@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "description": "Reglas oficiales de puntuación para la Polla Mundial 2026 basadas en pestaña ADMIN",
+  "match_points": {
+    "group_stage": {
+      "outcome": 10,
+      "goal_difference": 10,
+      "exact_score": 10
+    },
+    "round_of_32": {
+      "outcome": 20,
+      "goal_difference": 20,
+      "exact_score": 20,
+      "qualified_team": 20
+    },
+    "round_of_16": {
+      "outcome": 30,
+      "goal_difference": 30,
+      "exact_score": 30,
+      "qualified_team": 30
+    },
+    "quarter_finals": {
+      "outcome": 40,
+      "goal_difference": 40,
+      "exact_score": 40,
+      "qualified_team": 40
+    },
+    "semi_finals": {
+      "outcome": 50,
+      "goal_difference": 50,
+      "exact_score": 50,
+      "qualified_team": 50
+    },
+    "third_place": {
+      "outcome": 60,
+      "goal_difference": 60,
+      "exact_score": 60,
+      "qualified_team": 60
+    },
+    "final": {
+      "outcome": 70,
+      "goal_difference": 70,
+      "exact_score": 70,
+      "qualified_team": 70
+    }
+  },
+  "honor_roll": {
+    "champion": 90,
+    "runner_up": 80,
+    "third_place": 70
+  },
+  "awards": {
+    "golden_boot": 90,
+    "silver_boot": 80,
+    "bronze_boot": 70,
+    "golden_ball": 90,
+    "silver_ball": 80,
+    "bronze_ball": 70
+  },
+  "rules": {
+    "exact_score_excludes_outcome_and_difference": false,
+    "goal_difference_requires_correct_outcome": true,
+    "penalty_score_does_not_give_points": true,
+    "penalties_only_define_qualified_team": true,
+    "only_finished_matches_score": true
+  }
+}

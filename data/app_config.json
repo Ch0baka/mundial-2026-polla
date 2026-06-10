@@ -1,0 +1,11 @@
+{
+  "mode": "testing",
+  "title": "Polla Mundial 2026",
+  "prediction_lock": {
+    "enabled": true,
+    "date": "2026-06-11",
+    "time": "10:00",
+    "timezone": "America/Santiago",
+    "label": "Jueves 11 de junio de 2026, 10:00 hrs Chile"
+  }
+}

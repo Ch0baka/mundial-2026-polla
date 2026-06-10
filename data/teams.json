@@ -1,0 +1,194 @@
+{
+  "Alemania": {
+    "slug": "alemania",
+    "flag": "assets/flags/alemania.svg"
+  },
+  "Arabia Saudita": {
+    "slug": "arabia-saudita",
+    "flag": "assets/flags/arabia-saudita.svg"
+  },
+  "Argelia": {
+    "slug": "argelia",
+    "flag": "assets/flags/argelia.svg"
+  },
+  "Argentina": {
+    "slug": "argentina",
+    "flag": "assets/flags/argentina.svg"
+  },
+  "Australia": {
+    "slug": "australia",
+    "flag": "assets/flags/australia.svg"
+  },
+  "Austria": {
+    "slug": "austria",
+    "flag": "assets/flags/austria.svg"
+  },
+  "Bosnia y Herzegovina": {
+    "slug": "bosnia-y-herzegovina",
+    "flag": "assets/flags/bosnia-y-herzegovina.svg"
+  },
+  "Brasil": {
+    "slug": "brasil",
+    "flag": "assets/flags/brasil.svg"
+  },
+  "Bélgica": {
+    "slug": "belgica",
+    "flag": "assets/flags/belgica.svg"
+  },
+  "Cabo Verde": {
+    "slug": "cabo-verde",
+    "flag": "assets/flags/cabo-verde.svg"
+  },
+  "Canadá": {
+    "slug": "canada",
+    "flag": "assets/flags/canada.svg"
+  },
+  "Catar": {
+    "slug": "catar",
+    "flag": "assets/flags/catar.svg"
+  },
+  "Colombia": {
+    "slug": "colombia",
+    "flag": "assets/flags/colombia.svg"
+  },
+  "Corea del Sur": {
+    "slug": "corea-del-sur",
+    "flag": "assets/flags/corea-del-sur.svg"
+  },
+  "Costa de Marfil": {
+    "slug": "costa-de-marfil",
+    "flag": "assets/flags/costa-de-marfil.svg"
+  },
+  "Croacia": {
+    "slug": "croacia",
+    "flag": "assets/flags/croacia.svg"
+  },
+  "Curazao": {
+    "slug": "curazao",
+    "flag": "assets/flags/curazao.svg"
+  },
+  "Ecuador": {
+    "slug": "ecuador",
+    "flag": "assets/flags/ecuador.svg"
+  },
+  "Egipto": {
+    "slug": "egipto",
+    "flag": "assets/flags/egipto.svg"
+  },
+  "Escocia": {
+    "slug": "escocia",
+    "flag": "assets/flags/escocia.svg"
+  },
+  "España": {
+    "slug": "espana",
+    "flag": "assets/flags/espana.svg"
+  },
+  "Estados Unidos": {
+    "slug": "estados-unidos",
+    "flag": "assets/flags/estados-unidos.svg"
+  },
+  "Francia": {
+    "slug": "francia",
+    "flag": "assets/flags/francia.svg"
+  },
+  "Ghana": {
+    "slug": "ghana",
+    "flag": "assets/flags/ghana.svg"
+  },
+  "Haití": {
+    "slug": "haiti",
+    "flag": "assets/flags/haiti.svg"
+  },
+  "Inglaterra": {
+    "slug": "inglaterra",
+    "flag": "assets/flags/inglaterra.svg"
+  },
+  "Irak": {
+    "slug": "irak",
+    "flag": "assets/flags/irak.svg"
+  },
+  "Irán": {
+    "slug": "iran",
+    "flag": "assets/flags/iran.svg"
+  },
+  "Japón": {
+    "slug": "japon",
+    "flag": "assets/flags/japon.svg"
+  },
+  "Jordania": {
+    "slug": "jordania",
+    "flag": "assets/flags/jordania.svg"
+  },
+  "Marruecos": {
+    "slug": "marruecos",
+    "flag": "assets/flags/marruecos.svg"
+  },
+  "México": {
+    "slug": "mexico",
+    "flag": "assets/flags/mexico.svg"
+  },
+  "Noruega": {
+    "slug": "noruega",
+    "flag": "assets/flags/noruega.svg"
+  },
+  "Nueva Zelanda": {
+    "slug": "nueva-zelanda",
+    "flag": "assets/flags/nueva-zelanda.svg"
+  },
+  "Panamá": {
+    "slug": "panama",
+    "flag": "assets/flags/panama.svg"
+  },
+  "Paraguay": {
+    "slug": "paraguay",
+    "flag": "assets/flags/paraguay.svg"
+  },
+  "Países Bajos": {
+    "slug": "paises-bajos",
+    "flag": "assets/flags/paises-bajos.svg"
+  },
+  "Portugal": {
+    "slug": "portugal",
+    "flag": "assets/flags/portugal.svg"
+  },
+  "RD Congo": {
+    "slug": "rd-congo",
+    "flag": "assets/flags/rd-congo.svg"
+  },
+  "República Checa": {
+    "slug": "republica-checa",
+    "flag": "assets/flags/republica-checa.svg"
+  },
+  "Senegal": {
+    "slug": "senegal",
+    "flag": "assets/flags/senegal.svg"
+  },
+  "Sudáfrica": {
+    "slug": "sudafrica",
+    "flag": "assets/flags/sudafrica.svg"
+  },
+  "Suecia": {
+    "slug": "suecia",
+    "flag": "assets/flags/suecia.svg"
+  },
+  "Suiza": {
+    "slug": "suiza",
+    "flag": "assets/flags/suiza.svg"
+  },
+  "Turquía": {
+    "slug": "turquia",
+    "flag": "assets/flags/turquia.svg"
+  },
+  "Túnez": {
+    "slug": "tunez",
+    "flag": "assets/flags/tunez.svg"
+  },
+  "Uruguay": {
+    "slug": "uruguay",
+    "flag": "assets/flags/uruguay.svg"
+  },
+  "Uzbekistán": {
+    "slug": "uzbekistan",
+    "flag": "assets/flags/uzbekistan.svg"
+  }
+}

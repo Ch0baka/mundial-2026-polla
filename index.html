@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Portal de pronósticos de la polla del Mundial 2026">
+    <title>Polla Mundial 2026</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-content">
+        <div class="brand">
+          <p class="eyebrow">Portal de pronósticos</p>
+          <h1>Polla Mundial 2026</h1>
+          <p class="subtitle">Una vista clara de cada camino hacia la copa.</p>
+        </div>
+        <div class="status-pill" id="load-status" role="status">Cargando datos...</div>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="Secciones principales">
+      <div class="container tab-list" role="tablist">
+        <button class="tab is-active" role="tab" aria-selected="true" data-view="dashboard">Dashboard</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="ranking">Ranking</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="players">Jugadores</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="groups">Fase de grupos</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="knockout">Eliminatorias</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="fixture">Fixture de Control</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="rules">Reglas</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="awards">Premios</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="audit">Auditoría</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="warnings">Warnings</button>
+      </div>
+    </nav>
+
+    <main class="container">
+      <div id="global-error" class="message message-error" hidden></div>
+
+      <section class="view is-active" id="view-dashboard" aria-labelledby="dashboard-title">
+        <div class="section-heading">
+          <div><p class="section-kicker">Resumen general</p><h2 id="dashboard-title">Dashboard</h2></div>
+        </div>
+        <div id="dashboard-lock-notice"></div>
+        <div class="metric-grid" id="dashboard-metrics"></div>
+        <div class="panel">
+          <div class="panel-heading"><h3>Participantes</h3><span class="muted">Scoring pendiente</span></div>
+          <div id="dashboard-players"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-ranking" aria-labelledby="ranking-title">
+        <div class="section-heading">
+          <div><p class="section-kicker">Estructura preparada</p><h2 id="ranking-title">Ranking</h2></div>
+        </div>
+        <div id="ranking-lock-notice"></div>
+        <div class="message message-info">Solo los partidos con estado “Finalizado” generan puntos.</div>
+        <div class="panel" id="ranking-content"></div>
+      </section>
+
+      <section class="view" id="view-players" aria-labelledby="players-title">
+        <div class="section-heading">
+          <div><p class="section-kicker">Pronósticos destacados</p><h2 id="players-title">Jugadores</h2></div>
+        </div>
+        <div class="player-grid" id="player-cards"></div>
+      </section>
+
+      <section class="view" id="view-groups" aria-labelledby="groups-title">
+        <div class="section-heading">
+          <div><p class="section-kicker">Primera fase</p><h2 id="groups-title">Fase de grupos</h2></div>
+          <div class="filter-row">
+            <label class="picker"><span>Jugador</span><select data-player-select="groups"></select></label>
+            <label class="picker picker-small"><span>Grupo</span><select id="group-select"></select></label>
+          </div>
+        </div>
+        <div id="groups-content"></div>
+      </section>
+
+      <section class="view" id="view-knockout" aria-labelledby="knockout-title">
+        <div class="section-heading">
+          <div><p class="section-kicker">Camino a la final</p><h2 id="knockout-title">Eliminatorias</h2></div>
+          <label class="picker"><span>Jugador</span><select data-player-select="knockout"></select></label>
+        </div>
+        <div id="knockout-content"></div>
+      </section>
+
+      <section class="view" id="view-fixture" aria-labelledby="fixture-title">
+        <div class="section-heading">
+          <div><p class="section-kicker">Resultados reales</p><h2 id="fixture-title">Fixture de Control</h2></div>
+          <div class="filter-row fixture-filters">
+            <label class="picker"><span>Fase</span><select id="fixture-phase-filter"></select></label>
+            <label class="picker picker-small"><span>Grupo</span><select id="fixture-group-filter"></select></label>
+            <label class="picker"><span>Estado</span><select id="fixture-status-filter"></select></label>
+          </div>
+        </div>
+        <div id="fixture-summary"></div>
+        <div id="fixture-content"></div>
+      </section>
+
+      <section class="view" id="view-rules" aria-labelledby="rules-title">
+        <div class="section-heading">
+          <div><p class="section-kicker">Puntuación Fase 1</p><h2 id="rules-title">Reglas</h2></div>
+        </div>
+        <div id="rules-content"></div>
+      </section>
+
+      <section class="view" id="view-awards" aria-labelledby="awards-title">
+        <div class="section-heading">
+          <div><p class="section-kicker">Comparación</p><h2 id="awards-title">Premios individuales</h2></div>
+        </div>
+        <div class="panel" id="awards-content"></div>
+      </section>
+
+      <section class="view" id="view-audit" aria-labelledby="audit-title">
+        <div class="section-heading">
+          <div><p class="section-kicker">Respaldo documental</p><h2 id="audit-title">Auditoría</h2></div>
+        </div>
+        <div class="message message-info">Los PDF permiten congelar y auditar los pronósticos originales de cada participante.</div>
+        <div class="audit-grid" id="audit-content"></div>
+      </section>
+
+      <section class="view" id="view-warnings" aria-labelledby="warnings-title">
+        <div class="section-heading">
+          <div><p class="section-kicker">Validación de datos</p><h2 id="warnings-title">Warnings</h2></div>
+        </div>
+        <div class="warning-grid" id="warnings-content"></div>
+      </section>
+    </main>
+
+    <footer class="container site-footer">Mundial 2026 · Datos generados desde pronósticos Excel</footer>
+    <script src="app.js"></script>
+  </body>
+</html>
