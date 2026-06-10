@@ -13,11 +13,11 @@
       "time": "15:00",
       "home_team": "México",
       "away_team": "Sudáfrica",
-      "home_score": 3,
-      "away_score": 4,
+      "home_score": null,
+      "away_score": null,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "finished"
+      "status": "scheduled"
     },
     {
       "match_id": 2,
