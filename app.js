@@ -50,7 +50,7 @@ const state = {
   selected: {
     groups: "",
     knockout: "",
-    group: "A",
+    group: "all",
     groupOrder: "group",
     fixturePhase: "all",
     fixtureGroup: "all",
@@ -450,7 +450,7 @@ function renderSelectors() {
       select.innerHTML = '<option value="">Sin jugadores</option>';
       select.disabled = true;
     });
-    document.querySelector("#group-select").innerHTML = `<option value="all">Todos</option>${GROUPS.map((group) => `<option value="${group}">Grupo ${group}</option>`).join("")}`;
+    document.querySelector("#group-select").innerHTML = `<option value="all">Fase completa</option>${GROUPS.map((group) => `<option value="${group}">Grupo ${group}</option>`).join("")}`;
     document.querySelector("#group-order-select").innerHTML = '<option value="group">Grupo</option><option value="date">Fecha</option>';
     renderFixtureSelectors();
     return;
@@ -465,7 +465,7 @@ function renderSelectors() {
     });
   });
   const groupSelect = document.querySelector("#group-select");
-  groupSelect.innerHTML = `<option value="all">Todos</option>${GROUPS.map((group) => `<option value="${group}">Grupo ${group}</option>`).join("")}`;
+  groupSelect.innerHTML = `<option value="all">Fase completa</option>${GROUPS.map((group) => `<option value="${group}">Grupo ${group}</option>`).join("")}`;
   groupSelect.value = state.selected.group;
   groupSelect.addEventListener("change", () => { state.selected.group = groupSelect.value; renderGroupStage(); });
   const groupOrderSelect = document.querySelector("#group-order-select");
