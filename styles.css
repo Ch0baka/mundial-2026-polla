@@ -196,6 +196,13 @@ select { width: 100%; border: 1px solid var(--border); border-radius: 9px; paddi
 
 .warning-card { padding: 19px; }
 .warning-heading { margin-bottom: 13px; }
+.notice-details { border: 1px solid var(--border); border-radius: 10px; background: var(--surface-soft); overflow: hidden; }
+.notice-details + .warning-list { margin-top: 12px; }
+.notice-details summary { padding: 12px 14px; cursor: pointer; color: var(--muted); font-size: 0.86rem; font-weight: 800; list-style: none; }
+.notice-details summary::-webkit-details-marker { display: none; }
+.notice-details summary::before { content: "+"; margin-right: 8px; color: var(--accent); }
+.notice-details[open] summary::before { content: "−"; }
+.notice-details .warning-list { padding: 0 12px 12px; }
 .warning-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .warning-list li { border-left: 3px solid var(--gold); border-radius: 6px; padding: 9px 11px; background: var(--gold-soft); color: var(--gold); font-size: 0.85rem; }
 .audit-card { padding: 19px; }

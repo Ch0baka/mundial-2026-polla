@@ -199,7 +199,7 @@ function renderDashboard() {
   document.querySelector("#dashboard-metrics").innerHTML = [
     metricCard("Jugadores", state.players.length, "Participantes cargados"),
     metricCard("Partidos por jugador", counts.length ? Math.max(...counts) : 0, "Pronósticos disponibles"),
-    metricCard("Warnings", totalWarnings, "Avisos de validación"),
+    metricCard("Avisos", totalWarnings, "Validaciones y pendientes"),
     metricCard("Última actualización", formatDate(latest), "Desde source.generated_at", true),
   ].join("");
   const rows = state.players.map((player) => `
@@ -209,7 +209,7 @@ function renderDashboard() {
     <td>${renderTeamName(player.honor_roll?.champion)}</td>
     <td>${escapeHtml(formatDate(player.source?.generated_at))}</td></tr>`).join("");
   document.querySelector("#dashboard-players").innerHTML = table(
-    ["Jugador", "Partidos", "Warnings", "Campeón pronosticado", "Actualizado"], rows,
+    ["Jugador", "Partidos", "Avisos", "Campeón pronosticado", "Actualizado"], rows,
   );
 }
 
@@ -221,7 +221,7 @@ function renderRanking() {
     <td class="number-cell">${entry.exactScores}</td><td>${renderTeamName(entry.champion)}</td>
     <td>${warningBadge(entry.warnings)}</td></tr>`).join("");
   document.querySelector("#ranking-content").innerHTML = table(
-    ["Posición", "Jugador", "Puntos", "Partidos puntuados", "Exactos", "Campeón pronosticado", "Warnings"], rows,
+    ["Posición", "Jugador", "Puntos", "Partidos puntuados", "Exactos", "Campeón pronosticado", "Avisos"], rows,
   );
 }
 
@@ -300,7 +300,7 @@ function renderFixture() {
   summary.innerHTML = `<div class="fixture-summary">
     <span class="badge">${state.realResults.matches.length} partidos</span>
     <span class="badge badge-success">${finished} finalizados</span>
-    <span class="badge ${state.controlWarnings.length ? "badge-warning" : "badge-success"}">${state.controlWarnings.length} warnings de control</span>
+    <span class="badge ${state.controlWarnings.length ? "badge-warning" : "badge-success"}">${state.controlWarnings.length} avisos de control</span>
     <span class="muted">Actualizado: ${escapeHtml(formatDate(state.realResults.updated_at))}</span>
   </div>`;
 
@@ -380,14 +380,24 @@ function renderAudit() {
 }
 
 function renderWarnings() {
-  const controlCard = `<article class="warning-card"><div class="warning-heading"><h3>Warnings de control</h3>${warningBadge(state.controlWarnings.length)}</div>
-    ${state.controlWarnings.length ? `<ul class="warning-list">${state.controlWarnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>` : emptyState("Sin warnings")}</article>`;
-  const scoringCard = `<article class="warning-card"><div class="warning-heading"><h3>Warnings de scoring</h3>${warningBadge(state.scoringWarnings.length)}</div>
-    ${state.scoringWarnings.length ? `<ul class="warning-list">${state.scoringWarnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>` : emptyState("Sin warnings")}</article>`;
+  const pendingControl = state.controlWarnings.filter((warning) => /: Sin equipos definidos$/.test(warning));
+  const reviewControl = state.controlWarnings.filter((warning) => !/: Sin equipos definidos$/.test(warning));
+  const pendingDetails = pendingControl.length
+    ? `<details class="notice-details"><summary>${pendingControl.length} partidos pendientes sin equipos definidos</summary>
+        <ul class="warning-list">${pendingControl.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>
+      </details>`
+    : "";
+  const reviewList = reviewControl.length
+    ? `<ul class="warning-list">${reviewControl.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>`
+    : (!pendingControl.length ? emptyState("Sin avisos") : "");
+  const controlCard = `<article class="warning-card"><div class="warning-heading"><h3>Avisos de control</h3>${warningBadge(state.controlWarnings.length, "aviso")}</div>
+    ${pendingDetails}${reviewList}</article>`;
+  const scoringCard = `<article class="warning-card"><div class="warning-heading"><h3>Avisos de scoring</h3>${warningBadge(state.scoringWarnings.length, "aviso")}</div>
+    ${state.scoringWarnings.length ? `<ul class="warning-list">${state.scoringWarnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>` : emptyState("Sin avisos")}</article>`;
   document.querySelector("#warnings-content").innerHTML = controlCard + scoringCard + state.players.map((player) => {
     const warnings = getPlayerWarnings(player);
-    return `<article class="warning-card"><div class="warning-heading"><h3>Jugador: ${escapeHtml(player.player.name)}</h3>${warningBadge(warnings.length)}</div>
-      ${warnings.length ? `<ul class="warning-list">${warnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>` : emptyState("Sin warnings")}</article>`;
+    return `<article class="warning-card"><div class="warning-heading"><h3>Avisos de jugador: ${escapeHtml(player.player.name)}</h3>${warningBadge(warnings.length, "aviso")}</div>
+      ${warnings.length ? `<ul class="warning-list">${warnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>` : emptyState("Sin avisos")}</article>`;
   }).join("");
 }
 
@@ -697,23 +707,23 @@ function collectControlWarnings() {
   const warnings = [];
   resolveControlMatches(state.realResults).forEach((match) => {
     if (!match.match_key) {
-      warnings.push(`Partido #${match.match_id}: partido real sin match_key.`);
+      warnings.push(`Partido #${match.match_id}: Falta match_key`);
     }
     if (isKnockoutPhase(match.phase) && (!match.home_team || !match.away_team)) {
-      warnings.push(`Partido #${match.match_id}: Eliminatoria sin equipos reales definidos.`);
+      warnings.push(`Partido #${match.match_id}: Sin equipos definidos`);
     }
     if (match.status !== "finished") return;
     if (!match.home_team || !match.away_team) {
-      warnings.push(`Partido #${match.match_id}: Partido finished sin equipos definidos.`);
+      warnings.push(`Partido #${match.match_id}: Partido finalizado sin equipos definidos`);
       return;
     }
     if (!hasScore(match)) {
-      warnings.push(`Partido #${match.match_id}: estado finished sin goles.`);
+      warnings.push(`Partido #${match.match_id}: Sin marcador final`);
     } else if (match.phase !== "group_stage" && match.home_score === match.away_score) {
       if (!hasPenalties(match)) {
-        warnings.push(`Partido #${match.match_id}: eliminatoria empatada sin penales.`);
+        warnings.push(`Partido #${match.match_id}: Faltan penales`);
       } else if (match.home_penalties === match.away_penalties) {
-        warnings.push(`Partido #${match.match_id}: penales empatados ${match.home_penalties}-${match.away_penalties}.`);
+        warnings.push(`Partido #${match.match_id}: Penales inválidos`);
       }
     }
   });
@@ -811,7 +821,7 @@ function formatScore(match) {
 function getPlayer(id) { return state.players.find((player) => player.player.id === id); }
 function setStatus(text, type = "") { const el = document.querySelector("#load-status"); el.textContent = text; el.className = `status-pill ${type}`.trim(); }
 function showError(message) { const el = document.querySelector("#global-error"); el.hidden = false; el.textContent = message; }
-function warningBadge(count) { return `<span class="badge ${count ? "badge-warning" : "badge-success"}">${count} warning${count === 1 ? "" : "s"}</span>`; }
+function warningBadge(count, label = "warning") { return `<span class="badge ${count ? "badge-warning" : "badge-success"}">${count} ${label}${count === 1 ? "" : "s"}</span>`; }
 function metricCard(label, value, note, compact = false) { return `<article class="metric-card"><p class="metric-label">${label}</p><p class="metric-value ${compact ? "metric-value-compact" : ""}">${escapeHtml(value)}</p><p class="metric-note">${note}</p></article>`; }
 function honorItem(label, team) { return `<div class="honor-item"><span>${label}</span><strong>${renderTeamName(team)}</strong></div>`; }
 function awardGroup(title, keys, awards = {}) { return `<section class="award-group"><h4>${title}</h4>${keys.map((key) => `<div class="award-row"><span>${AWARD_LABELS[key]}</span><strong>${escapeHtml(awards?.[key] || "Sin definir")}</strong></div>`).join("")}</section>`; }
