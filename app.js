@@ -39,6 +39,7 @@ const state = {
   controlWarnings: [],
   scoringWarnings: [],
   leaderboard: [],
+  pdfAvailability: {},
   errors: [],
   selected: {
     groups: "",
@@ -60,6 +61,32 @@ async function loadJson(path) {
   const response = await fetch(path);
   if (!response.ok) throw new Error(`HTTP ${response.status} al cargar ${path}`);
   return response.json();
+}
+
+async function fileExists(path) {
+  try {
+    const response = await fetch(path, { method: "HEAD", cache: "no-store" });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function checkPdfExists(path) {
+  return fileExists(path);
+}
+
+function getPlayerPdfPath(playerId) {
+  return `pdf/${playerId}.pdf`;
+}
+
+async function loadPdfAvailability() {
+  const entries = await Promise.all(state.players.map(async (player) => {
+    const path = getPlayerPdfPath(player.player.id);
+    return [player.player.id, { path, available: await checkPdfExists(path) }];
+  }));
+  state.pdfAvailability = Object.fromEntries(entries);
+  return state.pdfAvailability;
 }
 
 async function loadPlayersIndex() {
@@ -136,6 +163,7 @@ async function init() {
   try {
     await loadPlayersIndex();
     await Promise.all([loadPlayers(), loadTeams(), loadConfig(), loadRealResults(), loadScoringRules()]);
+    await loadPdfAvailability();
     if (state.players.length) {
       state.selected.groups = state.players[0].player.id;
       state.selected.knockout = state.players[0].player.id;
@@ -230,7 +258,9 @@ function calculateLeaderboard() {
 }
 
 function renderPlayers() {
-  document.querySelector("#player-cards").innerHTML = state.players.map((player) => `
+  document.querySelector("#player-cards").innerHTML = state.players.map((player) => {
+    const pdf = state.pdfAvailability[player.player.id];
+    return `
     <article class="player-card">
       <header class="player-card-header"><div><p class="card-kicker">Participante</p><h3>${escapeHtml(player.player.name)}</h3></div>
       ${warningBadge(getPlayerWarnings(player).length)}</header>
@@ -244,9 +274,13 @@ function renderPlayers() {
           ${awardGroup("Botas", ["golden_boot", "silver_boot", "bronze_boot"], player.awards)}
           ${awardGroup("Balones", ["golden_ball", "silver_ball", "bronze_ball"], player.awards)}
         </div>
-        <button class="button button-primary" data-show-player="${escapeHtml(player.player.id)}">Ver predicciones</button>
+        <div class="player-actions">
+          <button class="button button-primary" data-show-player="${escapeHtml(player.player.id)}">Ver predicciones</button>
+          ${renderPdfAction(pdf)}
+        </div>
       </div>
-    </article>`).join("");
+    </article>`;
+  }).join("");
   document.querySelectorAll("[data-show-player]").forEach((button) => button.addEventListener("click", () => {
     state.selected.groups = button.dataset.showPlayer;
     document.querySelector('[data-player-select="groups"]').value = state.selected.groups;
@@ -365,11 +399,23 @@ function renderAwards() {
 
 function renderAudit() {
   document.querySelector("#audit-content").innerHTML = state.players.map((player) => {
-    const path = `pdf/${player.player.id}.pdf`;
-    return `<article class="audit-card"><div><p class="card-kicker">PDF esperado</p><h3>${escapeHtml(player.player.name)}</h3>
-      <p class="muted">Fuente: ${escapeHtml(player.source?.file || "Excel no identificado")}</p></div>
-      <a class="button button-secondary" href="${escapeHtml(path)}" target="_blank" rel="noopener">Abrir PDF esperado</a></article>`;
+    const pdf = state.pdfAvailability[player.player.id] || {
+      path: getPlayerPdfPath(player.player.id),
+      available: false,
+    };
+    return `<article class="audit-card"><div class="audit-meta"><p class="card-kicker">Auditoría de pronóstico</p>
+      <h3>${escapeHtml(player.player.name)}</h3>
+      <p><strong>Ruta esperada:</strong> <span class="audit-path">${escapeHtml(pdf.path)}</span></p>
+      <p><strong>Estado:</strong> ${pdf.available ? '<span class="control-ok">Disponible</span>' : '<span class="control-pending">No disponible todavía</span>'}</p>
+      </div>${renderPdfAction(pdf)}</article>`;
   }).join("");
+}
+
+function renderPdfAction(pdf) {
+  if (pdf?.available) {
+    return `<a class="button button-secondary" href="${escapeHtml(pdf.path)}" download>Descargar PDF</a>`;
+  }
+  return '<button class="button button-secondary" type="button" disabled>PDF no disponible</button>';
 }
 
 function renderWarnings() {

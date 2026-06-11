@@ -152,6 +152,8 @@ tbody tr:hover { background: var(--surface-soft); }
 .button { display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: 9px; padding: 9px 12px; cursor: pointer; font-weight: 800; text-decoration: none; }
 .button-primary { background: var(--accent); color: #fff; }
 .button-secondary { border-color: var(--border); background: var(--surface-soft); color: var(--accent-strong); }
+.button:disabled { cursor: not-allowed; opacity: 0.58; }
+.player-actions { display: flex; gap: 9px; flex-wrap: wrap; }
 
 .filter-row { align-items: flex-end; }
 .picker { display: grid; gap: 6px; min-width: 210px; color: var(--muted); font-size: 0.7rem; font-weight: 850; text-transform: uppercase; }
@@ -212,7 +214,10 @@ select { width: 100%; border: 1px solid var(--border); border-radius: 9px; paddi
 .notice-details .warning-list { padding: 0 12px 12px; }
 .warning-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .warning-list li { border-left: 3px solid var(--gold); border-radius: 6px; padding: 9px 11px; background: var(--gold-soft); color: var(--gold); font-size: 0.85rem; }
-.audit-card { padding: 19px; }
+.audit-card { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 19px; }
+.audit-meta { display: grid; gap: 5px; }
+.audit-meta p { margin: 0; }
+.audit-path { overflow-wrap: anywhere; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.78rem; }
 
 .empty-state, .message { border-radius: 12px; padding: 17px; }
 .empty-state { border: 1px dashed var(--border); background: var(--surface-soft); color: var(--muted); text-align: center; }

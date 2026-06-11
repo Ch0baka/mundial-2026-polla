@@ -81,8 +81,17 @@ banderas cuando el SVG correspondiente existe. El ranking calcula puntos usando
 Si `data/app_config.json` o una bandera SVG no están disponibles, el portal
 utiliza sus valores por defecto y continúa funcionando.
 
-Los PDF de auditoría se esperan en `pdf/{player_id}.pdf`. El portal mantiene el
-enlace visible aunque el archivo todavía no exista.
+Los PDF de auditoría se esperan en `pdf/{player_id}.pdf`. El portal comprueba
+si cada archivo existe antes de mostrar la descarga y evita abrir enlaces
+rotos cuando todavía no está disponible.
+
+Para que la descarga funcione, los PDF deben existir físicamente en la carpeta
+`pdf/` y estar incluidos en el repositorio publicado. Por ejemplo:
+
+```text
+pdf/dz-01.pdf
+pdf/rz-02.pdf
+```
 
 ## Modo pruebas
 
