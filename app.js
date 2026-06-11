@@ -227,9 +227,10 @@ function renderRanking() {
 
 function calculateLeaderboard() {
   state.scoringWarnings = [];
+  const resolvedResults = { ...state.realResults, matches: resolveControlMatches(state.realResults) };
   return state.players.map((player) => calculatePlayerScore(
     player,
-    state.realResults,
+    resolvedResults,
     state.scoringRules,
   )).sort((a, b) => b.points - a.points || a.name.localeCompare(b.name, "es"));
 }
@@ -286,9 +287,11 @@ function renderKnockout() {
 function renderFixture() {
   const content = document.querySelector("#fixture-content");
   const summary = document.querySelector("#fixture-summary");
+  const standings = document.querySelector("#fixture-standings");
   if (!state.fixtureAvailable) {
     summary.innerHTML = "";
     content.innerHTML = emptyState("Fixture de control no disponible");
+    standings.innerHTML = emptyState("Clasificados calculados no disponibles");
     return;
   }
 
@@ -303,26 +306,42 @@ function renderFixture() {
 
   if (!matches.length) {
     content.innerHTML = emptyState("No hay partidos para los filtros seleccionados.");
+    renderGroupStandings();
     return;
   }
 
   const rows = matches.map((match) => `
     <tr><td class="number-cell">${escapeHtml(match.match_id)}</td><td>${escapeHtml(formatFixtureDate(match))}</td>
     <td>${escapeHtml(phaseLabel(match.phase))}</td><td>${escapeHtml(match.group || "—")}</td>
-    <td>${renderTeamName(match.home_team)}</td><td>${renderTeamName(match.away_team)}</td>
+    <td>${renderControlTeam(match, "home")}</td><td>${renderControlTeam(match, "away")}</td>
     <td><span class="score">${escapeHtml(formatRealScore(match))}</span></td>
     <td>${escapeHtml(formatRealPenalties(match))}</td><td>${statusBadge(match.status)}</td>
     <td>${controlLabel(match)}</td></tr>`).join("");
   const cards = matches.map((match) => `
     <article class="fixture-card">
       <div class="fixture-card-head"><span>#${escapeHtml(match.match_id)} · ${escapeHtml(phaseLabel(match.phase))}${match.group ? ` · Grupo ${escapeHtml(match.group)}` : ""}</span>${statusBadge(match.status)}</div>
-      <div class="fixture-card-teams">${renderTeamName(match.home_team)}${renderTeamName(match.away_team)}</div>
+      <div class="fixture-card-teams">${renderControlTeam(match, "home")}${renderControlTeam(match, "away")}</div>
       <div class="fixture-card-result"><span class="muted">${escapeHtml(formatFixtureDate(match))} · ${controlLabel(match)}</span><strong>${escapeHtml(formatRealScore(match))}${formatRealPenalties(match) !== "—" ? ` · pen. ${escapeHtml(formatRealPenalties(match))}` : ""}</strong></div>
     </article>`).join("");
   content.innerHTML = `<div class="panel fixture-table">${table(
     ["ID", "Fecha", "Fase", "Grupo", "Local", "Visita", "Resultado", "Penales", "Estado", "Control"],
     rows,
   )}</div><div class="fixture-cards">${cards}</div>`;
+  renderGroupStandings();
+}
+
+function renderGroupStandings() {
+  const standings = getGroupStandings(state.realResults);
+  const rows = GROUPS.flatMap((group) => (standings[group]?.rows ?? []).map((team) => `
+    <tr><td><span class="badge">Grupo ${escapeHtml(group)}</span></td>
+    <td class="number-cell">${team.position}°</td><td class="standings-team">${renderTeamName(team.team)}</td>
+    <td class="number-cell">${team.points}</td><td class="number-cell">${team.gf}</td>
+    <td class="number-cell">${team.gc}</td><td class="number-cell">${team.gd}</td>
+    <td>${standings[group].complete ? '<span class="control-ok">Completo</span>' : '<span class="control-pending">Provisional</span>'}</td></tr>`));
+  document.querySelector("#fixture-standings").innerHTML = rows.length
+    ? `<div class="message message-info">Las posiciones solo resuelven slots eliminatorios cuando todos los partidos del grupo están finalizados. Los cruces de mejores terceros permanecen por definir.</div>
+      <div class="panel">${table(["Grupo", "Posición", "Equipo", "Puntos", "GF", "GC", "DG", "Estado"], rows.join(""))}</div>`
+    : emptyState("No hay grupos disponibles para calcular posiciones.");
 }
 
 function renderRules() {
@@ -377,6 +396,13 @@ function renderTeamName(teamName) {
   const team = state.teams[teamName];
   if (!team?.flag) return `<span class="team-name"><span class="team-label">${escapeHtml(teamName)}</span></span>`;
   return `<span class="team-name"><img class="team-flag" src="${escapeHtml(team.flag)}" alt="" loading="lazy" onload="this.classList.add('is-loaded')" onerror="this.remove()"><span class="team-label">${escapeHtml(teamName)}</span></span>`;
+}
+
+function renderControlTeam(match, side) {
+  const team = match?.[`${side}_team`];
+  if (team) return renderTeamName(team);
+  const slot = match?.[`${side}_slot`] || "Por definir";
+  return `<span class="control-slot">${escapeHtml(slot)}</span>`;
 }
 
 function renderMatch(match) {
@@ -474,6 +500,80 @@ function findPrediction(predictions, realMatch) {
   return predictions.exact.get(exactKey) || predictions.normalized.get(buildMatchKey(realMatch));
 }
 
+function isKnockoutPhase(phase) {
+  return Object.prototype.hasOwnProperty.call(PHASE_LABELS, phase);
+}
+
+function getGroupStandings(realResults) {
+  const standings = Object.fromEntries(GROUPS.map((group) => [group, { complete: false, rows: [] }]));
+  GROUPS.forEach((group) => {
+    const matches = (realResults?.matches ?? []).filter(
+      (match) => match.phase === "group_stage" && match.group === group,
+    );
+    const teams = new Map();
+    matches.forEach((match) => {
+      [match.home_team, match.away_team].filter(Boolean).forEach((team) => {
+        if (!teams.has(team)) teams.set(team, { team, points: 0, gf: 0, gc: 0, gd: 0, played: 0 });
+      });
+      if (match.status !== "finished" || !hasScore(match) || !match.home_team || !match.away_team) return;
+      const home = teams.get(match.home_team);
+      const away = teams.get(match.away_team);
+      home.played += 1;
+      away.played += 1;
+      home.gf += match.home_score;
+      home.gc += match.away_score;
+      away.gf += match.away_score;
+      away.gc += match.home_score;
+      if (match.home_score > match.away_score) home.points += 3;
+      else if (match.away_score > match.home_score) away.points += 3;
+      else {
+        home.points += 1;
+        away.points += 1;
+      }
+    });
+    const rows = [...teams.values()]
+      .map((team) => ({ ...team, gd: team.gf - team.gc }))
+      .sort((a, b) => b.points - a.points || b.gd - a.gd || b.gf - a.gf || a.team.localeCompare(b.team, "es"))
+      .map((team, index) => ({ ...team, position: index + 1 }));
+    standings[group] = {
+      complete: matches.length > 0 && matches.every((match) => match.status === "finished" && hasScore(match)),
+      rows,
+    };
+  });
+  return standings;
+}
+
+function resolveControlMatches(realResults) {
+  const standings = getGroupStandings(realResults);
+  const resolvedById = new Map();
+  return (realResults?.matches ?? []).map((sourceMatch) => {
+    const match = { ...sourceMatch };
+    if (isKnockoutPhase(match.phase)) {
+      match.home_team = match.home_team || resolveControlSlot(match.home_slot, standings, resolvedById);
+      match.away_team = match.away_team || resolveControlSlot(match.away_slot, standings, resolvedById);
+      if (match.home_team && match.away_team) match.match_key = deriveMatchKey(match);
+    }
+    resolvedById.set(match.match_id, match);
+    return match;
+  });
+}
+
+function resolveControlSlot(slot, standings, resolvedById) {
+  const groupSlot = /^([1-4])° Grupo ([A-L])$/.exec(slot || "");
+  if (groupSlot) {
+    const group = standings[groupSlot[2]];
+    return group?.complete ? group.rows[Number(groupSlot[1]) - 1]?.team || null : null;
+  }
+  const priorSlot = /^(Ganador|Perdedor) partido (\d+)$/.exec(slot || "");
+  if (!priorSlot) return null;
+  const priorMatch = resolvedById.get(Number(priorSlot[2]));
+  if (!priorMatch || priorMatch.status !== "finished" || !priorMatch.home_team || !priorMatch.away_team) return null;
+  const winner = getQualifiedTeam(priorMatch);
+  if (!winner) return null;
+  if (priorSlot[1] === "Ganador") return winner;
+  return compareTeams(winner, priorMatch.home_team) ? priorMatch.away_team : priorMatch.home_team;
+}
+
 function calculatePlayerScore(player, realResults, scoringRules) {
   const predictions = predictionMap(player);
   const result = {
@@ -488,6 +588,13 @@ function calculatePlayerScore(player, realResults, scoringRules) {
   if (!realResults?.matches?.length || !scoringRules?.match_points) return result;
 
   realResults.matches.filter((match) => match.status === "finished").forEach((realMatch) => {
+    if (!realMatch.home_team || !realMatch.away_team) {
+      state.scoringWarnings.push(
+        `${player.player.name}: Partido #${realMatch.match_id}: No se puede calcular ranking para partido sin equipos reales.`,
+      );
+      result.warnings += 1;
+      return;
+    }
     const prediction = findPrediction(predictions, realMatch);
     if (!prediction) {
       state.scoringWarnings.push(
@@ -520,6 +627,10 @@ function calculateMatchPoints(prediction, realMatch, scoringRules) {
     warnings: [],
   };
   if (realMatch.status !== "finished") return result;
+  if (!realMatch.home_team || !realMatch.away_team) {
+    result.warnings.push(`Partido #${realMatch.match_id}: No se puede calcular ranking para partido sin equipos reales.`);
+    return result;
+  }
   if (!hasScore(realMatch)) {
     result.warnings.push(`Partido #${realMatch.match_id}: finalizado sin goles válidos.`);
     return result;
@@ -584,11 +695,18 @@ function getGoalDifference(match) {
 function collectControlWarnings() {
   if (!state.fixtureAvailable) return [];
   const warnings = [];
-  state.realResults.matches.forEach((match) => {
+  resolveControlMatches(state.realResults).forEach((match) => {
     if (!match.match_key) {
       warnings.push(`Partido #${match.match_id}: partido real sin match_key.`);
     }
+    if (isKnockoutPhase(match.phase) && (!match.home_team || !match.away_team)) {
+      warnings.push(`Partido #${match.match_id}: Eliminatoria sin equipos reales definidos.`);
+    }
     if (match.status !== "finished") return;
+    if (!match.home_team || !match.away_team) {
+      warnings.push(`Partido #${match.match_id}: Partido finished sin equipos definidos.`);
+      return;
+    }
     if (!hasScore(match)) {
       warnings.push(`Partido #${match.match_id}: estado finished sin goles.`);
     } else if (match.phase !== "group_stage" && match.home_score === match.away_score) {
@@ -603,6 +721,9 @@ function collectControlWarnings() {
 }
 
 function getControlState(match) {
+  if (isKnockoutPhase(match.phase) && (!match.home_team || !match.away_team)) {
+    return { label: "Por definir", className: "control-pending" };
+  }
   if (match.status !== "finished") return { label: "Pendiente", className: "control-pending" };
   if (!hasScore(match)) return { label: "Revisar", className: "control-review" };
   if (
@@ -621,7 +742,7 @@ function controlLabel(match) {
 }
 
 function getFilteredFixtureMatches() {
-  return state.realResults.matches.filter((match) =>
+  return resolveControlMatches(state.realResults).filter((match) =>
     (state.selected.fixturePhase === "all" || match.phase === state.selected.fixturePhase)
     && (state.selected.fixtureGroup === "all" || match.group === state.selected.fixtureGroup)
     && (state.selected.fixtureStatus === "all" || match.status === state.selected.fixtureStatus)

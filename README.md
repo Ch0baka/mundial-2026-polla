@@ -135,6 +135,13 @@ La pestaña **Fixture de Control** permite filtrar por fase, grupo y estado, y
 muestra warnings cuando un resultado finalizado está incompleto o no se puede
 unir con una predicción.
 
+En `data/real_results.json`, los partidos de fase de grupos mantienen sus
+selecciones reales. Las eliminatorias usan `home_slot` y `away_slot` hasta que
+los resultados reales permiten resolver los equipos. El portal calcula tablas
+de grupo por puntos, diferencia de gol, goles a favor y nombre como desempate
+temporal; los cruces de mejores terceros permanecen por definir hasta contar
+con una regla oficial completa.
+
 La puntuación se lee desde `data/scoring_rules.json` y es acumulativa: se suman
 los puntos correspondientes por signo, diferencia de gol y marcador exacto.
 En eliminatorias, acertar el clasificado suma puntos adicionales; el marcador
