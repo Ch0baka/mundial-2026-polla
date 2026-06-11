@@ -3,12 +3,18 @@
     "id": "dz-01",
     "name": "DZ-01",
     "file": "players/dz-01.json",
-    "generated_at": "2026-06-11T00:03:52.288244+00:00"
+    "generated_at": "2026-06-11T22:59:08.260428+00:00"
   },
   {
-    "id": "rz-02",
-    "name": "RZ-02",
-    "file": "players/rz-02.json",
-    "generated_at": "2026-06-11T00:03:54.161901+00:00"
+    "id": "fz-02",
+    "name": "FZ-02",
+    "file": "players/fz-02.json",
+    "generated_at": "2026-06-11T22:59:10.108924+00:00"
+  },
+  {
+    "id": "rz-03",
+    "name": "RZ-03",
+    "file": "players/rz-03.json",
+    "generated_at": "2026-06-11T22:59:11.965581+00:00"
   }
 ]

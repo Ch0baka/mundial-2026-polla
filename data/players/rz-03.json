@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "player": {
-    "id": "rz-02",
-    "name": "RZ-02",
-    "alias": "RZ-02"
+    "id": "rz-03",
+    "name": "RZ-03",
+    "alias": "RZ-03"
   },
   "source": {
-    "file": "player-source-rz-02.xlsx",
+    "file": "player-source-rz-03.xlsx",
     "sheet": "Pool",
-    "generated_at": "2026-06-11T00:03:54.161901+00:00"
+    "generated_at": "2026-06-11T22:59:11.965581+00:00"
   },
   "predictions": {
     "group_stage": [
