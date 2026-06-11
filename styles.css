@@ -213,17 +213,12 @@ select { width: 100%; border: 1px solid var(--border); border-radius: 9px; paddi
 .warning-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .warning-list li { border-left: 3px solid var(--gold); border-radius: 6px; padding: 9px 11px; background: var(--gold-soft); color: var(--gold); font-size: 0.85rem; }
 .audit-card { padding: 19px; }
-.rules-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; }
-.rules-copy { display: grid; gap: 10px; }
-.rules-copy .message { margin-bottom: 0; }
 
 .empty-state, .message { border-radius: 12px; padding: 17px; }
 .empty-state { border: 1px dashed var(--border); background: var(--surface-soft); color: var(--muted); text-align: center; }
 .message { margin-bottom: 20px; }
 .message-error { border: 1px solid var(--danger); background: var(--danger-soft); color: var(--danger); }
 .message-info { border: 1px solid var(--border); background: var(--surface-soft); color: var(--muted); }
-.lock-notice { border-color: var(--gold); background: var(--gold-soft); color: var(--gold); font-weight: 750; }
-.lock-notice-brief { padding: 11px 14px; font-size: 0.84rem; }
 .site-footer { padding-block: 23px 32px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.8rem; text-align: center; }
 
 @media (max-width: 920px) {
@@ -237,7 +232,6 @@ select { width: 100%; border: 1px solid var(--border); border-radius: 9px; paddi
   .header-content, .section-heading { align-items: flex-start; flex-direction: column; gap: 15px; }
   .subtitle { font-size: 0.88rem; }
   .metric-grid, .warning-grid, .audit-grid { grid-template-columns: 1fr; gap: 10px; }
-  .rules-grid { grid-template-columns: 1fr; }
   .metric-card { padding: 16px; }
   .metric-value { font-size: 1.75rem; }
   .honor-grid, .award-columns { grid-template-columns: 1fr; }

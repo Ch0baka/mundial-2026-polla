@@ -27,7 +27,6 @@
         <button class="tab" role="tab" aria-selected="false" data-view="groups">Fase de grupos</button>
         <button class="tab" role="tab" aria-selected="false" data-view="knockout">Eliminatorias</button>
         <button class="tab" role="tab" aria-selected="false" data-view="fixture">Fixture de Control</button>
-        <button class="tab" role="tab" aria-selected="false" data-view="rules">Reglas</button>
         <button class="tab" role="tab" aria-selected="false" data-view="awards">Premios</button>
         <button class="tab" role="tab" aria-selected="false" data-view="audit">Auditoría</button>
         <button class="tab" role="tab" aria-selected="false" data-view="warnings">Avisos</button>
@@ -41,10 +40,9 @@
         <div class="section-heading">
           <div><p class="section-kicker">Resumen general</p><h2 id="dashboard-title">Dashboard</h2></div>
         </div>
-        <div id="dashboard-lock-notice"></div>
         <div class="metric-grid" id="dashboard-metrics"></div>
         <div class="panel">
-          <div class="panel-heading"><h3>Participantes</h3><span class="muted">Scoring pendiente</span></div>
+          <div class="panel-heading"><h3>Participantes</h3><span class="muted">Puntaje actualizado automáticamente</span></div>
           <div id="dashboard-players"></div>
         </div>
       </section>
@@ -53,7 +51,6 @@
         <div class="section-heading">
           <div><p class="section-kicker">Estructura preparada</p><h2 id="ranking-title">Ranking</h2></div>
         </div>
-        <div id="ranking-lock-notice"></div>
         <div class="message message-info">Solo los partidos con estado “Finalizado” generan puntos.</div>
         <div class="panel" id="ranking-content"></div>
       </section>
@@ -105,13 +102,6 @@
           </div>
           <div id="fixture-standings"></div>
         </section>
-      </section>
-
-      <section class="view" id="view-rules" aria-labelledby="rules-title">
-        <div class="section-heading">
-          <div><p class="section-kicker">Puntuación Fase 1</p><h2 id="rules-title">Reglas</h2></div>
-        </div>
-        <div id="rules-content"></div>
       </section>
 
       <section class="view" id="view-awards" aria-labelledby="awards-title">

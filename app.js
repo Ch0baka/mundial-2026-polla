@@ -8,13 +8,6 @@ const PATHS = {
 const DEFAULT_CONFIG = {
   mode: "testing",
   title: "Polla Mundial 2026",
-  prediction_lock: {
-    enabled: true,
-    date: "2026-06-11",
-    time: "10:00",
-    timezone: "America/Santiago",
-    label: "Jueves 11 de junio de 2026, 10:00 hrs Chile",
-  },
 };
 const GROUPS = "ABCDEFGHIJKL".split("");
 const PHASE_LABELS = {
@@ -185,7 +178,6 @@ function renderAll() {
   renderGroupStage();
   renderKnockout();
   renderFixture();
-  renderRules();
   renderAwards();
   renderAudit();
   renderWarnings();
@@ -196,26 +188,27 @@ function renderDashboard() {
     + state.players.reduce((sum, player) => sum + getPlayerWarnings(player).length, 0);
   const counts = state.players.map(countPredictions);
   const latest = state.players.map((player) => player.source?.generated_at).filter(Boolean).sort().at(-1);
-  document.querySelector("#dashboard-lock-notice").innerHTML = renderLockNotice(false);
   document.querySelector("#dashboard-metrics").innerHTML = [
     metricCard("Jugadores", state.players.length, "Participantes cargados"),
     metricCard("Partidos por jugador", counts.length ? Math.max(...counts) : 0, "Pronósticos disponibles"),
     metricCard("Avisos", totalWarnings, "Validaciones y pendientes"),
     metricCard("Última actualización", formatDate(latest), "Desde source.generated_at", true),
   ].join("");
-  const rows = state.players.map((player) => `
-    <tr><td><strong>${escapeHtml(player.player.name)}</strong></td>
+  const rows = state.players.map((player) => {
+    const leaderboardEntry = state.leaderboard.find((entry) => entry.id === player.player.id);
+    return `<tr><td><strong>${escapeHtml(player.player.name)}</strong></td>
+    <td class="points-cell">${leaderboardEntry?.points ?? 0}</td>
     <td class="number-cell">${countPredictions(player)}</td>
     <td>${warningBadge(getPlayerWarnings(player).length)}</td>
     <td>${renderTeamName(player.honor_roll?.champion)}</td>
-    <td>${escapeHtml(formatDate(player.source?.generated_at))}</td></tr>`).join("");
+    <td>${escapeHtml(formatDate(player.source?.generated_at))}</td></tr>`;
+  }).join("");
   document.querySelector("#dashboard-players").innerHTML = table(
-    ["Jugador", "Partidos", "Avisos", "Campeón pronosticado", "Actualizado"], rows,
+    ["Jugador", "Puntos", "Partidos", "Avisos", "Campeón pronosticado", "Actualizado"], rows,
   );
 }
 
 function renderRanking() {
-  document.querySelector("#ranking-lock-notice").innerHTML = renderLockNotice(true);
   const rows = state.leaderboard.map((entry, index) => `
     <tr><td class="rank-cell">${index + 1}</td><td><strong>${escapeHtml(entry.name)}</strong></td>
     <td class="points-cell">${entry.points}</td><td class="number-cell">${entry.scoredMatches}</td>
@@ -362,26 +355,6 @@ function renderGroupStandings() {
     ? `<div class="message message-info">Las posiciones solo resuelven slots eliminatorios cuando todos los partidos del grupo están finalizados. Los cruces de mejores terceros permanecen por definir.</div>
       <div class="panel">${table(["Grupo", "Posición", "Equipo", "Puntos", "GF", "GC", "DG", "Estado"], rows.join(""))}</div>`
     : emptyState("No hay grupos disponibles para calcular posiciones.");
-}
-
-function renderRules() {
-  const content = document.querySelector("#rules-content");
-  if (!state.scoringAvailable) {
-    content.innerHTML = emptyState("Reglas de puntuación no disponibles");
-    return;
-  }
-  const rows = Object.entries(state.scoringRules.match_points).map(([phase, rules]) => `
-    <tr><td><strong>${escapeHtml(phaseLabel(phase))}</strong></td>
-    <td>${escapeHtml(rules.outcome ?? "—")}</td><td>${escapeHtml(rules.goal_difference ?? "—")}</td>
-    <td>${escapeHtml(rules.exact_score ?? "—")}</td><td>${escapeHtml(rules.qualified_team ?? "—")}</td></tr>`).join("");
-  content.innerHTML = `<div class="rules-grid">
-    <div class="panel">${table(["Fase", "Signo 1X2", "Diferencia", "Marcador exacto", "Clasificado"], rows)}</div>
-    <div class="rules-copy">
-      <div class="message message-info">Los puntos son acumulativos: signo 1X2, diferencia de gol y marcador exacto se suman cuando corresponden.</div>
-      <div class="message message-info">En eliminatorias, el clasificado correcto suma puntos adicionales.</div>
-      <div class="message message-info">Los penales no otorgan puntos por marcador exacto. Solo se usan para determinar qué equipo clasificó.</div>
-    </div>
-  </div>`;
 }
 
 function renderAwards() {
@@ -895,15 +868,4 @@ function honorItem(label, team) { return `<div class="honor-item"><span>${label}
 function awardGroup(title, keys, awards = {}) { return `<section class="award-group"><h4>${title}</h4>${keys.map((key) => `<div class="award-row"><span>${AWARD_LABELS[key]}</span><strong>${escapeHtml(awards?.[key] || "Sin definir")}</strong></div>`).join("")}</section>`; }
 function table(headers, rows) { return `<div class="table-wrap"><table><thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`; }
 function emptyState(message) { return `<div class="empty-state">${escapeHtml(message)}</div>`; }
-function renderLockNotice(brief) {
-  const lock = state.config?.prediction_lock;
-  if (!lock) {
-    return '<div class="message lock-notice lock-notice-brief">Los pronósticos quedarán congelados antes del inicio del Mundial. Luego solo se actualizarán resultados reales.</div>';
-  }
-  if (!lock.enabled) return "";
-  const fullText = `Cierre de cambios: ${lock.label}. Después de ese horario los pronósticos quedan congelados y solo se actualizarán los resultados reales del Mundial.`;
-  const briefText = `Cierre de cambios: ${lock.label}. Luego solo se actualizarán resultados reales.`;
-  return `<div class="message lock-notice ${brief ? "lock-notice-brief" : ""}">${escapeHtml(brief ? briefText : fullText)}</div>`;
-}
-
 init();

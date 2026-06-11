@@ -78,9 +78,8 @@ premios, auditoría y warnings. También carga `data/teams.json` para mostrar
 banderas cuando el SVG correspondiente existe. El ranking calcula puntos usando
 únicamente resultados finalizados de `data/real_results.json`.
 
-La fecha visible de cierre de cambios se configura en `data/app_config.json`.
-Si ese archivo o una bandera SVG no están disponibles, el portal utiliza sus
-valores por defecto y continúa funcionando.
+Si `data/app_config.json` o una bandera SVG no están disponibles, el portal
+utiliza sus valores por defecto y continúa funcionando.
 
 Los PDF de auditoría se esperan en `pdf/{player_id}.pdf`. El portal mantiene el
 enlace visible aunque el archivo todavía no exista.
