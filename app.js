@@ -51,6 +51,7 @@ const state = {
     groups: "",
     knockout: "",
     group: "A",
+    groupOrder: "group",
     fixturePhase: "all",
     fixtureGroup: "all",
     fixtureStatus: "all",
@@ -263,14 +264,33 @@ function renderPlayers() {
 
 function renderGroupStage() {
   const player = getPlayer(state.selected.groups);
-  const matches = (player?.predictions?.group_stage ?? []).filter((match) => match.group === state.selected.group);
+  const matches = (player?.predictions?.group_stage ?? [])
+    .map(enrichPredictionWithRealMatchData)
+    .filter((match) => state.selected.group === "all" || match.group === state.selected.group)
+    .sort(state.selected.groupOrder === "date"
+      ? compareMatchesByDate
+      : (a, b) => String(a.group || "").localeCompare(String(b.group || ""), "es"));
   const rows = matches.map((match) => `
-    <tr><td><span class="badge">Grupo ${escapeHtml(match.group)}</span></td>
+    <tr><td>${escapeHtml(formatGroupMatchDate(match))}</td><td>${escapeHtml(match.time || "Sin hora")}</td>
+    <td><span class="badge">Grupo ${escapeHtml(match.group)}</span></td>
     <td>${renderMatchTeams(match)}</td><td><span class="score">${escapeHtml(formatScore(match))}</span></td>
     <td><span class="outcome">${escapeHtml(match.outcome || "—")}</span></td></tr>`).join("");
+  const cards = matches.map((match) => `
+    <article class="group-stage-card">
+      <div class="group-stage-card-head">
+        <span>${escapeHtml(formatGroupMatchDate(match))} · ${escapeHtml(match.time || "Sin hora")}</span>
+        <span class="badge">Grupo ${escapeHtml(match.group)}</span>
+      </div>
+      <div class="group-stage-card-teams">${renderMatchTeams(match)}</div>
+      <div class="group-stage-card-result">
+        <span class="muted">Pronóstico</span>
+        <span><span class="score">${escapeHtml(formatScore(match))}</span> <span class="outcome">${escapeHtml(match.outcome || "—")}</span></span>
+      </div>
+    </article>`).join("");
   document.querySelector("#groups-content").innerHTML = matches.length
-    ? `<div class="panel">${table(["Grupo", "Partido", "Marcador pronosticado", "Resultado"], rows)}</div>`
-    : emptyState("No hay partidos para este grupo.");
+    ? `<div class="panel group-stage-table">${table(["Fecha", "Hora", "Grupo", "Partido", "Pronóstico", "Resultado 1/X/2"], rows)}</div>
+      <div class="group-stage-cards">${cards}</div>`
+    : emptyState("No hay partidos para el filtro seleccionado.");
 }
 
 function renderKnockout() {
@@ -430,7 +450,8 @@ function renderSelectors() {
       select.innerHTML = '<option value="">Sin jugadores</option>';
       select.disabled = true;
     });
-    document.querySelector("#group-select").innerHTML = GROUPS.map((group) => `<option value="${group}">Grupo ${group}</option>`).join("");
+    document.querySelector("#group-select").innerHTML = `<option value="all">Todos</option>${GROUPS.map((group) => `<option value="${group}">Grupo ${group}</option>`).join("")}`;
+    document.querySelector("#group-order-select").innerHTML = '<option value="group">Grupo</option><option value="date">Fecha</option>';
     renderFixtureSelectors();
     return;
   }
@@ -444,9 +465,16 @@ function renderSelectors() {
     });
   });
   const groupSelect = document.querySelector("#group-select");
-  groupSelect.innerHTML = GROUPS.map((group) => `<option value="${group}">Grupo ${group}</option>`).join("");
+  groupSelect.innerHTML = `<option value="all">Todos</option>${GROUPS.map((group) => `<option value="${group}">Grupo ${group}</option>`).join("")}`;
   groupSelect.value = state.selected.group;
   groupSelect.addEventListener("change", () => { state.selected.group = groupSelect.value; renderGroupStage(); });
+  const groupOrderSelect = document.querySelector("#group-order-select");
+  groupOrderSelect.innerHTML = '<option value="group">Grupo</option><option value="date">Fecha</option>';
+  groupOrderSelect.value = state.selected.groupOrder;
+  groupOrderSelect.addEventListener("change", () => {
+    state.selected.groupOrder = groupOrderSelect.value;
+    renderGroupStage();
+  });
   renderFixtureSelectors();
 }
 
@@ -483,6 +511,39 @@ function normalizeTeamName(teamName) {
 
 function compareTeams(a, b) {
   return normalizeTeamName(a) === normalizeTeamName(b);
+}
+
+function getMatchDateTime(match) {
+  if (!match?.date || !match?.time) return null;
+  const value = new Date(`${match.date}T${match.time}:00`);
+  return Number.isNaN(value.getTime()) ? null : value;
+}
+
+function compareMatchesByDate(a, b) {
+  const aDate = getMatchDateTime(a);
+  const bDate = getMatchDateTime(b);
+  if (!aDate && !bDate) return String(a.group || "").localeCompare(String(b.group || ""), "es");
+  if (!aDate) return 1;
+  if (!bDate) return -1;
+  return aDate - bDate || String(a.group || "").localeCompare(String(b.group || ""), "es");
+}
+
+function enrichPredictionWithRealMatchData(prediction) {
+  const realMatch = (state.realResults?.matches ?? []).find((match) =>
+    match.phase === "group_stage"
+    && (
+      (prediction.match_key && match.match_key === prediction.match_key)
+      || (
+        compareTeams(match.home_team, prediction.home_team)
+        && compareTeams(match.away_team, prediction.away_team)
+      )
+    )
+  );
+  return {
+    ...prediction,
+    date: prediction.date || realMatch?.date || null,
+    time: prediction.time || realMatch?.time || null,
+  };
 }
 
 function buildMatchKey(match) {
@@ -784,6 +845,13 @@ function formatFixtureDate(match) {
     hour: match.time ? "2-digit" : undefined,
     minute: match.time ? "2-digit" : undefined,
   }).format(date);
+}
+
+function formatGroupMatchDate(match) {
+  if (!match?.date) return "Sin fecha";
+  const date = new Date(`${match.date}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return "Sin fecha";
+  return new Intl.DateTimeFormat("es", { day: "2-digit", month: "short", year: "numeric" }).format(date);
 }
 
 function formatRealScore(match) {

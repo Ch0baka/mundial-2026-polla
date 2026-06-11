@@ -174,6 +174,13 @@ select { width: 100%; border: 1px solid var(--border); border-radius: 9px; paddi
 .match-list { display: grid; gap: 1px; border-top: 1px solid var(--border); background: var(--border); }
 .match-card { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 13px 18px; background: var(--surface); }
 .match-result { display: flex; align-items: center; gap: 8px; }
+.group-stage-table { display: block; }
+.group-stage-cards { display: none; gap: 10px; }
+.group-stage-card { border: 1px solid var(--border); border-radius: 14px; padding: 15px; background: var(--surface); box-shadow: var(--shadow); }
+.group-stage-card-head, .group-stage-card-result { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.group-stage-card-head { margin-bottom: 13px; color: var(--muted); font-size: 0.76rem; }
+.group-stage-card-teams { margin-bottom: 14px; }
+.group-stage-card-result { padding-top: 12px; border-top: 1px solid var(--border); }
 
 .fixture-summary { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
 .fixture-table { display: block; }
@@ -238,6 +245,8 @@ select { width: 100%; border: 1px solid var(--border); border-radius: 9px; paddi
   .picker, .picker-small { width: 100%; min-width: 0; }
   .match-card, .audit-card { align-items: flex-start; flex-direction: column; }
   .match-result { width: 100%; justify-content: space-between; }
+  .group-stage-table { display: none; }
+  .group-stage-cards { display: grid; }
   .fixture-table { display: none; }
   .fixture-cards { display: grid; }
   th, td { padding: 11px 12px; }
