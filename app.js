@@ -305,13 +305,14 @@ function renderGroupStage() {
       <div class="group-stage-card-teams">${renderMatchTeams(match)}</div>
       <div class="group-stage-card-result">
         <span><span class="muted">Pronóstico</span>${renderPredictionScore(match, match.realMatch)}</span>
-        <span><span class="muted">Resultado real</span>${renderRealResult(match.realMatch)}</span>
+        <span><span class="muted">Resultado</span>${renderRealResult(match.realMatch)}</span>
       </div>
     </article>`).join("");
   document.querySelector("#groups-content").innerHTML = matches.length
-    ? `${renderPredictionLegend()}<div class="panel group-stage-table">${table(["Fecha", "Hora", "Grupo", "Partido", "Pronóstico", "Resultado real"], rows)}</div>
+    ? `${renderPredictionLegend()}<div class="panel group-stage-table">${table(["Fecha", "Hora", "Grupo", "Partido", "Pronóstico", "Resultado"], rows)}</div>
       <div class="group-stage-cards">${cards}</div>`
     : emptyState("No hay partidos para el filtro seleccionado.");
+  renderGroupStandings("#groups-standings", state.selected.group);
 }
 
 function renderKnockout() {
@@ -338,6 +339,7 @@ function renderFixture() {
     summary.innerHTML = "";
     content.innerHTML = emptyState("Fixture no disponible");
     standings.innerHTML = emptyState("Clasificados calculados no disponibles");
+    document.querySelector("#groups-standings").innerHTML = emptyState("Clasificados calculados no disponibles");
     return;
   }
 
@@ -352,7 +354,7 @@ function renderFixture() {
 
   if (!matches.length) {
     content.innerHTML = emptyState("No hay partidos para los filtros seleccionados.");
-    renderGroupStandings();
+    renderGroupStandings("#fixture-standings", state.selected.fixtureGroup);
     return;
   }
 
@@ -374,23 +376,30 @@ function renderFixture() {
     ["ID", "Fecha", "Fase", "Grupo", "Local", "Visita", "Resultado", ...(showPenalties ? ["Penales"] : []), "Estado"],
     rows,
   )}</div><div class="fixture-cards">${cards}</div>`;
-  renderGroupStandings();
+  renderGroupStandings("#fixture-standings", state.selected.fixtureGroup);
 }
 
-function renderGroupStandings() {
+function renderGroupStandings(targetSelector, selectedGroup = "all") {
   const standings = getGroupStandings(state.realResults);
-  const rows = GROUPS.flatMap((group) => (standings[group]?.rows ?? []).map((team) => `
-    <tr><td><span class="badge">Grupo ${escapeHtml(group)}</span></td>
-    <td class="number-cell">${team.position}°</td><td class="standings-team">${renderTeamName(team.team)}</td>
-    <td class="number-cell">${team.played}</td><td class="number-cell">${team.wins}</td>
-    <td class="number-cell">${team.draws}</td><td class="number-cell">${team.losses}</td>
-    <td class="number-cell">${team.points}</td><td class="number-cell">${team.gf}</td>
-    <td class="number-cell">${team.gc}</td><td class="number-cell">${team.gd}</td>
-    <td>${team.tie_pending ? '<span class="control-pending">Desempate pendiente</span>'
-      : standings[group].complete ? '<span class="control-ok">Completo</span>' : '<span class="control-pending">Provisional</span>'}</td></tr>`));
-  document.querySelector("#fixture-standings").innerHTML = rows.length
+  const groups = selectedGroup === "all" ? GROUPS : GROUPS.filter((group) => group === selectedGroup);
+  const groupTables = groups.map((group) => {
+    const rows = (standings[group]?.rows ?? []).map((team) => `
+      <tr><td class="number-cell">${team.position}°</td><td class="standings-team">${renderTeamName(team.team)}</td>
+      <td class="number-cell">${team.played}</td><td class="number-cell">${team.wins}</td>
+      <td class="number-cell">${team.draws}</td><td class="number-cell">${team.losses}</td>
+      <td class="number-cell">${team.points}</td><td class="number-cell">${team.gf}</td>
+      <td class="number-cell">${team.gc}</td><td class="number-cell">${team.gd}</td>
+      <td>${team.tie_pending ? '<span class="control-pending">Desempate pendiente</span>'
+        : standings[group].complete ? '<span class="control-ok">Completo</span>' : '<span class="control-pending">Provisional</span>'}</td></tr>`).join("");
+    return rows ? `<section class="panel group-standings-card">
+      <div class="group-standings-heading"><h4>Grupo ${escapeHtml(group)}</h4>
+        <span class="badge">${standings[group].complete ? "Completo" : "Provisional"}</span></div>
+      ${table(["Posición", "Equipo", "J", "G", "E", "P", "Pts", "GF", "GC", "DG", "Estado"], rows)}
+    </section>` : "";
+  }).filter(Boolean);
+  document.querySelector(targetSelector).innerHTML = groupTables.length
     ? `<div class="message message-info">Las posiciones solo resuelven slots eliminatorios cuando todos los partidos del grupo están finalizados. Los cruces de mejores terceros permanecen por definir.</div>
-      <div class="panel">${table(["Grupo", "Posición", "Equipo", "J", "G", "E", "P", "Pts", "GF", "GC", "DG", "Estado"], rows.join(""))}</div>`
+      <div class="group-standings-grid">${groupTables.join("")}</div>`
     : emptyState("No hay grupos disponibles para calcular posiciones.");
 }
 
@@ -499,7 +508,7 @@ function renderKnockoutComparison(prediction, player) {
       <strong>${renderOfficialMatch(officialMatch)}</strong></div>
     <div class="comparison-block"><span class="comparison-label">Pronóstico ${escapeHtml(player.player.name)}</span>
       ${renderPredictionScore(prediction, realMatch, true)}</div>
-    <div class="comparison-block"><span class="comparison-label">Resultado real</span>
+    <div class="comparison-block"><span class="comparison-label">Resultado</span>
       <strong>${renderRealResult(realMatch)}</strong></div>
   </article>`;
 }

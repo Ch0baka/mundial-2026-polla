@@ -216,6 +216,12 @@ select { width: 100%; border: 1px solid var(--border); border-radius: 9px; paddi
 .fixture-card-result { padding-top: 12px; border-top: 1px solid var(--border); }
 .fixture-standings-section { margin-top: 28px; }
 .standings-heading { margin-bottom: 14px; }
+.group-standings-grid { display: grid; gap: 18px; }
+.group-standings-heading {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 15px 17px; border-bottom: 1px solid var(--border);
+}
+.group-standings-heading h4 { margin: 0; }
 .control-slot { color: var(--muted); font-weight: 750; }
 .standings-team { min-width: 170px; }
 .control-ok { color: var(--accent-strong); font-weight: 800; }
