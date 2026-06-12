@@ -731,19 +731,27 @@ function calculateMatchPoints(prediction, realMatch, scoringRules) {
     return result;
   }
 
+  const predictedHomeScore = Number(prediction.home_score);
+  const predictedAwayScore = Number(prediction.away_score);
+  const realHomeScore = Number(realMatch.home_score);
+  const realAwayScore = Number(realMatch.away_score);
   const outcomeCorrect = getMatchOutcome(prediction) === getMatchOutcome(realMatch);
+  const predictedGoalDifference = predictedHomeScore - predictedAwayScore;
+  const realGoalDifference = realHomeScore - realAwayScore;
+  const correctGoalDifference = outcomeCorrect
+    && predictedGoalDifference === realGoalDifference;
+  const exactScore = predictedHomeScore === realHomeScore
+    && predictedAwayScore === realAwayScore;
+
   if (outcomeCorrect) {
     result.details.outcome = true;
     result.points += rules.outcome ?? 0;
   }
-  if (getGoalDifference(prediction) === getGoalDifference(realMatch)) {
+  if (correctGoalDifference) {
     result.details.goal_difference = true;
     result.points += rules.goal_difference ?? 0;
   }
-  if (
-    prediction.home_score === realMatch.home_score
-    && prediction.away_score === realMatch.away_score
-  ) {
+  if (exactScore) {
     result.details.exact_score = true;
     result.points += rules.exact_score ?? 0;
   }
@@ -763,15 +771,19 @@ function calculateMatchPoints(prediction, realMatch, scoringRules) {
 
 function getMatchOutcome(match) {
   if (!hasScore(match)) return null;
-  if (match.home_score > match.away_score) return "1";
-  if (match.away_score > match.home_score) return "2";
+  const homeScore = numericScore(match.home_score);
+  const awayScore = numericScore(match.away_score);
+  if (homeScore > awayScore) return "1";
+  if (awayScore > homeScore) return "2";
   return "X";
 }
 
 function getQualifiedTeam(match) {
   if (!match || match.phase === "group_stage" || !hasScore(match)) return null;
-  if (match.home_score > match.away_score) return match.home_team;
-  if (match.away_score > match.home_score) return match.away_team;
+  const homeScore = numericScore(match.home_score);
+  const awayScore = numericScore(match.away_score);
+  if (homeScore > awayScore) return match.home_team;
+  if (awayScore > homeScore) return match.away_team;
   if (!hasPenalties(match)) return null;
   if (match.home_penalties > match.away_penalties) return match.home_team;
   if (match.away_penalties > match.home_penalties) return match.away_team;
@@ -779,7 +791,9 @@ function getQualifiedTeam(match) {
 }
 
 function getGoalDifference(match) {
-  return hasScore(match) ? match.home_score - match.away_score : null;
+  return hasScore(match)
+    ? numericScore(match.home_score) - numericScore(match.away_score)
+    : null;
 }
 
 function collectControlWarnings() {
@@ -839,8 +853,14 @@ function getFilteredFixtureMatches() {
   );
 }
 
+function numericScore(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const score = Number(value);
+  return Number.isInteger(score) ? score : null;
+}
+
 function hasScore(match) {
-  return Number.isInteger(match?.home_score) && Number.isInteger(match?.away_score);
+  return numericScore(match?.home_score) !== null && numericScore(match?.away_score) !== null;
 }
 
 function hasPenalties(match) {
@@ -914,4 +934,8 @@ function honorItem(label, team) { return `<div class="honor-item"><span>${label}
 function awardGroup(title, keys, awards = {}) { return `<section class="award-group"><h4>${title}</h4>${keys.map((key) => `<div class="award-row"><span>${AWARD_LABELS[key]}</span><strong>${escapeHtml(awards?.[key] || "Sin definir")}</strong></div>`).join("")}</section>`; }
 function table(headers, rows) { return `<div class="table-wrap"><table><thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`; }
 function emptyState(message) { return `<div class="empty-state">${escapeHtml(message)}</div>`; }
-init();
+if (typeof document !== "undefined") init();
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { calculateMatchPoints, getGoalDifference, getMatchOutcome };
+}
