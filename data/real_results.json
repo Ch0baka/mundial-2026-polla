@@ -29,11 +29,11 @@
       "time": "22:00",
       "home_team": "Corea del Sur",
       "away_team": "República Checa",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 2,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 3,
