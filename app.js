@@ -39,7 +39,6 @@ const state = {
   controlWarnings: [],
   scoringWarnings: [],
   leaderboard: [],
-  pdfAvailability: {},
   errors: [],
   selected: {
     groups: "",
@@ -61,32 +60,6 @@ async function loadJson(path) {
   const response = await fetch(path);
   if (!response.ok) throw new Error(`HTTP ${response.status} al cargar ${path}`);
   return response.json();
-}
-
-async function fileExists(path) {
-  try {
-    const response = await fetch(path, { method: "HEAD", cache: "no-store" });
-    return response.ok;
-  } catch {
-    return false;
-  }
-}
-
-async function checkPdfExists(path) {
-  return fileExists(path);
-}
-
-function getPlayerPdfPath(playerId) {
-  return `pdf/${playerId}.pdf`;
-}
-
-async function loadPdfAvailability() {
-  const entries = await Promise.all(state.players.map(async (player) => {
-    const path = getPlayerPdfPath(player.player.id);
-    return [player.player.id, { path, available: await checkPdfExists(path) }];
-  }));
-  state.pdfAvailability = Object.fromEntries(entries);
-  return state.pdfAvailability;
 }
 
 async function loadPlayersIndex() {
@@ -163,7 +136,6 @@ async function init() {
   try {
     await loadPlayersIndex();
     await Promise.all([loadPlayers(), loadTeams(), loadConfig(), loadRealResults(), loadScoringRules()]);
-    await loadPdfAvailability();
     if (state.players.length) {
       state.selected.groups = state.players[0].player.id;
       state.selected.knockout = state.players[0].player.id;
@@ -207,20 +179,19 @@ function renderAll() {
   renderKnockout();
   renderFixture();
   renderAwards();
-  renderAudit();
   renderWarnings();
 }
 
 function renderDashboard() {
-  const totalWarnings = state.controlWarnings.length + state.scoringWarnings.length
-    + state.players.reduce((sum, player) => sum + getPlayerWarnings(player).length, 0);
   const counts = state.players.map(countPredictions);
-  const latest = state.players.map((player) => player.source?.generated_at).filter(Boolean).sort().at(-1);
+  const realMatches = state.realResults?.matches ?? [];
+  const playedMatches = realMatches.filter((match) => match.status === "finished").length;
+  const pendingMatches = realMatches.filter((match) => match.status !== "finished").length;
   document.querySelector("#dashboard-metrics").innerHTML = [
     metricCard("Jugadores", state.players.length, "Participantes cargados"),
     metricCard("Partidos por jugador", counts.length ? Math.max(...counts) : 0, "Pronósticos disponibles"),
-    metricCard("Avisos", totalWarnings, "Validaciones y pendientes"),
-    metricCard("Última actualización", formatDate(latest), "Desde source.generated_at", true),
+    metricCard("Partidos jugados", playedMatches, "Resultados finalizados"),
+    metricCard("Partidos pendientes", pendingMatches, "Encuentros por completar"),
   ].join("");
   const rows = state.players.map((player) => {
     const leaderboardEntry = state.leaderboard.find((entry) => entry.id === player.player.id);
@@ -228,11 +199,10 @@ function renderDashboard() {
     <td class="points-cell">${leaderboardEntry?.points ?? 0}</td>
     <td class="number-cell">${countPredictions(player)}</td>
     <td>${warningBadge(getPlayerWarnings(player).length)}</td>
-    <td>${renderTeamName(player.honor_roll?.champion)}</td>
-    <td>${escapeHtml(formatDate(player.source?.generated_at))}</td></tr>`;
+    <td>${renderTeamName(player.honor_roll?.champion)}</td></tr>`;
   }).join("");
   document.querySelector("#dashboard-players").innerHTML = table(
-    ["Jugador", "Puntos", "Partidos", "Avisos", "Campeón pronosticado", "Actualizado"], rows,
+    ["Jugador", "Puntos", "Partidos", "Avisos", "Campeón pronosticado"], rows,
   );
 }
 
@@ -240,10 +210,9 @@ function renderRanking() {
   const rows = state.leaderboard.map((entry, index) => `
     <tr><td class="rank-cell">${index + 1}</td><td><strong>${escapeHtml(entry.name)}</strong></td>
     <td class="points-cell">${entry.points}</td><td class="number-cell">${entry.scoredMatches}</td>
-    <td class="number-cell">${entry.exactScores}</td><td>${renderTeamName(entry.champion)}</td>
-    <td>${warningBadge(entry.warnings)}</td></tr>`).join("");
+    <td class="number-cell">${entry.exactScores}</td><td>${renderTeamName(entry.champion)}</td></tr>`).join("");
   document.querySelector("#ranking-content").innerHTML = table(
-    ["Posición", "Jugador", "Puntos", "Partidos puntuados", "Exactos", "Campeón pronosticado", "Avisos"], rows,
+    ["Posición", "Jugador", "Puntos", "Partidos puntuados", "Resultados exactos", "Campeón pronosticado"], rows,
   );
 }
 
@@ -258,9 +227,7 @@ function calculateLeaderboard() {
 }
 
 function renderPlayers() {
-  document.querySelector("#player-cards").innerHTML = state.players.map((player) => {
-    const pdf = state.pdfAvailability[player.player.id];
-    return `
+  document.querySelector("#player-cards").innerHTML = state.players.map((player) => `
     <article class="player-card">
       <header class="player-card-header"><div><p class="card-kicker">Participante</p><h3>${escapeHtml(player.player.name)}</h3></div>
       ${warningBadge(getPlayerWarnings(player).length)}</header>
@@ -274,13 +241,9 @@ function renderPlayers() {
           ${awardGroup("Botas", ["golden_boot", "silver_boot", "bronze_boot"], player.awards)}
           ${awardGroup("Balones", ["golden_ball", "silver_ball", "bronze_ball"], player.awards)}
         </div>
-        <div class="player-actions">
-          <button class="button button-primary" data-show-player="${escapeHtml(player.player.id)}">Ver predicciones</button>
-          ${renderPdfAction(pdf)}
-        </div>
+        <button class="button button-primary" data-show-player="${escapeHtml(player.player.id)}">Ver predicciones</button>
       </div>
-    </article>`;
-  }).join("");
+    </article>`).join("");
   document.querySelectorAll("[data-show-player]").forEach((button) => button.addEventListener("click", () => {
     state.selected.groups = button.dataset.showPlayer;
     document.querySelector('[data-player-select="groups"]').value = state.selected.groups;
@@ -300,8 +263,7 @@ function renderGroupStage() {
   const rows = matches.map((match) => `
     <tr><td>${escapeHtml(formatGroupMatchDate(match))}</td><td>${escapeHtml(match.time || "Sin hora")}</td>
     <td><span class="badge">Grupo ${escapeHtml(match.group)}</span></td>
-    <td>${renderMatchTeams(match)}</td><td><span class="score">${escapeHtml(formatScore(match))}</span></td>
-    <td><span class="outcome">${escapeHtml(match.outcome || "—")}</span></td></tr>`).join("");
+    <td>${renderMatchTeams(match)}</td><td><span class="score">${escapeHtml(formatScore(match))}</span></td></tr>`).join("");
   const cards = matches.map((match) => `
     <article class="group-stage-card">
       <div class="group-stage-card-head">
@@ -311,11 +273,11 @@ function renderGroupStage() {
       <div class="group-stage-card-teams">${renderMatchTeams(match)}</div>
       <div class="group-stage-card-result">
         <span class="muted">Pronóstico</span>
-        <span><span class="score">${escapeHtml(formatScore(match))}</span> <span class="outcome">${escapeHtml(match.outcome || "—")}</span></span>
+        <span class="score">${escapeHtml(formatScore(match))}</span>
       </div>
     </article>`).join("");
   document.querySelector("#groups-content").innerHTML = matches.length
-    ? `<div class="panel group-stage-table">${table(["Fecha", "Hora", "Grupo", "Partido", "Pronóstico", "Resultado 1/X/2"], rows)}</div>
+    ? `<div class="panel group-stage-table">${table(["Fecha", "Hora", "Grupo", "Partido", "Pronóstico"], rows)}</div>
       <div class="group-stage-cards">${cards}</div>`
     : emptyState("No hay partidos para el filtro seleccionado.");
 }
@@ -337,7 +299,7 @@ function renderFixture() {
   const standings = document.querySelector("#fixture-standings");
   if (!state.fixtureAvailable) {
     summary.innerHTML = "";
-    content.innerHTML = emptyState("Fixture de control no disponible");
+    content.innerHTML = emptyState("Fixture no disponible");
     standings.innerHTML = emptyState("Clasificados calculados no disponibles");
     return;
   }
@@ -362,16 +324,15 @@ function renderFixture() {
     <td>${escapeHtml(phaseLabel(match.phase))}</td><td>${escapeHtml(match.group || "—")}</td>
     <td>${renderControlTeam(match, "home")}</td><td>${renderControlTeam(match, "away")}</td>
     <td><span class="score">${escapeHtml(formatRealScore(match))}</span></td>
-    <td>${escapeHtml(formatRealPenalties(match))}</td><td>${statusBadge(match.status)}</td>
-    <td>${controlLabel(match)}</td></tr>`).join("");
+    <td>${escapeHtml(formatRealPenalties(match))}</td><td>${statusBadge(match.status)}</td></tr>`).join("");
   const cards = matches.map((match) => `
     <article class="fixture-card">
       <div class="fixture-card-head"><span>#${escapeHtml(match.match_id)} · ${escapeHtml(phaseLabel(match.phase))}${match.group ? ` · Grupo ${escapeHtml(match.group)}` : ""}</span>${statusBadge(match.status)}</div>
       <div class="fixture-card-teams">${renderControlTeam(match, "home")}${renderControlTeam(match, "away")}</div>
-      <div class="fixture-card-result"><span class="muted">${escapeHtml(formatFixtureDate(match))} · ${controlLabel(match)}</span><strong>${escapeHtml(formatRealScore(match))}${formatRealPenalties(match) !== "—" ? ` · pen. ${escapeHtml(formatRealPenalties(match))}` : ""}</strong></div>
+      <div class="fixture-card-result"><span class="muted">${escapeHtml(formatFixtureDate(match))}</span><strong>${escapeHtml(formatRealScore(match))}${formatRealPenalties(match) !== "—" ? ` · pen. ${escapeHtml(formatRealPenalties(match))}` : ""}</strong></div>
     </article>`).join("");
   content.innerHTML = `<div class="panel fixture-table">${table(
-    ["ID", "Fecha", "Fase", "Grupo", "Local", "Visita", "Resultado", "Penales", "Estado", "Control"],
+    ["ID", "Fecha", "Fase", "Grupo", "Local", "Visita", "Resultado", "Penales", "Estado"],
     rows,
   )}</div><div class="fixture-cards">${cards}</div>`;
   renderGroupStandings();
@@ -395,27 +356,6 @@ function renderAwards() {
   const rows = Object.entries(AWARD_LABELS).map(([key, label]) => `
     <tr><td><strong>${label}</strong></td>${state.players.map((player) => `<td>${escapeHtml(player.awards?.[key] || "Sin definir")}</td>`).join("")}</tr>`).join("");
   document.querySelector("#awards-content").innerHTML = table(["Premio", ...state.players.map((player) => player.player.name)], rows);
-}
-
-function renderAudit() {
-  document.querySelector("#audit-content").innerHTML = state.players.map((player) => {
-    const pdf = state.pdfAvailability[player.player.id] || {
-      path: getPlayerPdfPath(player.player.id),
-      available: false,
-    };
-    return `<article class="audit-card"><div class="audit-meta"><p class="card-kicker">Auditoría de pronóstico</p>
-      <h3>${escapeHtml(player.player.name)}</h3>
-      <p><strong>Ruta esperada:</strong> <span class="audit-path">${escapeHtml(pdf.path)}</span></p>
-      <p><strong>Estado:</strong> ${pdf.available ? '<span class="control-ok">Disponible</span>' : '<span class="control-pending">No disponible todavía</span>'}</p>
-      </div>${renderPdfAction(pdf)}</article>`;
-  }).join("");
-}
-
-function renderPdfAction(pdf) {
-  if (pdf?.available) {
-    return `<a class="button button-secondary" href="${escapeHtml(pdf.path)}" download>Descargar PDF</a>`;
-  }
-  return '<button class="button button-secondary" type="button" disabled>PDF no disponible</button>';
 }
 
 function renderWarnings() {
@@ -456,7 +396,7 @@ function renderControlTeam(match, side) {
 
 function renderMatch(match) {
   return `<article class="match-card"><div class="match-teams">${renderMatchTeams(match)}</div>
-    <div class="match-result"><span class="score">${escapeHtml(formatScore(match))}</span><span class="outcome">${escapeHtml(match.outcome || "—")}</span></div></article>`;
+    <div class="match-result"><span class="score">${escapeHtml(formatScore(match))}</span></div></article>`;
 }
 
 function renderMatchTeams(match) {
@@ -824,27 +764,6 @@ function collectControlWarnings() {
   return warnings;
 }
 
-function getControlState(match) {
-  if (isKnockoutPhase(match.phase) && (!match.home_team || !match.away_team)) {
-    return { label: "Por definir", className: "control-pending" };
-  }
-  if (match.status !== "finished") return { label: "Pendiente", className: "control-pending" };
-  if (!hasScore(match)) return { label: "Revisar", className: "control-review" };
-  if (
-    match.phase !== "group_stage"
-    && match.home_score === match.away_score
-    && (!hasPenalties(match) || match.home_penalties === match.away_penalties)
-  ) {
-    return { label: "Revisar", className: "control-review" };
-  }
-  return { label: "Calcula", className: "control-ok" };
-}
-
-function controlLabel(match) {
-  const control = getControlState(match);
-  return `<span class="${control.className}">${control.label}</span>`;
-}
-
 function getFilteredFixtureMatches() {
   return resolveControlMatches(state.realResults).filter((match) =>
     (state.selected.fixturePhase === "all" || match.phase === state.selected.fixturePhase)
@@ -929,7 +848,7 @@ function getPlayer(id) { return state.players.find((player) => player.player.id 
 function setStatus(text, type = "") { const el = document.querySelector("#load-status"); el.textContent = text; el.className = `status-pill ${type}`.trim(); }
 function showError(message) { const el = document.querySelector("#global-error"); el.hidden = false; el.textContent = message; }
 function warningBadge(count, label = "warning") { return `<span class="badge ${count ? "badge-warning" : "badge-success"}">${count} ${label}${count === 1 ? "" : "s"}</span>`; }
-function metricCard(label, value, note, compact = false) { return `<article class="metric-card"><p class="metric-label">${label}</p><p class="metric-value ${compact ? "metric-value-compact" : ""}">${escapeHtml(value)}</p><p class="metric-note">${note}</p></article>`; }
+function metricCard(label, value, note) { return `<article class="metric-card"><p class="metric-label">${label}</p><p class="metric-value">${escapeHtml(value)}</p><p class="metric-note">${note}</p></article>`; }
 function honorItem(label, team) { return `<div class="honor-item"><span>${label}</span><strong>${renderTeamName(team)}</strong></div>`; }
 function awardGroup(title, keys, awards = {}) { return `<section class="award-group"><h4>${title}</h4>${keys.map((key) => `<div class="award-row"><span>${AWARD_LABELS[key]}</span><strong>${escapeHtml(awards?.[key] || "Sin definir")}</strong></div>`).join("")}</section>`; }
 function table(headers, rows) { return `<div class="table-wrap"><table><thead><tr>${headers.map((header) => `<th>${escapeHtml(header)}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>`; }

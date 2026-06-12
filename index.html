@@ -26,9 +26,8 @@
         <button class="tab" role="tab" aria-selected="false" data-view="players">Jugadores</button>
         <button class="tab" role="tab" aria-selected="false" data-view="groups">Fase de grupos</button>
         <button class="tab" role="tab" aria-selected="false" data-view="knockout">Eliminatorias</button>
-        <button class="tab" role="tab" aria-selected="false" data-view="fixture">Fixture de Control</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="fixture">Fixture</button>
         <button class="tab" role="tab" aria-selected="false" data-view="awards">Premios</button>
-        <button class="tab" role="tab" aria-selected="false" data-view="audit">Auditoría</button>
         <button class="tab" role="tab" aria-selected="false" data-view="warnings">Avisos</button>
       </div>
     </nav>
@@ -84,7 +83,7 @@
 
       <section class="view" id="view-fixture" aria-labelledby="fixture-title">
         <div class="section-heading">
-          <div><p class="section-kicker">Resultados reales</p><h2 id="fixture-title">Fixture de Control</h2></div>
+          <div><p class="section-kicker">Resultados reales</p><h2 id="fixture-title">Fixture</h2></div>
           <div class="filter-row fixture-filters">
             <label class="picker"><span>Fase</span><select id="fixture-phase-filter"></select></label>
             <label class="picker picker-small"><span>Grupo</span><select id="fixture-group-filter"></select></label>
@@ -109,14 +108,6 @@
           <div><p class="section-kicker">Comparación</p><h2 id="awards-title">Premios individuales</h2></div>
         </div>
         <div class="panel" id="awards-content"></div>
-      </section>
-
-      <section class="view" id="view-audit" aria-labelledby="audit-title">
-        <div class="section-heading">
-          <div><p class="section-kicker">Respaldo documental</p><h2 id="audit-title">Auditoría</h2></div>
-        </div>
-        <div class="message message-info">Los PDFs se publicarán cuando los pronósticos estén congelados. Mientras no exista el archivo PDF, la descarga aparecerá como no disponible.</div>
-        <div class="audit-grid" id="audit-content"></div>
       </section>
 
       <section class="view" id="view-warnings" aria-labelledby="warnings-title">

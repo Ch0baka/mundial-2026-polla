@@ -73,25 +73,13 @@ http://localhost:8000
 ```
 
 La aplicación carga `data/players_index.json` y los JSON individuales para
-mostrar dashboard, ranking preparado, jugadores, fase de grupos, eliminatorias,
-premios, auditoría y warnings. También carga `data/teams.json` para mostrar
+mostrar dashboard, ranking, jugadores, fase de grupos, eliminatorias, fixture,
+premios y avisos. También carga `data/teams.json` para mostrar
 banderas cuando el SVG correspondiente existe. El ranking calcula puntos usando
 únicamente resultados finalizados de `data/real_results.json`.
 
 Si `data/app_config.json` o una bandera SVG no están disponibles, el portal
 utiliza sus valores por defecto y continúa funcionando.
-
-Los PDF de auditoría se esperan en `pdf/{player_id}.pdf`. El portal comprueba
-si cada archivo existe antes de mostrar la descarga y evita abrir enlaces
-rotos cuando todavía no está disponible.
-
-Para que la descarga funcione, los PDF deben existir físicamente en la carpeta
-`pdf/` y estar incluidos en el repositorio publicado. Por ejemplo:
-
-```text
-pdf/dz-01.pdf
-pdf/rz-02.pdf
-```
 
 ## Modo pruebas
 
@@ -139,7 +127,7 @@ mediante `match_key`, con el formato:
 phase|home_team|away_team
 ```
 
-La pestaña **Fixture de Control** permite filtrar por fase, grupo y estado, y
+La pestaña **Fixture** permite filtrar por fase, grupo y estado, y
 muestra warnings cuando un resultado finalizado está incompleto o no se puede
 unir con una predicción.
 
