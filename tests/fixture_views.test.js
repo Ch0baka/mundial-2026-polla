@@ -32,6 +32,8 @@ assert.equal(app.getPredictionStatus(app.calculateMatchPoints(scoreMatch(2, 0), 
 assert.equal(app.getPredictionStatus(app.calculateMatchPoints(scoreMatch(2, 0), scoreMatch(2, 0), scoringRules), scoreMatch(2, 0)), "exact");
 assert.equal(app.getPredictionStatus(app.calculateMatchPoints(scoreMatch(3, 1), scoreMatch(2, 0), scoringRules), scoreMatch(2, 0)), "partial");
 assert.equal(app.getPredictionStatus(app.calculateMatchPoints(scoreMatch(0, 1), scoreMatch(2, 0), scoringRules), scoreMatch(2, 0)), "zero");
+assert.equal(app.shouldShowFixturePenalties([{ phase: "group_stage" }]), false);
+assert.equal(app.shouldShowFixturePenalties([{ phase: "group_stage" }, { phase: "round_of_32" }]), true);
 
 setResults(realResults.matches);
 let official = app.resolveOfficialFixtureMatch(73);
@@ -73,6 +75,7 @@ const penaltiesPrediction = {
 assert.equal(app.calculateMatchPoints(penaltiesPrediction, penaltiesReal, scoringRules).details.exact_score, true);
 
 console.log("OK estados visuales: pending, live, exact, partial y zero");
+console.log("OK Fixture: penales ocultos en fase de grupos");
 console.log("OK M73: slots oficiales y posiciones reales resueltas");
 console.log("OK M90: ganadores reales de M73 y M75");
 console.log("OK eliminatoria finalizada con penales");

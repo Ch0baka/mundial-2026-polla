@@ -356,20 +356,22 @@ function renderFixture() {
     return;
   }
 
+  const showPenalties = shouldShowFixturePenalties(matches);
   const rows = matches.map((match) => `
     <tr><td class="number-cell">${escapeHtml(match.match_id)}</td><td>${escapeHtml(formatFixtureDate(match))}</td>
     <td>${escapeHtml(phaseLabel(match.phase))}</td><td>${escapeHtml(match.group || "—")}</td>
     <td>${renderControlTeam(match, "home")}</td><td>${renderControlTeam(match, "away")}</td>
     <td><span class="score">${escapeHtml(formatRealScore(match))}</span></td>
-    <td>${escapeHtml(formatRealPenalties(match))}</td><td>${statusBadge(match.status)}</td></tr>`).join("");
+    ${showPenalties ? `<td>${escapeHtml(formatRealPenalties(match))}</td>` : ""}
+    <td>${statusBadge(match.status)}</td></tr>`).join("");
   const cards = matches.map((match) => `
     <article class="fixture-card">
       <div class="fixture-card-head"><span>#${escapeHtml(match.match_id)} · ${escapeHtml(phaseLabel(match.phase))}${match.group ? ` · Grupo ${escapeHtml(match.group)}` : ""}</span>${statusBadge(match.status)}</div>
       <div class="fixture-card-teams">${renderControlTeam(match, "home")}${renderControlTeam(match, "away")}</div>
-      <div class="fixture-card-result"><span class="muted">${escapeHtml(formatFixtureDate(match))}</span><strong>${escapeHtml(formatRealScore(match))}${formatRealPenalties(match) !== "—" ? ` · pen. ${escapeHtml(formatRealPenalties(match))}` : ""}</strong></div>
+      <div class="fixture-card-result"><span class="muted">${escapeHtml(formatFixtureDate(match))}</span><strong>${escapeHtml(formatRealScore(match))}${isKnockoutPhase(match.phase) && formatRealPenalties(match) !== "—" ? ` · pen. ${escapeHtml(formatRealPenalties(match))}` : ""}</strong></div>
     </article>`).join("");
   content.innerHTML = `<div class="panel fixture-table">${table(
-    ["ID", "Fecha", "Fase", "Grupo", "Local", "Visita", "Resultado", "Penales", "Estado"],
+    ["ID", "Fecha", "Fase", "Grupo", "Local", "Visita", "Resultado", ...(showPenalties ? ["Penales"] : []), "Estado"],
     rows,
   )}</div><div class="fixture-cards">${cards}</div>`;
   renderGroupStandings();
@@ -649,6 +651,10 @@ function findPrediction(predictions, realMatch) {
 
 function isKnockoutPhase(phase) {
   return Object.prototype.hasOwnProperty.call(PHASE_LABELS, phase);
+}
+
+function shouldShowFixturePenalties(matches) {
+  return matches.some((match) => isKnockoutPhase(match.phase));
 }
 
 function calculateGroupStandings(realResults) {
@@ -1129,6 +1135,7 @@ if (typeof module !== "undefined" && module.exports) {
     resolveOfficialFixtureMatch,
     buildOfficialFixture,
     withPredictionMatchId,
+    shouldShowFixturePenalties,
     setTestState: (values) => Object.assign(state, values),
   };
 }
