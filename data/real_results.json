@@ -45,11 +45,11 @@
       "time": "15:00",
       "home_team": "Canadá",
       "away_team": "Bosnia y Herzegovina",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 1,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 4,
