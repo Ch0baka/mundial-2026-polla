@@ -4,6 +4,9 @@ const PATHS = {
   config: "data/app_config.json",
   results: "data/real_results.json",
   scoring: "data/scoring_rules.json",
+  bracket: "data/knockout_bracket.json",
+  qualificationOverrides: "data/qualification_overrides.json",
+  bestThirdMatrix: "data/best_third_matrix.json",
 };
 const DEFAULT_CONFIG = {
   mode: "testing",
@@ -26,6 +29,15 @@ const AWARD_LABELS = {
   silver_ball: "Balón de Plata",
   bronze_ball: "Balón de Bronce",
 };
+const PHASE_MATCH_START = {
+  group_stage: 1,
+  round_of_32: 73,
+  round_of_16: 89,
+  quarter_finals: 97,
+  semi_finals: 101,
+  third_place: 103,
+  final: 104,
+};
 
 const state = {
   index: [],
@@ -36,6 +48,9 @@ const state = {
   fixtureAvailable: false,
   scoringRules: null,
   scoringAvailable: false,
+  knockoutBracket: { matches: [] },
+  qualificationOverrides: { group_positions: {}, best_thirds: [], round_of_32_assignments: {} },
+  bestThirdMatrix: { implemented: false, assignments: {} },
   controlWarnings: [],
   scoringWarnings: [],
   leaderboard: [],
@@ -57,7 +72,7 @@ const escapeHtml = (value) =>
     .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
 
 async function loadJson(path) {
-  const response = await fetch(path);
+  const response = await fetch(path, { cache: "no-store" });
   if (!response.ok) throw new Error(`HTTP ${response.status} al cargar ${path}`);
   return response.json();
 }
@@ -131,11 +146,25 @@ async function loadScoringRules() {
   return state.scoringRules;
 }
 
+async function loadBracketConfiguration() {
+  const [bracket, overrides, matrix] = await Promise.all([
+    loadJson(PATHS.bracket),
+    loadJson(PATHS.qualificationOverrides).catch(() => state.qualificationOverrides),
+    loadJson(PATHS.bestThirdMatrix).catch(() => state.bestThirdMatrix),
+  ]);
+  state.knockoutBracket = bracket;
+  state.qualificationOverrides = overrides;
+  state.bestThirdMatrix = matrix;
+}
+
 async function init() {
   setupNavigation();
   try {
     await loadPlayersIndex();
-    await Promise.all([loadPlayers(), loadTeams(), loadConfig(), loadRealResults(), loadScoringRules()]);
+    await Promise.all([
+      loadPlayers(), loadTeams(), loadConfig(), loadRealResults(), loadScoringRules(),
+      loadBracketConfiguration(),
+    ]);
     if (state.players.length) {
       state.selected.groups = state.players[0].player.id;
       state.selected.knockout = state.players[0].player.id;
@@ -255,7 +284,9 @@ function renderPlayers() {
 function renderGroupStage() {
   const player = getPlayer(state.selected.groups);
   const matches = (player?.predictions?.group_stage ?? [])
-    .map(enrichPredictionWithRealMatchData)
+    .map((prediction, index) => enrichPredictionWithRealMatchData(
+      withPredictionMatchId(prediction, "group_stage", index),
+    ))
     .filter((match) => state.selected.group === "all" || match.group === state.selected.group)
     .sort(state.selected.groupOrder === "date"
       ? compareMatchesByDate
@@ -263,7 +294,8 @@ function renderGroupStage() {
   const rows = matches.map((match) => `
     <tr><td>${escapeHtml(formatGroupMatchDate(match))}</td><td>${escapeHtml(match.time || "Sin hora")}</td>
     <td><span class="badge">Grupo ${escapeHtml(match.group)}</span></td>
-    <td>${renderMatchTeams(match)}</td><td><span class="score">${escapeHtml(formatScore(match))}</span></td></tr>`).join("");
+    <td>${renderMatchTeams(match)}</td><td>${renderPredictionScore(match, match.realMatch)}</td>
+    <td>${renderRealResult(match.realMatch)}</td></tr>`).join("");
   const cards = matches.map((match) => `
     <article class="group-stage-card">
       <div class="group-stage-card-head">
@@ -272,23 +304,28 @@ function renderGroupStage() {
       </div>
       <div class="group-stage-card-teams">${renderMatchTeams(match)}</div>
       <div class="group-stage-card-result">
-        <span class="muted">Pronóstico</span>
-        <span class="score">${escapeHtml(formatScore(match))}</span>
+        <span><span class="muted">Pronóstico</span>${renderPredictionScore(match, match.realMatch)}</span>
+        <span><span class="muted">Resultado real</span>${renderRealResult(match.realMatch)}</span>
       </div>
     </article>`).join("");
   document.querySelector("#groups-content").innerHTML = matches.length
-    ? `<div class="panel group-stage-table">${table(["Fecha", "Hora", "Grupo", "Partido", "Pronóstico"], rows)}</div>
+    ? `${renderPredictionLegend()}<div class="panel group-stage-table">${table(["Fecha", "Hora", "Grupo", "Partido", "Pronóstico", "Resultado real"], rows)}</div>
       <div class="group-stage-cards">${cards}</div>`
     : emptyState("No hay partidos para el filtro seleccionado.");
 }
 
 function renderKnockout() {
   const player = getPlayer(state.selected.knockout);
-  document.querySelector("#knockout-content").innerHTML = Object.entries(PHASE_LABELS).map(([phase, label], index) => {
-    const matches = player?.predictions?.[phase] ?? [];
+  document.querySelector("#knockout-content").innerHTML = renderPredictionLegend()
+    + Object.entries(PHASE_LABELS).map(([phase, label], index) => {
+    const matches = (player?.predictions?.[phase] ?? []).map(
+      (prediction, predictionIndex) => withPredictionMatchId(prediction, phase, predictionIndex),
+    );
     return `<details class="phase-section" ${index === 0 ? "open" : ""}>
       <summary><span>${label}</span><span class="phase-count">${matches.length} partidos</span></summary>
-      <div class="match-list">${matches.length ? matches.map(renderMatch).join("") : emptyState("Sin pronósticos.")}</div>
+      <div class="knockout-comparison-list">${matches.length
+        ? matches.map((prediction) => renderKnockoutComparison(prediction, player)).join("")
+        : emptyState("Sin pronósticos.")}</div>
     </details>`;
   }).join("");
 }
@@ -343,12 +380,15 @@ function renderGroupStandings() {
   const rows = GROUPS.flatMap((group) => (standings[group]?.rows ?? []).map((team) => `
     <tr><td><span class="badge">Grupo ${escapeHtml(group)}</span></td>
     <td class="number-cell">${team.position}°</td><td class="standings-team">${renderTeamName(team.team)}</td>
+    <td class="number-cell">${team.played}</td><td class="number-cell">${team.wins}</td>
+    <td class="number-cell">${team.draws}</td><td class="number-cell">${team.losses}</td>
     <td class="number-cell">${team.points}</td><td class="number-cell">${team.gf}</td>
     <td class="number-cell">${team.gc}</td><td class="number-cell">${team.gd}</td>
-    <td>${standings[group].complete ? '<span class="control-ok">Completo</span>' : '<span class="control-pending">Provisional</span>'}</td></tr>`));
+    <td>${team.tie_pending ? '<span class="control-pending">Desempate pendiente</span>'
+      : standings[group].complete ? '<span class="control-ok">Completo</span>' : '<span class="control-pending">Provisional</span>'}</td></tr>`));
   document.querySelector("#fixture-standings").innerHTML = rows.length
     ? `<div class="message message-info">Las posiciones solo resuelven slots eliminatorios cuando todos los partidos del grupo están finalizados. Los cruces de mejores terceros permanecen por definir.</div>
-      <div class="panel">${table(["Grupo", "Posición", "Equipo", "Puntos", "GF", "GC", "DG", "Estado"], rows.join(""))}</div>`
+      <div class="panel">${table(["Grupo", "Posición", "Equipo", "J", "G", "E", "P", "Pts", "GF", "GC", "DG", "Estado"], rows.join(""))}</div>`
     : emptyState("No hay grupos disponibles para calcular posiciones.");
 }
 
@@ -394,9 +434,78 @@ function renderControlTeam(match, side) {
   return `<span class="control-slot">${escapeHtml(slot)}</span>`;
 }
 
-function renderMatch(match) {
-  return `<article class="match-card"><div class="match-teams">${renderMatchTeams(match)}</div>
-    <div class="match-result"><span class="score">${escapeHtml(formatScore(match))}</span></div></article>`;
+function renderPredictionLegend() {
+  return `<div class="prediction-legend" aria-label="Leyenda de pronósticos">
+    <span class="prediction-exact">Verde: exacto</span>
+    <span class="prediction-partial">Amarillo: sumó puntos</span>
+    <span class="prediction-zero">Rojo: cero puntos</span>
+    <span class="prediction-pending">Gris: pendiente</span>
+  </div>`;
+}
+
+function getPredictionStatus(scoreResult, realMatch) {
+  if (!realMatch || realMatch.status !== "finished") return "pending";
+  if (scoreResult?.details?.exact_score) return "exact";
+  if ((scoreResult?.points ?? 0) > 0) return "partial";
+  return "zero";
+}
+
+function getPredictionStatusClass(status) {
+  return `prediction-${["exact", "partial", "zero"].includes(status) ? status : "pending"}`;
+}
+
+function predictionStatusLabel(status) {
+  return {
+    exact: "Resultado exacto",
+    partial: "Puntuación parcial",
+    zero: "Sin puntos",
+    pending: "Partido pendiente",
+  }[status] || "Partido pendiente";
+}
+
+function scorePrediction(prediction, realMatch) {
+  if (!realMatch) return { points: 0, details: {}, warnings: [] };
+  return calculateMatchPoints(prediction, realMatch, state.scoringRules);
+}
+
+function renderPredictionScore(prediction, realMatch, includeTeams = false) {
+  const scoreResult = scorePrediction(prediction, realMatch);
+  const status = getPredictionStatus(scoreResult, realMatch);
+  const label = predictionStatusLabel(status);
+  const content = includeTeams
+    ? `${renderTeamName(prediction.home_team)} <span class="versus-mark">vs</span> ${renderTeamName(prediction.away_team)} <span class="score">${escapeHtml(formatScore(prediction))}</span>`
+    : `<span class="score">${escapeHtml(formatScore(prediction))}</span>`;
+  return `<span class="prediction-result ${getPredictionStatusClass(status)}" title="${label}" aria-label="${label}">${content}</span>`;
+}
+
+function renderRealResult(match) {
+  if (!match || match.status === "scheduled") return '<span class="real-result pending">Pendiente</span>';
+  if (match.status === "postponed") return '<span class="real-result pending">Postergado</span>';
+  if (match.status === "live") {
+    return `<span class="real-result live">${escapeHtml(formatRealScore(match))} · En juego</span>`;
+  }
+  if (match.status !== "finished") return `<span class="real-result pending">${escapeHtml(statusLabel(match.status))}</span>`;
+  const penalties = formatRealPenalties(match);
+  return `<span class="real-result finished">${escapeHtml(formatRealScore(match))}${penalties !== "—" ? ` · pen. ${escapeHtml(penalties)}` : ""}</span>`;
+}
+
+function renderKnockoutComparison(prediction, player) {
+  const officialMatch = resolveOfficialFixtureMatch(prediction.match_id);
+  const realMatch = getRealMatchById(prediction.match_id);
+  return `<article class="knockout-comparison">
+    <div class="comparison-block"><span class="comparison-label">Partido oficial</span>
+      <strong>${renderOfficialMatch(officialMatch)}</strong></div>
+    <div class="comparison-block"><span class="comparison-label">Pronóstico ${escapeHtml(player.player.name)}</span>
+      ${renderPredictionScore(prediction, realMatch, true)}</div>
+    <div class="comparison-block"><span class="comparison-label">Resultado real</span>
+      <strong>${renderRealResult(realMatch)}</strong></div>
+  </article>`;
+}
+
+function renderOfficialMatch(match) {
+  return `${match.home_team ? renderTeamName(match.home_team) : `<span class="control-slot">${escapeHtml(match.home_label)}</span>`}
+    <span class="versus-mark">vs</span>
+    ${match.away_team ? renderTeamName(match.away_team) : `<span class="control-slot">${escapeHtml(match.away_label)}</span>`}`;
 }
 
 function renderMatchTeams(match) {
@@ -472,6 +581,18 @@ function compareTeams(a, b) {
   return normalizeTeamName(a) === normalizeTeamName(b);
 }
 
+function withPredictionMatchId(prediction, phase, index) {
+  return {
+    ...prediction,
+    phase,
+    match_id: prediction.match_id ?? (PHASE_MATCH_START[phase] + index),
+  };
+}
+
+function getRealMatchById(matchId) {
+  return (state.realResults?.matches ?? []).find((match) => match.match_id === Number(matchId)) || null;
+}
+
 function getMatchDateTime(match) {
   if (!match?.date || !match?.time) return null;
   const value = new Date(`${match.date}T${match.time}:00`);
@@ -488,20 +609,12 @@ function compareMatchesByDate(a, b) {
 }
 
 function enrichPredictionWithRealMatchData(prediction) {
-  const realMatch = (state.realResults?.matches ?? []).find((match) =>
-    match.phase === "group_stage"
-    && (
-      (prediction.match_key && match.match_key === prediction.match_key)
-      || (
-        compareTeams(match.home_team, prediction.home_team)
-        && compareTeams(match.away_team, prediction.away_team)
-      )
-    )
-  );
+  const realMatch = getRealMatchById(prediction.match_id);
   return {
     ...prediction,
     date: prediction.date || realMatch?.date || null,
     time: prediction.time || realMatch?.time || null,
+    realMatch,
   };
 }
 
@@ -514,10 +627,11 @@ function deriveMatchKey(match) {
 }
 
 function predictionMap(player) {
-  const predictions = { exact: new Map(), normalized: new Map() };
+  const predictions = { byId: new Map(), exact: new Map(), normalized: new Map() };
   Object.entries(player.predictions ?? {}).forEach(([phase, matches]) => {
-    (matches ?? []).forEach((prediction) => {
-      const normalized = { ...prediction, phase };
+    (matches ?? []).forEach((prediction, index) => {
+      const normalized = withPredictionMatchId(prediction, phase, index);
+      predictions.byId.set(normalized.match_id, normalized);
       predictions.exact.set(prediction.match_key || deriveMatchKey(normalized), normalized);
       predictions.normalized.set(buildMatchKey(normalized), normalized);
     });
@@ -526,6 +640,9 @@ function predictionMap(player) {
 }
 
 function findPrediction(predictions, realMatch) {
+  if (realMatch.match_id && predictions.byId.has(realMatch.match_id)) {
+    return predictions.byId.get(realMatch.match_id);
+  }
   const exactKey = realMatch.match_key || deriveMatchKey(realMatch);
   return predictions.exact.get(exactKey) || predictions.normalized.get(buildMatchKey(realMatch));
 }
@@ -534,7 +651,7 @@ function isKnockoutPhase(phase) {
   return Object.prototype.hasOwnProperty.call(PHASE_LABELS, phase);
 }
 
-function getGroupStandings(realResults) {
+function calculateGroupStandings(realResults) {
   const standings = Object.fromEntries(GROUPS.map((group) => [group, { complete: false, rows: [] }]));
   GROUPS.forEach((group) => {
     const matches = (realResults?.matches ?? []).filter(
@@ -543,7 +660,9 @@ function getGroupStandings(realResults) {
     const teams = new Map();
     matches.forEach((match) => {
       [match.home_team, match.away_team].filter(Boolean).forEach((team) => {
-        if (!teams.has(team)) teams.set(team, { team, points: 0, gf: 0, gc: 0, gd: 0, played: 0 });
+        if (!teams.has(team)) teams.set(team, {
+          team, played: 0, wins: 0, draws: 0, losses: 0, points: 0, gf: 0, gc: 0, gd: 0,
+        });
       });
       if (match.status !== "finished" || !hasScore(match) || !match.home_team || !match.away_team) return;
       const home = teams.get(match.home_team);
@@ -560,27 +679,130 @@ function getGroupStandings(realResults) {
         home.points += 1;
         away.points += 1;
       }
+      if (match.home_score > match.away_score) {
+        home.wins += 1;
+        away.losses += 1;
+      } else if (match.away_score > match.home_score) {
+        away.wins += 1;
+        home.losses += 1;
+      } else {
+        home.draws += 1;
+        away.draws += 1;
+      }
     });
-    const rows = [...teams.values()]
-      .map((team) => ({ ...team, gd: team.gf - team.gc }))
-      .sort((a, b) => b.points - a.points || b.gd - a.gd || b.gf - a.gf || a.team.localeCompare(b.team, "es"))
-      .map((team, index) => ({ ...team, position: index + 1 }));
+    const finishedMatches = matches.filter((match) => match.status === "finished" && hasScore(match));
+    const complete = matches.length > 0 && finishedMatches.length === matches.length;
+    const rows = rankGroupTeams([...teams.values()].map((team) => ({ ...team, gd: team.gf - team.gc })), finishedMatches);
+    const override = state.qualificationOverrides?.group_positions?.[group];
+    if (override) applyGroupPositionOverride(rows, override);
     standings[group] = {
-      complete: matches.length > 0 && matches.every((match) => match.status === "finished" && hasScore(match)),
-      rows,
+      complete,
+      resolved: complete && rows.every((team) => !team.tie_pending),
+      rows: rows.map((team, index) => ({ ...team, position: index + 1 })),
     };
   });
   return standings;
 }
 
+function getGroupStandings(realResults) {
+  return calculateGroupStandings(realResults);
+}
+
+function rankGroupTeams(teams, matches) {
+  const buckets = teams.reduce(
+    (map, team) => map.set(team.points, [...(map.get(team.points) || []), team]),
+    new Map(),
+  );
+  return [...buckets.entries()].sort((a, b) => b[0] - a[0]).flatMap(([, tied]) => {
+    if (tied.length === 1) return tied;
+    const tiedNames = new Set(tied.map((team) => team.team));
+    const mini = calculateMiniTable(matches.filter(
+      (match) => tiedNames.has(match.home_team) && tiedNames.has(match.away_team),
+    ), tiedNames);
+    const sorted = [...tied].sort((a, b) => {
+      const aMini = mini.get(a.team);
+      const bMini = mini.get(b.team);
+      return bMini.points - aMini.points || bMini.gd - aMini.gd || bMini.gf - aMini.gf
+        || b.gd - a.gd || b.gf - a.gf;
+    });
+    sorted.forEach((team, index) => {
+      const next = sorted[index + 1];
+      if (!next) return;
+      const aMini = mini.get(team.team);
+      const bMini = mini.get(next.team);
+      if (aMini.points === bMini.points && aMini.gd === bMini.gd && aMini.gf === bMini.gf
+        && team.gd === next.gd && team.gf === next.gf) {
+        team.tie_pending = true;
+        next.tie_pending = true;
+      }
+    });
+    return sorted;
+  });
+}
+
+function calculateMiniTable(matches, teams) {
+  const mini = new Map([...teams].map((team) => [team, { points: 0, gf: 0, gc: 0, gd: 0 }]));
+  matches.forEach((match) => {
+    const home = mini.get(match.home_team);
+    const away = mini.get(match.away_team);
+    home.gf += numericScore(match.home_score);
+    home.gc += numericScore(match.away_score);
+    away.gf += numericScore(match.away_score);
+    away.gc += numericScore(match.home_score);
+    if (match.home_score > match.away_score) home.points += 3;
+    else if (match.away_score > match.home_score) away.points += 3;
+    else { home.points += 1; away.points += 1; }
+  });
+  mini.forEach((team) => { team.gd = team.gf - team.gc; });
+  return mini;
+}
+
+function applyGroupPositionOverride(rows, override) {
+  const order = Array.isArray(override)
+    ? override
+    : Object.entries(override).sort((a, b) => Number(a[0]) - Number(b[0])).map(([, team]) => team);
+  rows.sort((a, b) => {
+    const aIndex = order.findIndex((team) => compareTeams(team, a.team));
+    const bIndex = order.findIndex((team) => compareTeams(team, b.team));
+    return (aIndex < 0 ? 99 : aIndex) - (bIndex < 0 ? 99 : bIndex);
+  });
+  rows.forEach((team) => { team.tie_pending = false; });
+}
+
+function calculateBestThirdTeams(groupStandings) {
+  if (!GROUPS.every((group) => groupStandings[group]?.complete)) {
+    return { resolved: false, teams: [], reason: "Grupos pendientes" };
+  }
+  const thirds = GROUPS.map((group) => ({ ...groupStandings[group].rows[2], group }));
+  const sorted = [...thirds].sort((a, b) => b.points - a.points || b.gd - a.gd || b.gf - a.gf);
+  const boundary = sorted[7];
+  const next = sorted[8];
+  const unresolvedBoundary = boundary && next
+    && boundary.points === next.points && boundary.gd === next.gd && boundary.gf === next.gf;
+  if (unresolvedBoundary && !(state.qualificationOverrides?.best_thirds?.length)) {
+    return { resolved: false, teams: [], reason: "Clasificación pendiente" };
+  }
+  const overridden = state.qualificationOverrides?.best_thirds;
+  return { resolved: true, teams: overridden?.length ? overridden : sorted.slice(0, 8) };
+}
+
 function resolveControlMatches(realResults) {
-  const standings = getGroupStandings(realResults);
+  return buildOfficialFixture(realResults);
+}
+
+function buildOfficialFixture(realResults) {
+  const standings = calculateGroupStandings(realResults);
   const resolvedById = new Map();
   return (realResults?.matches ?? []).map((sourceMatch) => {
     const match = { ...sourceMatch };
     if (isKnockoutPhase(match.phase)) {
-      match.home_team = match.home_team || resolveControlSlot(match.home_slot, standings, resolvedById);
-      match.away_team = match.away_team || resolveControlSlot(match.away_slot, standings, resolvedById);
+      const bracketMatch = state.knockoutBracket.matches.find((item) => item.match_id === match.match_id);
+      const home = resolveBracketSource(bracketMatch?.home_source, standings, resolvedById, match.match_id);
+      const away = resolveBracketSource(bracketMatch?.away_source, standings, resolvedById, match.match_id);
+      match.home_team = match.home_team || home.team;
+      match.away_team = match.away_team || away.team;
+      match.home_slot = home.label;
+      match.away_slot = away.label;
       if (match.home_team && match.away_team) match.match_key = deriveMatchKey(match);
     }
     resolvedById.set(match.match_id, match);
@@ -588,20 +810,60 @@ function resolveControlMatches(realResults) {
   });
 }
 
-function resolveControlSlot(slot, standings, resolvedById) {
-  const groupSlot = /^([1-4])° Grupo ([A-L])$/.exec(slot || "");
-  if (groupSlot) {
-    const group = standings[groupSlot[2]];
-    return group?.complete ? group.rows[Number(groupSlot[1]) - 1]?.team || null : null;
+function resolveOfficialFixtureMatch(matchId) {
+  const match = buildOfficialFixture(state.realResults).find((item) => item.match_id === Number(matchId));
+  return {
+    ...match,
+    home_label: match?.home_team || match?.home_slot || "Por definir",
+    away_label: match?.away_team || match?.away_slot || "Por definir",
+  };
+}
+
+function resolveBracketSource(source, standings, resolvedById, targetMatchId) {
+  if (!source) return { team: null, label: "Por definir" };
+  if (source.type === "group_position") {
+    return { team: resolveGroupPosition(source.group, source.position, standings), label: `${source.position}° Grupo ${source.group}` };
   }
-  const priorSlot = /^(Ganador|Perdedor) partido (\d+)$/.exec(slot || "");
-  if (!priorSlot) return null;
-  const priorMatch = resolvedById.get(Number(priorSlot[2]));
-  if (!priorMatch || priorMatch.status !== "finished" || !priorMatch.home_team || !priorMatch.away_team) return null;
-  const winner = getQualifiedTeam(priorMatch);
+  if (source.type === "best_third") {
+    return { team: resolveBestThirdSlot(targetMatchId), label: `Mejor 3° ${source.groups.join("/")}` };
+  }
+  if (source.type === "winner_of") return { team: resolveWinner(source.match_id, resolvedById), label: `Ganador partido ${source.match_id}` };
+  if (source.type === "loser_of") return { team: resolveLoser(source.match_id, resolvedById), label: `Perdedor semifinal ${source.match_id}` };
+  return { team: null, label: "Por definir" };
+}
+
+function resolveGroupPosition(group, position, standings = calculateGroupStandings(state.realResults)) {
+  const groupStanding = standings[group];
+  if (!groupStanding?.complete || !groupStanding.resolved) return null;
+  return groupStanding.rows[position - 1]?.team || null;
+}
+
+function resolveWinner(matchId, resolvedById) {
+  const match = resolvedById.get(Number(matchId));
+  return match?.status === "finished" ? getQualifiedTeam(match) : null;
+}
+
+function resolveLoser(matchId, resolvedById) {
+  const match = resolvedById.get(Number(matchId));
+  const winner = match?.status === "finished" ? getQualifiedTeam(match) : null;
   if (!winner) return null;
-  if (priorSlot[1] === "Ganador") return winner;
-  return compareTeams(winner, priorMatch.home_team) ? priorMatch.away_team : priorMatch.home_team;
+  return compareTeams(winner, match.home_team) ? match.away_team : match.home_team;
+}
+
+function resolveBestThirdSlot(matchId) {
+  const override = state.qualificationOverrides?.round_of_32_assignments?.[String(matchId)];
+  if (override) return override;
+  if (!state.bestThirdMatrix?.implemented) return null;
+  const standings = calculateGroupStandings(state.realResults);
+  const bestThirds = calculateBestThirdTeams(standings);
+  if (!bestThirds.resolved) return null;
+  const key = bestThirds.teams.map((team) => team.group || team).sort().join("");
+  return state.bestThirdMatrix.assignments?.[key]?.[String(matchId)] || null;
+}
+
+function getOfficialMatchLabel(matchId) {
+  const match = resolveOfficialFixtureMatch(matchId);
+  return `${match.home_label} vs ${match.away_label}`;
 }
 
 function calculatePlayerScore(player, realResults, scoringRules) {
@@ -739,12 +1001,12 @@ function getGoalDifference(match) {
 function collectControlWarnings() {
   if (!state.fixtureAvailable) return [];
   const warnings = [];
+  if (!state.bestThirdMatrix?.implemented) {
+    warnings.push("Asignación de mejores terceros pendiente");
+  }
   resolveControlMatches(state.realResults).forEach((match) => {
     if (!match.match_key) {
       warnings.push(`Partido #${match.match_id}: Falta match_key`);
-    }
-    if (isKnockoutPhase(match.phase) && (!match.home_team || !match.away_team)) {
-      warnings.push(`Partido #${match.match_id}: Sin equipos definidos`);
     }
     if (match.status !== "finished") return;
     if (!match.home_team || !match.away_team) {
@@ -856,5 +1118,17 @@ function emptyState(message) { return `<div class="empty-state">${escapeHtml(mes
 if (typeof document !== "undefined") init();
 
 if (typeof module !== "undefined" && module.exports) {
-  module.exports = { calculateMatchPoints, getGoalDifference, getMatchOutcome };
+  module.exports = {
+    calculateMatchPoints,
+    getGoalDifference,
+    getMatchOutcome,
+    getPredictionStatus,
+    getPredictionStatusClass,
+    calculateGroupStandings,
+    calculateBestThirdTeams,
+    resolveOfficialFixtureMatch,
+    buildOfficialFixture,
+    withPredictionMatchId,
+    setTestState: (values) => Object.assign(state, values),
+  };
 }

@@ -184,6 +184,27 @@ select { width: 100%; border: 1px solid var(--border); border-radius: 9px; paddi
 .group-stage-card-head { margin-bottom: 13px; color: var(--muted); font-size: 0.76rem; }
 .group-stage-card-teams { margin-bottom: 14px; }
 .group-stage-card-result { padding-top: 12px; border-top: 1px solid var(--border); }
+.group-stage-card-result > span { display: grid; gap: 6px; }
+
+.prediction-legend { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.prediction-legend span, .prediction-result {
+  border: 1px solid var(--border); border-radius: 9px; padding: 6px 9px; font-weight: 800;
+}
+.prediction-result { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.prediction-exact { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-strong); }
+.prediction-partial { border-color: var(--gold); background: var(--gold-soft); color: var(--gold); }
+.prediction-zero { border-color: var(--danger); background: var(--danger-soft); color: var(--danger); }
+.prediction-pending { background: var(--surface-soft); color: var(--muted); }
+.prediction-result .score { background: transparent; color: inherit; }
+.real-result { display: inline-flex; border-radius: 8px; padding: 6px 9px; font-weight: 800; white-space: nowrap; }
+.real-result.pending { background: var(--surface-soft); color: var(--muted); }
+.real-result.live { background: var(--gold-soft); color: var(--gold); }
+.real-result.finished { background: var(--accent-soft); color: var(--accent-strong); }
+
+.knockout-comparison-list { display: grid; gap: 1px; border-top: 1px solid var(--border); background: var(--border); }
+.knockout-comparison { display: grid; grid-template-columns: 1fr 1.25fr 0.8fr; gap: 1px; background: var(--border); }
+.comparison-block { display: grid; align-content: center; gap: 8px; min-width: 0; padding: 15px 17px; background: var(--surface); }
+.comparison-label { color: var(--muted); font-size: 0.68rem; font-weight: 850; letter-spacing: 0.08em; text-transform: uppercase; }
 
 .fixture-summary { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
 .fixture-table { display: block; }
@@ -240,6 +261,8 @@ select { width: 100%; border: 1px solid var(--border); border-radius: 9px; paddi
   .picker, .picker-small { width: 100%; min-width: 0; }
   .match-card { align-items: flex-start; flex-direction: column; }
   .match-result { width: 100%; justify-content: space-between; }
+  .knockout-comparison { grid-template-columns: 1fr; }
+  .comparison-block { padding: 13px 15px; }
   .group-stage-table { display: none; }
   .group-stage-cards { display: grid; }
   .fixture-table { display: none; }

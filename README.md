@@ -121,11 +121,20 @@ Flujo de actualización:
 
 La web solo lee este archivo y nunca lo modifica. Únicamente los partidos con
 `status: "finished"` generan puntos. Cada resultado se une a los pronósticos
-mediante `match_key`, con el formato:
+principalmente mediante `match_id`. Cuando un JSON de jugador no incluye ese
+campo, el frontend lo deriva de forma determinista según la posición dentro de
+cada fase: grupos 1-72, dieciseisavos 73-88, octavos 89-96, cuartos 97-100,
+semifinales 101-102, tercer puesto 103 y final 104.
 
-```text
-phase|home_team|away_team
-```
+El cuadro oficial se define en `data/knockout_bracket.json`. Los desempates que
+no puedan resolverse con los resultados disponibles pueden administrarse en
+`data/qualification_overrides.json`.
+
+La matriz completa de asignación de mejores terceros del Anexo C todavía no
+está implementada. `data/best_third_matrix.json` conserva la referencia oficial
+y el portal mantiene esos slots como pendientes, sin asignarlos arbitrariamente.
+La fuente oficial es el documento
+[FIFA World Cup 26 Regulations](https://digitalhub.fifa.com/m/636f5c9c6f29771f/original/FWC2026_regulations_EN.pdf).
 
 La pestaña **Fixture** permite filtrar por fase, grupo y estado, y
 muestra warnings cuando un resultado finalizado está incompleto o no se puede
