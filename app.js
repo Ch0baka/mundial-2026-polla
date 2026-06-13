@@ -222,10 +222,10 @@ function renderDashboard() {
     metricCard("Partidos jugados", playedMatches, "Resultados finalizados"),
     metricCard("Partidos pendientes", pendingMatches, "Encuentros por completar"),
   ].join("");
-  const rows = state.players.map((player) => {
-    const leaderboardEntry = state.leaderboard.find((entry) => entry.id === player.player.id);
+  const rows = state.leaderboard.map((leaderboardEntry) => {
+    const player = getPlayer(leaderboardEntry.id);
     return `<tr><td><strong>${escapeHtml(player.player.name)}</strong></td>
-    <td class="points-cell">${leaderboardEntry?.points ?? 0}</td>
+    <td class="points-cell">${leaderboardEntry.points}</td>
     <td class="number-cell">${countPredictions(player)}</td>
     <td>${warningBadge(getPlayerWarnings(player).length)}</td>
     <td>${renderTeamName(player.honor_roll?.champion)}</td></tr>`;
