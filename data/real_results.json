@@ -109,11 +109,11 @@
       "time": "21:00",
       "home_team": "Estados Unidos",
       "away_team": "Paraguay",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 4,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 8,
