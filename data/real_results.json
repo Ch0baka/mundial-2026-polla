@@ -61,11 +61,11 @@
       "time": "15:00",
       "home_team": "Catar",
       "away_team": "Suiza",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 1,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 5,
@@ -77,11 +77,11 @@
       "time": "18:00",
       "home_team": "Brasil",
       "away_team": "Marruecos",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 1,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 6,
@@ -93,11 +93,11 @@
       "time": "21:00",
       "home_team": "Haití",
       "away_team": "Escocia",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 7,
