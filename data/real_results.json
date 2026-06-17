@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-11T10:00:00-04:00",
-  "status": "not_started",
+  "updated_at": "2026-06-17T15:59:46-04:00",
+  "status": "in_progress",
   "matches": [
     {
       "match_id": 1,
@@ -205,11 +205,11 @@
       "time": "15:00",
       "home_team": "Bélgica",
       "away_team": "Egipto",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 1,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 14,
@@ -221,11 +221,11 @@
       "time": "21:00",
       "home_team": "Irán",
       "away_team": "Nueva Zelanda",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 2,
+      "away_score": 2,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 15,
@@ -237,11 +237,11 @@
       "time": "12:00",
       "home_team": "España",
       "away_team": "Cabo Verde",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 0,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 16,
@@ -253,11 +253,11 @@
       "time": "18:00",
       "home_team": "Arabia Saudita",
       "away_team": "Uruguay",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 1,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 17,
@@ -269,11 +269,11 @@
       "time": "15:00",
       "home_team": "Francia",
       "away_team": "Senegal",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 3,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 18,
@@ -285,11 +285,11 @@
       "time": "18:00",
       "home_team": "Irak",
       "away_team": "Noruega",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 1,
+      "away_score": 4,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 19,
@@ -301,11 +301,11 @@
       "time": "21:00",
       "home_team": "Argentina",
       "away_team": "Argelia",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 3,
+      "away_score": 0,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 20,
@@ -317,11 +317,11 @@
       "time": "00:00",
       "home_team": "Austria",
       "away_team": "Jordania",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 3,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 21,
@@ -333,11 +333,11 @@
       "time": "13:00",
       "home_team": "Portugal",
       "away_team": "RD Congo",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 1,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 22,
