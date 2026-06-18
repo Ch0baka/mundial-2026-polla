@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-18T00:15:23-04:00",
+  "updated_at": "2026-06-18T17:30:13-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -397,11 +397,11 @@
       "time": "12:00",
       "home_team": "República Checa",
       "away_team": "Sudáfrica",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 1,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 26,
@@ -429,11 +429,11 @@
       "time": "15:00",
       "home_team": "Suiza",
       "away_team": "Bosnia y Herzegovina",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 4,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 28,
