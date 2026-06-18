@@ -110,6 +110,35 @@ resultados reales. Después hace commit y publica el cambio en GitHub; GitHub
 Pages servirá el JSON actualizado y el ranking se recalculará automáticamente
 al recargar el portal.
 
+También existe un script para consultar resultados desde internet y actualizar
+el archivo automáticamente:
+
+```bash
+python scripts/update_real_results.py 2026-06-15
+```
+
+Si no se indica fecha, consulta las últimas 24 horas:
+
+```bash
+python scripts/update_real_results.py
+```
+
+Para probar sin escribir cambios:
+
+```bash
+python scripts/update_real_results.py --dry-run 2026-06-15
+```
+
+El script usa el scoreboard público de ESPN como fuente, empareja partidos por
+selecciones contra `data/real_results.json`, actualiza marcadores y estados
+`live`/`finished`, y evita retroceder partidos ya finalizados.
+
+Cuando el script escribe cambios reales, pregunta si se desea hacer commit y
+push a GitHub. Si se confirma, ejecuta `git status`, agrega únicamente
+`data/real_results.json`, crea un commit `Games update #XX` con el último
+partido actualizado y hace `git push`. En modo `--dry-run` no escribe cambios
+ni ofrece commit.
+
 Flujo de actualización:
 
 1. Editar `data/real_results.json`.

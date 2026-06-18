@@ -5,3 +5,6 @@ private/
 private/player_aliases.json
 input/*.xlsx
 input/~$*
+banderas_mundial/
+flag-icons/
+node_modules/
