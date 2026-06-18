@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-17T15:59:46-04:00",
+  "updated_at": "2026-06-17T20:34:43-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -365,11 +365,11 @@
       "time": "16:00",
       "home_team": "Inglaterra",
       "away_team": "Croacia",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 4,
+      "away_score": 2,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 24,
@@ -381,11 +381,11 @@
       "time": "19:00",
       "home_team": "Ghana",
       "away_team": "Panamá",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 0,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "live"
     },
     {
       "match_id": 25,
