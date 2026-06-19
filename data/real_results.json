@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-19T10:43:51-04:00",
+  "updated_at": "2026-06-19T17:42:52-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -493,11 +493,11 @@
       "time": "15:00",
       "home_team": "Estados Unidos",
       "away_team": "Australia",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 2,
+      "away_score": 0,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 32,
