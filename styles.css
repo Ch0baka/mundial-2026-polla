@@ -105,8 +105,9 @@ main { min-height: 65vh; padding-block: 36px 58px; }
 .view.is-active { display: block; }
 .section-heading { margin-bottom: 22px; }
 
-.metric-grid, .player-grid, .warning-grid { display: grid; gap: 16px; }
+.metric-grid, .player-grid, .warning-grid, .dashboard-match-grid { display: grid; gap: 16px; }
 .metric-grid { grid-template-columns: repeat(4, 1fr); margin-bottom: 20px; }
+.dashboard-match-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 20px; }
 .player-grid, .warning-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
 .metric-card, .player-card, .panel, .warning-card, .phase-section {
@@ -119,6 +120,15 @@ main { min-height: 65vh; padding-block: 36px 58px; }
 .metric-note { margin-bottom: 0; color: var(--muted); font-size: 0.78rem; }
 .panel { overflow: hidden; }
 .panel-heading { padding: 18px 20px; border-bottom: 1px solid var(--border); }
+
+.dashboard-match-list { display: grid; gap: 1px; background: var(--border); }
+.dashboard-match-item {
+  display: grid; grid-template-columns: minmax(82px, 0.35fr) minmax(0, 1fr) auto;
+  align-items: center; gap: 14px; padding: 13px 15px; background: var(--surface);
+}
+.dashboard-match-meta { display: grid; gap: 4px; color: var(--muted); font-size: 0.76rem; font-weight: 800; }
+.dashboard-match-teams { display: flex; align-items: center; gap: 9px; min-width: 0; flex-wrap: wrap; }
+.dashboard-match-result { justify-self: end; }
 
 .table-wrap { width: 100%; overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 0.88rem; }
@@ -251,6 +261,7 @@ select { width: 100%; border: 1px solid var(--border); border-radius: 9px; paddi
 
 @media (max-width: 920px) {
   .metric-grid { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-match-grid { grid-template-columns: 1fr; }
   .player-grid { grid-template-columns: 1fr; }
 }
 
@@ -259,9 +270,11 @@ select { width: 100%; border: 1px solid var(--border); border-radius: 9px; paddi
   .site-header { padding: 23px 0; }
   .header-content, .section-heading { align-items: flex-start; flex-direction: column; gap: 15px; }
   .subtitle { font-size: 0.88rem; }
-  .metric-grid, .warning-grid { grid-template-columns: 1fr; gap: 10px; }
+  .metric-grid, .warning-grid, .dashboard-match-grid { grid-template-columns: 1fr; gap: 10px; }
   .metric-card { padding: 16px; }
   .metric-value { font-size: 1.75rem; }
+  .dashboard-match-item { grid-template-columns: 1fr; align-items: start; gap: 9px; }
+  .dashboard-match-result { justify-self: start; }
   .honor-grid, .award-columns { grid-template-columns: 1fr; }
   .filter-row { width: 100%; align-items: stretch; flex-direction: column; }
   .picker, .picker-small { width: 100%; min-width: 0; }

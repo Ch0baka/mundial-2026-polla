@@ -222,6 +222,7 @@ function renderDashboard() {
     metricCard("Partidos jugados", playedMatches, "Resultados finalizados"),
     metricCard("Partidos pendientes", pendingMatches, "Encuentros por completar"),
   ].join("");
+  document.querySelector("#dashboard-daily-matches").innerHTML = renderDashboardDailyMatches();
   const rows = state.leaderboard.map((leaderboardEntry) => {
     const player = getPlayer(leaderboardEntry.id);
     return `<tr><td><strong>${escapeHtml(player.player.name)}</strong></td>
@@ -233,6 +234,44 @@ function renderDashboard() {
   document.querySelector("#dashboard-players").innerHTML = table(
     ["Jugador", "Puntos", "Partidos", "Avisos", "Campeón pronosticado"], rows,
   );
+}
+
+function renderDashboardDailyMatches(today = new Date()) {
+  const todayKey = getLocalDateKey(today);
+  const yesterdayKey = shiftDateKey(todayKey, -1);
+  const matches = resolveControlMatches(state.realResults);
+  return [
+    renderDashboardMatchPanel("Partidos de hoy", todayKey, matches.filter((match) => match.date === todayKey), false),
+    renderDashboardMatchPanel("Resultados de ayer", yesterdayKey, matches.filter((match) => match.date === yesterdayKey), true),
+  ].join("");
+}
+
+function renderDashboardMatchPanel(title, dateKey, matches, resultsOnly) {
+  const sortedMatches = [...matches].sort(compareMatchesByDate);
+  const content = sortedMatches.length
+    ? `<div class="dashboard-match-list">${sortedMatches.map((match) => renderDashboardMatch(match, resultsOnly)).join("")}</div>`
+    : emptyState(resultsOnly ? "No hubo partidos registrados." : "No hay partidos programados.");
+  return `<section class="panel dashboard-match-panel">
+    <div class="panel-heading"><h3>${escapeHtml(title)}</h3><span class="muted">${escapeHtml(formatDateKey(dateKey))}</span></div>
+    ${content}
+  </section>`;
+}
+
+function renderDashboardMatch(match, resultsOnly) {
+  return `<article class="dashboard-match-item">
+    <div class="dashboard-match-meta">
+      <span>${escapeHtml(match.time || "Sin hora")}</span>
+      <span>${escapeHtml(phaseLabel(match.phase))}${match.group ? ` · Grupo ${escapeHtml(match.group)}` : ""}</span>
+    </div>
+    <div class="dashboard-match-teams">
+      ${renderControlTeam(match, "home")}
+      <span class="versus-mark">vs</span>
+      ${renderControlTeam(match, "away")}
+    </div>
+    <div class="dashboard-match-result">
+      ${resultsOnly && match.status !== "finished" ? statusBadge(match.status) : renderRealResult(match)}
+    </div>
+  </article>`;
 }
 
 function renderRanking() {
@@ -1063,6 +1102,26 @@ function hasPenalties(match) {
   return Number.isInteger(match?.home_penalties) && Number.isInteger(match?.away_penalties);
 }
 
+function getLocalDateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function shiftDateKey(dateKey, days) {
+  const date = new Date(`${dateKey}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return dateKey;
+  date.setDate(date.getDate() + days);
+  return getLocalDateKey(date);
+}
+
+function formatDateKey(dateKey) {
+  const date = new Date(`${dateKey}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return dateKey;
+  return new Intl.DateTimeFormat("es", { weekday: "long", day: "2-digit", month: "short", year: "numeric" }).format(date);
+}
+
 function formatDate(value) {
   if (!value) return "Sin fecha";
   const date = new Date(value);
@@ -1145,6 +1204,9 @@ if (typeof module !== "undefined" && module.exports) {
     buildOfficialFixture,
     withPredictionMatchId,
     shouldShowFixturePenalties,
+    getLocalDateKey,
+    shiftDateKey,
+    renderDashboardDailyMatches,
     setTestState: (values) => Object.assign(state, values),
   };
 }
