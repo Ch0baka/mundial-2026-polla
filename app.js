@@ -186,14 +186,30 @@ async function init() {
 
 function setupThemeToggle() {
   const button = document.querySelector("#theme-toggle");
-  const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+  const savedTheme = readStoredTheme();
   const initialTheme = ["light", "dark"].includes(savedTheme) ? savedTheme : getPreferredTheme();
   applyTheme(initialTheme);
   button?.addEventListener("click", () => {
     const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-    localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+    storeTheme(nextTheme);
     applyTheme(nextTheme);
   });
+}
+
+function readStoredTheme() {
+  try {
+    return window.localStorage?.getItem(THEME_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function storeTheme(theme) {
+  try {
+    window.localStorage?.setItem(THEME_STORAGE_KEY, theme);
+  } catch {
+    // Safari private contexts can block storage; the in-memory theme still applies.
+  }
 }
 
 function getPreferredTheme() {
