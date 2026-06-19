@@ -38,6 +38,7 @@ const PHASE_MATCH_START = {
   third_place: 103,
   final: 104,
 };
+const THEME_STORAGE_KEY = "worldcup-2026-theme";
 
 const state = {
   index: [],
@@ -158,6 +159,7 @@ async function loadBracketConfiguration() {
 }
 
 async function init() {
+  setupThemeToggle();
   setupNavigation();
   try {
     await loadPlayersIndex();
@@ -174,12 +176,38 @@ async function init() {
       showError(`Carga parcial: ${state.errors.join(" | ")}`);
       setStatus(`${state.players.length} jugadores · carga parcial`, "is-error");
     } else {
-      setStatus(`${state.players.length} jugadores cargados`, "is-ready");
+      setStatus(`${state.players.length} jugadores participando`, "is-ready");
     }
   } catch (error) {
     showError(`No se pudieron cargar los datos. Usa un servidor local. Detalle: ${error.message}`);
     setStatus("Error de carga", "is-error");
   }
+}
+
+function setupThemeToggle() {
+  const button = document.querySelector("#theme-toggle");
+  const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+  const initialTheme = ["light", "dark"].includes(savedTheme) ? savedTheme : getPreferredTheme();
+  applyTheme(initialTheme);
+  button?.addEventListener("click", () => {
+    const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+    applyTheme(nextTheme);
+  });
+}
+
+function getPreferredTheme() {
+  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function applyTheme(theme) {
+  const safeTheme = theme === "dark" ? "dark" : "light";
+  document.documentElement.dataset.theme = safeTheme;
+  const button = document.querySelector("#theme-toggle");
+  if (!button) return;
+  const isDark = safeTheme === "dark";
+  button.textContent = isDark ? "Tema claro" : "Tema oscuro";
+  button.setAttribute("aria-label", isDark ? "Cambiar a tema claro" : "Cambiar a tema oscuro");
 }
 
 function setupNavigation() {
