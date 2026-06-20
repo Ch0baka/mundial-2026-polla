@@ -181,6 +181,9 @@ main { min-height: 65vh; padding-block: 36px 58px; }
 .dashboard-match-meta { display: grid; gap: 4px; color: var(--muted); font-size: 0.76rem; font-weight: 800; }
 .dashboard-match-teams { display: flex; align-items: center; gap: 9px; min-width: 0; flex-wrap: wrap; }
 .dashboard-match-result { justify-self: end; }
+.top-scorers-panel { margin-bottom: 20px; }
+.top-scorers-panel th:first-child { width: 70px; }
+.top-scorers-panel th:last-child, .top-scorers-panel td:last-child { text-align: right; }
 
 .table-wrap { width: 100%; overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 0.88rem; }

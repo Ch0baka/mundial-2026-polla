@@ -86,9 +86,30 @@ assert.match(dailyDashboard, /Resultados de ayer/);
 assert.match(dailyDashboard, /Corea del Sur/);
 assert.match(dailyDashboard, /México/);
 
+const scorers = app.parseTopScorersFromEspnStats({
+  stats: [{
+    name: "goalsLeaders",
+    leaders: [
+      { value: 3, athlete: { id: "1", displayName: "Jonathan David", team: { displayName: "Canada" } } },
+      { value: 2, athlete: { id: "2", displayName: "Luis Romo", team: { displayName: "Mexico" } } },
+      { value: 0, athlete: { id: "3", displayName: "Sin gol", team: { displayName: "Brazil" } } },
+    ],
+  }],
+});
+assert.equal(scorers.length, 2);
+assert.deepEqual(scorers[0], {
+  id: "1",
+  name: "Jonathan David",
+  team: "Canadá",
+  goals: 3,
+  displayValue: "",
+});
+assert.equal(app.mapEspnTeamName("South Korea"), "Corea del Sur");
+
 console.log("OK estados visuales: pending, live, exact, partial y zero");
 console.log("OK Fixture: penales ocultos en fase de grupos");
 console.log("OK M73: slots oficiales y posiciones reales resueltas");
 console.log("OK M90: ganadores reales de M73 y M75");
 console.log("OK eliminatoria finalizada con penales");
 console.log("OK Dashboard: partidos de hoy y resultados de ayer");
+console.log("OK Dashboard: top 5 goleadores ESPN");

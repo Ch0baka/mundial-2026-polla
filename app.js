@@ -7,6 +7,7 @@ const PATHS = {
   bracket: "data/knockout_bracket.json",
   qualificationOverrides: "data/qualification_overrides.json",
   bestThirdMatrix: "data/best_third_matrix.json",
+  topScorers: "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/statistics?season=2026",
 };
 const DEFAULT_CONFIG = {
   mode: "testing",
@@ -39,6 +40,57 @@ const PHASE_MATCH_START = {
   final: 104,
 };
 const THEME_STORAGE_KEY = "worldcup-2026-theme";
+const ESPN_TEAM_NAMES = {
+  Algeria: "Argelia",
+  Argentina: "Argentina",
+  Australia: "Australia",
+  Austria: "Austria",
+  Belgium: "Bélgica",
+  "Bosnia-Herzegovina": "Bosnia y Herzegovina",
+  "Bosnia and Herzegovina": "Bosnia y Herzegovina",
+  Brazil: "Brasil",
+  Canada: "Canadá",
+  "Cape Verde": "Cabo Verde",
+  Colombia: "Colombia",
+  "Congo DR": "RD Congo",
+  Croatia: "Croacia",
+  Curacao: "Curazao",
+  Czechia: "República Checa",
+  Ecuador: "Ecuador",
+  Egypt: "Egipto",
+  England: "Inglaterra",
+  France: "Francia",
+  Germany: "Alemania",
+  Ghana: "Ghana",
+  Haiti: "Haití",
+  Iran: "Irán",
+  Iraq: "Irak",
+  "Ivory Coast": "Costa de Marfil",
+  Japan: "Japón",
+  Jordan: "Jordania",
+  Mexico: "México",
+  Morocco: "Marruecos",
+  Netherlands: "Países Bajos",
+  "New Zealand": "Nueva Zelanda",
+  Norway: "Noruega",
+  Panama: "Panamá",
+  Paraguay: "Paraguay",
+  Portugal: "Portugal",
+  Qatar: "Catar",
+  "Saudi Arabia": "Arabia Saudita",
+  Scotland: "Escocia",
+  Senegal: "Senegal",
+  "South Africa": "Sudáfrica",
+  "South Korea": "Corea del Sur",
+  Spain: "España",
+  Sweden: "Suecia",
+  Switzerland: "Suiza",
+  Turkey: "Turquía",
+  Tunisia: "Túnez",
+  "United States": "Estados Unidos",
+  Uruguay: "Uruguay",
+  Uzbekistan: "Uzbekistán",
+};
 
 const state = {
   index: [],
@@ -52,6 +104,8 @@ const state = {
   knockoutBracket: { matches: [] },
   qualificationOverrides: { group_positions: {}, best_thirds: [], round_of_32_assignments: {} },
   bestThirdMatrix: { implemented: false, assignments: {} },
+  topScorers: [],
+  topScorersAvailable: false,
   controlWarnings: [],
   scoringWarnings: [],
   leaderboard: [],
@@ -147,6 +201,18 @@ async function loadScoringRules() {
   return state.scoringRules;
 }
 
+async function loadTopScorers() {
+  try {
+    const data = await loadJson(PATHS.topScorers);
+    state.topScorers = parseTopScorersFromEspnStats(data);
+    state.topScorersAvailable = true;
+  } catch {
+    state.topScorers = [];
+    state.topScorersAvailable = false;
+  }
+  return state.topScorers;
+}
+
 async function loadBracketConfiguration() {
   const [bracket, overrides, matrix] = await Promise.all([
     loadJson(PATHS.bracket),
@@ -164,7 +230,7 @@ async function init() {
   try {
     await loadPlayersIndex();
     await Promise.all([
-      loadPlayers(), loadTeams(), loadConfig(), loadRealResults(), loadScoringRules(),
+      loadPlayers(), loadTeams(), loadConfig(), loadRealResults(), loadScoringRules(), loadTopScorers(),
       loadBracketConfiguration(),
     ]);
     if (state.players.length) {
@@ -267,6 +333,7 @@ function renderDashboard() {
     metricCard("Partidos pendientes", pendingMatches, "Encuentros por completar"),
   ].join("");
   document.querySelector("#dashboard-daily-matches").innerHTML = renderDashboardDailyMatches();
+  document.querySelector("#dashboard-top-scorers").innerHTML = renderTopScorers();
   const rows = state.leaderboard.map((leaderboardEntry) => {
     const player = getPlayer(leaderboardEntry.id);
     return `<tr><td><strong>${escapeHtml(player.player.name)}</strong></td>
@@ -278,6 +345,28 @@ function renderDashboard() {
   document.querySelector("#dashboard-players").innerHTML = table(
     ["Jugador", "Puntos", "Partidos", "Avisos", "Campeón pronosticado"], rows,
   );
+}
+
+function renderTopScorers() {
+  if (!state.topScorersAvailable) {
+    return `<div class="panel top-scorers-panel">
+      <div class="panel-heading"><h3>Top 5 goleadores</h3><span class="muted">ESPN</span></div>
+      ${emptyState("Goleadores no disponibles.")}
+    </div>`;
+  }
+  if (!state.topScorers.length) {
+    return `<div class="panel top-scorers-panel">
+      <div class="panel-heading"><h3>Top 5 goleadores</h3><span class="muted">ESPN</span></div>
+      ${emptyState("Sin goleadores registrados.")}
+    </div>`;
+  }
+  const rows = state.topScorers.slice(0, 5).map((scorer, index) => `
+    <tr><td class="rank-cell">${index + 1}</td><td><strong>${escapeHtml(scorer.name)}</strong></td>
+    <td>${renderTeamName(scorer.team)}</td><td class="points-cell">${escapeHtml(scorer.goals)}</td></tr>`).join("");
+  return `<div class="panel top-scorers-panel">
+    <div class="panel-heading"><h3>Top 5 goleadores</h3><span class="muted">Datos ESPN</span></div>
+    ${table(["#", "Jugador", "Selección", "Goles"], rows)}
+  </div>`;
 }
 
 function renderDashboardDailyMatches(today = new Date()) {
@@ -316,6 +405,25 @@ function renderDashboardMatch(match, resultsOnly) {
       ${resultsOnly && match.status !== "finished" ? statusBadge(match.status) : renderRealResult(match)}
     </div>
   </article>`;
+}
+
+function parseTopScorersFromEspnStats(data) {
+  const goalsCategory = (data?.stats ?? []).find((category) => category.name === "goalsLeaders");
+  return (goalsCategory?.leaders ?? []).map((leader) => {
+    const athlete = leader.athlete ?? {};
+    const team = athlete.team ?? leader.team ?? {};
+    return {
+      id: athlete.id ?? "",
+      name: athlete.displayName ?? athlete.shortName ?? "Jugador sin nombre",
+      team: mapEspnTeamName(team.displayName ?? team.name ?? ""),
+      goals: Number(leader.value ?? 0),
+      displayValue: leader.displayValue ?? "",
+    };
+  }).filter((scorer) => scorer.goals > 0);
+}
+
+function mapEspnTeamName(teamName) {
+  return ESPN_TEAM_NAMES[teamName] || teamName || "Sin definir";
 }
 
 function renderRanking() {
@@ -1251,6 +1359,8 @@ if (typeof module !== "undefined" && module.exports) {
     getLocalDateKey,
     shiftDateKey,
     renderDashboardDailyMatches,
+    parseTopScorersFromEspnStats,
+    mapEspnTeamName,
     setTestState: (values) => Object.assign(state, values),
   };
 }
