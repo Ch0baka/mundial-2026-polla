@@ -322,13 +322,13 @@ function renderAll() {
 }
 
 function renderDashboard() {
-  const counts = state.players.map(countPredictions);
   const realMatches = state.realResults?.matches ?? [];
+  const totalGoals = countTournamentGoals(realMatches);
   const playedMatches = realMatches.filter((match) => match.status === "finished").length;
   const pendingMatches = realMatches.filter((match) => match.status !== "finished").length;
   document.querySelector("#dashboard-metrics").innerHTML = [
     metricCard("Jugadores", state.players.length, "Participantes cargados"),
-    metricCard("Partidos por jugador", counts.length ? Math.max(...counts) : 0, "Pronósticos disponibles"),
+    metricCard("Cantidad de goles", totalGoals, "Goles convertidos"),
     metricCard("Partidos jugados", playedMatches, "Resultados finalizados"),
     metricCard("Partidos pendientes", pendingMatches, "Encuentros por completar"),
   ].join("");
@@ -345,6 +345,16 @@ function renderDashboard() {
   document.querySelector("#dashboard-players").innerHTML = table(
     ["Jugador", "Puntos", "Partidos", "Avisos", "Campeón pronosticado"], rows,
   );
+}
+
+function countTournamentGoals(matches) {
+  return (matches ?? []).reduce((total, match) => {
+    if (!["finished", "live"].includes(match.status)) return total;
+    const homeScore = numericScore(match.home_score);
+    const awayScore = numericScore(match.away_score);
+    if (homeScore === null || awayScore === null) return total;
+    return total + homeScore + awayScore;
+  }, 0);
 }
 
 function renderTopScorers() {
