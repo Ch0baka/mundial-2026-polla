@@ -557,11 +557,11 @@
       "time": "13:00",
       "home_team": "Países Bajos",
       "away_team": "Suecia",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 2,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "live"
     },
     {
       "match_id": 36,
