@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-19T18:03:36-04:00",
+  "updated_at": "2026-06-19T19:59:55-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -465,7 +465,7 @@
       "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "live"
+      "status": "finished"
     },
     {
       "match_id": 30,
