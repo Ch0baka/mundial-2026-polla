@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-19T22:42:15-04:00",
+  "updated_at": "2026-06-19T23:56:22-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -509,11 +509,11 @@
       "time": "23:00",
       "home_team": "Turquía",
       "away_team": "Paraguay",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "live"
     },
     {
       "match_id": 33,
