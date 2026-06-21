@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-20T21:56:53-04:00",
+  "updated_at": "2026-06-21T01:57:46-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -573,11 +573,11 @@
       "time": "00:00",
       "home_team": "Túnez",
       "away_team": "Japón",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 4,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 37,
