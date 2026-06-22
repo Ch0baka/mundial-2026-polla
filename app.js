@@ -40,6 +40,7 @@ const PHASE_MATCH_START = {
   final: 104,
 };
 const THEME_STORAGE_KEY = "worldcup-2026-theme";
+const TOP_SCORERS_REFRESH_MS = 5 * 60 * 1000;
 const ESPN_TEAM_NAMES = {
   Algeria: "Argelia",
   Argentina: "Argentina",
@@ -106,6 +107,9 @@ const state = {
   bestThirdMatrix: { implemented: false, assignments: {} },
   topScorers: [],
   topScorersAvailable: false,
+  topScorersUpdatedAt: null,
+  topScorersError: "",
+  topScorersRefreshTimer: null,
   controlWarnings: [],
   scoringWarnings: [],
   leaderboard: [],
@@ -130,6 +134,12 @@ async function loadJson(path) {
   const response = await fetch(path, { cache: "no-store" });
   if (!response.ok) throw new Error(`HTTP ${response.status} al cargar ${path}`);
   return response.json();
+}
+
+function cacheBustedUrl(path) {
+  if (!/^https?:\/\//i.test(path)) return path;
+  const separator = path.includes("?") ? "&" : "?";
+  return `${path}${separator}_=${Date.now()}`;
 }
 
 async function loadPlayersIndex() {
@@ -203,14 +213,31 @@ async function loadScoringRules() {
 
 async function loadTopScorers() {
   try {
-    const data = await loadJson(PATHS.topScorers);
+    const data = await loadJson(cacheBustedUrl(PATHS.topScorers));
     state.topScorers = parseTopScorersFromEspnStats(data);
     state.topScorersAvailable = true;
+    state.topScorersUpdatedAt = data?.timestamp || new Date().toISOString();
+    state.topScorersError = "";
   } catch {
-    state.topScorers = [];
-    state.topScorersAvailable = false;
+    state.topScorersError = "No se pudo actualizar desde ESPN.";
+    if (!state.topScorers.length) {
+      state.topScorers = [];
+      state.topScorersAvailable = false;
+      state.topScorersUpdatedAt = null;
+    }
   }
   return state.topScorers;
+}
+
+async function refreshTopScorers() {
+  await loadTopScorers();
+  const container = document.querySelector("#dashboard-top-scorers");
+  if (container) container.innerHTML = renderTopScorers();
+}
+
+function startTopScorersAutoRefresh() {
+  if (state.topScorersRefreshTimer) window.clearInterval(state.topScorersRefreshTimer);
+  state.topScorersRefreshTimer = window.setInterval(refreshTopScorers, TOP_SCORERS_REFRESH_MS);
 }
 
 async function loadBracketConfiguration() {
@@ -238,6 +265,7 @@ async function init() {
       state.selected.knockout = state.players[0].player.id;
     }
     renderAll();
+    startTopScorersAutoRefresh();
     if (state.errors.length) {
       showError(`Carga parcial: ${state.errors.join(" | ")}`);
       setStatus(`${state.players.length} jugadores · carga parcial`, "is-error");
@@ -358,24 +386,29 @@ function countTournamentGoals(matches) {
 }
 
 function renderTopScorers() {
+  const updatedLabel = state.topScorersUpdatedAt ? `Actualizado ${formatDate(state.topScorersUpdatedAt)}` : "ESPN";
+  const warning = state.topScorersError ? `<p class="muted top-scorers-note">${escapeHtml(state.topScorersError)}</p>` : "";
   if (!state.topScorersAvailable) {
     return `<div class="panel top-scorers-panel">
-      <div class="panel-heading"><h3>Top 5 goleadores</h3><span class="muted">ESPN</span></div>
+      <div class="panel-heading"><h3>Top 5 goleadores</h3><span class="muted">${escapeHtml(updatedLabel)}</span></div>
       ${emptyState("Goleadores no disponibles.")}
+      ${warning}
     </div>`;
   }
   if (!state.topScorers.length) {
     return `<div class="panel top-scorers-panel">
-      <div class="panel-heading"><h3>Top 5 goleadores</h3><span class="muted">ESPN</span></div>
+      <div class="panel-heading"><h3>Top 5 goleadores</h3><span class="muted">${escapeHtml(updatedLabel)}</span></div>
       ${emptyState("Sin goleadores registrados.")}
+      ${warning}
     </div>`;
   }
   const rows = state.topScorers.slice(0, 5).map((scorer, index) => `
     <tr><td class="rank-cell">${index + 1}</td><td><strong>${escapeHtml(scorer.name)}</strong></td>
     <td>${renderTeamName(scorer.team)}</td><td class="points-cell">${escapeHtml(scorer.goals)}</td></tr>`).join("");
   return `<div class="panel top-scorers-panel">
-    <div class="panel-heading"><h3>Top 5 goleadores</h3><span class="muted">Datos ESPN</span></div>
+    <div class="panel-heading"><h3>Top 5 goleadores</h3><span class="muted">${escapeHtml(updatedLabel)}</span></div>
     ${table(["#", "Jugador", "Selección", "Goles"], rows)}
+    ${warning}
   </div>`;
 }
 
