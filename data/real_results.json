@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-22T09:11:02-04:00",
+  "updated_at": "2026-06-22T17:03:48-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -653,11 +653,11 @@
       "time": "17:00",
       "home_team": "Francia",
       "away_team": "Irak",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 0,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "live"
     },
     {
       "match_id": 42,
@@ -685,11 +685,11 @@
       "time": "13:00",
       "home_team": "Argentina",
       "away_team": "Austria",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 2,
+      "away_score": 0,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 44,
