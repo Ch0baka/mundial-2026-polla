@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-21T01:57:46-04:00",
+  "updated_at": "2026-06-22T09:11:02-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -589,11 +589,11 @@
       "time": "15:00",
       "home_team": "Bélgica",
       "away_team": "Irán",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 0,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 38,
@@ -605,11 +605,11 @@
       "time": "21:00",
       "home_team": "Nueva Zelanda",
       "away_team": "Egipto",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 1,
+      "away_score": 3,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 39,
@@ -621,11 +621,11 @@
       "time": "12:00",
       "home_team": "España",
       "away_team": "Arabia Saudita",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 4,
+      "away_score": 0,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 40,
@@ -637,11 +637,11 @@
       "time": "18:00",
       "home_team": "Uruguay",
       "away_team": "Cabo Verde",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 2,
+      "away_score": 2,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 41,
