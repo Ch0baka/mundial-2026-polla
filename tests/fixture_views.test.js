@@ -106,6 +106,44 @@ assert.deepEqual(scorers[0], {
 });
 assert.equal(app.mapEspnTeamName("South Korea"), "Corea del Sur");
 
+const scorersFromEvents = app.parseTopScorersFromEspnSummaries([{
+  summary: {
+    keyEvents: [
+      {
+        id: "missed-penalty",
+        scoringPlay: false,
+        type: { type: "penalty---missed" },
+        team: { displayName: "Argentina" },
+        participants: [{ athlete: { id: "45843", displayName: "Lionel Messi" } }],
+      },
+      {
+        id: "goal-1",
+        scoringPlay: true,
+        type: { type: "goal" },
+        team: { displayName: "Argentina" },
+        participants: [{ athlete: { id: "45843", displayName: "Lionel Messi" } }],
+      },
+      {
+        id: "goal-2",
+        scoringPlay: true,
+        type: { type: "goal" },
+        team: { displayName: "Argentina" },
+        participants: [{ athlete: { id: "45843", displayName: "Lionel Messi" } }],
+      },
+      {
+        id: "goal-3",
+        scoringPlay: true,
+        type: { type: "goal" },
+        team: { displayName: "Canada" },
+        participants: [{ athlete: { id: "273499", displayName: "Jonathan David" } }],
+      },
+    ],
+  },
+}]);
+assert.equal(scorersFromEvents[0].name, "Lionel Messi");
+assert.equal(scorersFromEvents[0].team, "Argentina");
+assert.equal(scorersFromEvents[0].goals, 2);
+
 console.log("OK estados visuales: pending, live, exact, partial y zero");
 console.log("OK Fixture: penales ocultos en fase de grupos");
 console.log("OK M73: slots oficiales y posiciones reales resueltas");
@@ -113,3 +151,4 @@ console.log("OK M90: ganadores reales de M73 y M75");
 console.log("OK eliminatoria finalizada con penales");
 console.log("OK Dashboard: partidos de hoy y resultados de ayer");
 console.log("OK Dashboard: top 5 goleadores ESPN");
+console.log("OK Dashboard: goleadores calculados desde eventos ESPN");

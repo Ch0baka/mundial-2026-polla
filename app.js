@@ -7,7 +7,9 @@ const PATHS = {
   bracket: "data/knockout_bracket.json",
   qualificationOverrides: "data/qualification_overrides.json",
   bestThirdMatrix: "data/best_third_matrix.json",
-  topScorers: "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/statistics?season=2026",
+  topScorersStats: "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/statistics?season=2026",
+  topScorersScoreboard: "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?limit=200&dates=20260611-20260719",
+  topScorersSummary: "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event=",
 };
 const DEFAULT_CONFIG = {
   mode: "testing",
@@ -213,8 +215,22 @@ async function loadScoringRules() {
 
 async function loadTopScorers() {
   try {
-    const data = await loadJson(cacheBustedUrl(PATHS.topScorers));
-    state.topScorers = parseTopScorersFromEspnStats(data);
+    const data = await loadJson(cacheBustedUrl(PATHS.topScorersScoreboard));
+    const events = (data?.events ?? []).filter((event) =>
+      event?.id && (event.status?.type?.completed || event.status?.type?.state === "in")
+    );
+    const summaries = await Promise.allSettled(events.map(async (event) => ({
+      event,
+      summary: await loadJson(cacheBustedUrl(`${PATHS.topScorersSummary}${event.id}`)),
+    })));
+    const eventSummaries = summaries
+      .filter((result) => result.status === "fulfilled")
+      .map((result) => result.value);
+    state.topScorers = parseTopScorersFromEspnSummaries(eventSummaries);
+    if (!state.topScorers.length) {
+      const fallbackData = await loadJson(cacheBustedUrl(PATHS.topScorersStats));
+      state.topScorers = parseTopScorersFromEspnStats(fallbackData);
+    }
     state.topScorersAvailable = true;
     state.topScorersUpdatedAt = data?.timestamp || new Date().toISOString();
     state.topScorersError = "";
@@ -463,6 +479,39 @@ function parseTopScorersFromEspnStats(data) {
       displayValue: leader.displayValue ?? "",
     };
   }).filter((scorer) => scorer.goals > 0);
+}
+
+function parseTopScorersFromEspnSummaries(eventSummaries) {
+  const scorers = new Map();
+  eventSummaries.forEach(({ summary }) => {
+    const seenPlayIds = new Set();
+    (summary?.keyEvents ?? []).forEach((play) => {
+      if (!isGoalScoringPlay(play) || seenPlayIds.has(play.id)) return;
+      seenPlayIds.add(play.id);
+      const athlete = play.participants?.[0]?.athlete;
+      const name = athlete?.displayName || athlete?.shortName;
+      if (!name) return;
+      const id = athlete.id || `${name}|${play.team?.displayName || ""}`;
+      const existing = scorers.get(id) ?? {
+        id,
+        name,
+        team: mapEspnTeamName(play.team?.displayName ?? ""),
+        goals: 0,
+        displayValue: "",
+      };
+      existing.goals += 1;
+      existing.displayValue = `${existing.goals}`;
+      scorers.set(id, existing);
+    });
+  });
+  return [...scorers.values()]
+    .filter((scorer) => scorer.goals > 0)
+    .sort((a, b) => b.goals - a.goals || a.name.localeCompare(b.name));
+}
+
+function isGoalScoringPlay(play) {
+  const type = String(play?.type?.type || play?.type?.text || "").toLowerCase();
+  return play?.scoringPlay === true && ["goal", "penalty---scored"].includes(type);
 }
 
 function mapEspnTeamName(teamName) {
@@ -1403,6 +1452,7 @@ if (typeof module !== "undefined" && module.exports) {
     shiftDateKey,
     renderDashboardDailyMatches,
     parseTopScorersFromEspnStats,
+    parseTopScorersFromEspnSummaries,
     mapEspnTeamName,
     setTestState: (values) => Object.assign(state, values),
   };
