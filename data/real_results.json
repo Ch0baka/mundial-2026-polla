@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-25T10:04:50-04:00",
+  "updated_at": "2026-06-25T17:52:33-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -909,11 +909,11 @@
       "time": "16:00",
       "home_team": "Curazao",
       "away_team": "Costa de Marfil",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 2,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "live"
     },
     {
       "match_id": 58,
@@ -925,11 +925,11 @@
       "time": "16:00",
       "home_team": "Ecuador",
       "away_team": "Alemania",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 2,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "live"
     },
     {
       "match_id": 59,
