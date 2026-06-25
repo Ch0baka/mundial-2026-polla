@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-24T20:55:35-04:00",
+  "updated_at": "2026-06-25T10:04:50-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -781,11 +781,11 @@
       "time": "21:00",
       "home_team": "República Checa",
       "away_team": "México",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 3,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 50,
@@ -797,11 +797,11 @@
       "time": "21:00",
       "home_team": "Sudáfrica",
       "away_team": "Corea del Sur",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 1,
+      "away_score": 0,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 51,
