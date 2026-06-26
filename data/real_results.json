@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-25T17:58:56-04:00",
+  "updated_at": "2026-06-25T21:06:47-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -941,11 +941,11 @@
       "time": "19:00",
       "home_team": "Japón",
       "away_team": "Suecia",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 1,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 60,
@@ -957,11 +957,11 @@
       "time": "19:00",
       "home_team": "Túnez",
       "away_team": "Países Bajos",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 1,
+      "away_score": 3,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 61,
