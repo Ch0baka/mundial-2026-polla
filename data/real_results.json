@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-26T23:17:43-04:00",
+  "updated_at": "2026-06-27T11:33:47-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -977,7 +977,7 @@
       "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "live"
+      "status": "finished"
     },
     {
       "match_id": 62,
@@ -989,11 +989,11 @@
       "time": "23:00",
       "home_team": "Nueva Zelanda",
       "away_team": "Bélgica",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 5,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "live"
+      "status": "finished"
     },
     {
       "match_id": 63,
