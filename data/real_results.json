@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-27T11:33:47-04:00",
+  "updated_at": "2026-06-27T22:29:17-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -1069,11 +1069,11 @@
       "time": "22:00",
       "home_team": "Argelia",
       "away_team": "Austria",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "live"
     },
     {
       "match_id": 68,
@@ -1085,11 +1085,11 @@
       "time": "22:00",
       "home_team": "Jordania",
       "away_team": "Argentina",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "live"
     },
     {
       "match_id": 69,
@@ -1101,11 +1101,11 @@
       "time": "19:30",
       "home_team": "Colombia",
       "away_team": "Portugal",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 0,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 70,
@@ -1117,11 +1117,11 @@
       "time": "19:30",
       "home_team": "RD Congo",
       "away_team": "Uzbekistán",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 3,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 71,
@@ -1133,11 +1133,11 @@
       "time": "17:00",
       "home_team": "Panamá",
       "away_team": "Inglaterra",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 2,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 72,
@@ -1149,11 +1149,11 @@
       "time": "17:00",
       "home_team": "Croacia",
       "away_team": "Ghana",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 2,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled"
+      "status": "finished"
     },
     {
       "match_id": 73,
