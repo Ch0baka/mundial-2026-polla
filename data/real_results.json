@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-29T00:10:30-04:00",
+  "updated_at": "2026-06-29T18:57:32-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -1183,11 +1183,11 @@
       "time": "16:30",
       "home_team": "Alemania",
       "away_team": "Paraguay",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 1,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled",
+      "status": "live",
       "home_slot": "1° Grupo E",
       "away_slot": "Mejor 3° por definir"
     },
@@ -1219,11 +1219,11 @@
       "time": "13:00",
       "home_team": "Brasil",
       "away_team": "Japón",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 2,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled",
+      "status": "finished",
       "home_slot": "1° Grupo C",
       "away_slot": "2° Grupo F"
     },
