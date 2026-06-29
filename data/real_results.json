@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-29T18:57:32-04:00",
+  "updated_at": "2026-06-29T19:29:41-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -1185,9 +1185,9 @@
       "away_team": "Paraguay",
       "home_score": 1,
       "away_score": 1,
-      "home_penalties": null,
-      "away_penalties": null,
-      "status": "live",
+      "home_penalties": 3,
+      "away_penalties": 4,
+      "status": "finished",
       "home_slot": "1° Grupo E",
       "away_slot": "Mejor 3° por definir"
     },
