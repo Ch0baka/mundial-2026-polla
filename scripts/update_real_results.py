@@ -32,6 +32,24 @@ REAL_RESULTS_PATH = ROOT / "data" / "real_results.json"
 ESPN_SCOREBOARD_URL = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard"
 LOCAL_TZ = ZoneInfo("America/Santiago")
 USER_AGENT = "Mozilla/5.0 (compatible; Mundial2026PollaUpdater/1.0)"
+ESPN_KNOCKOUT_MATCH_IDS = {
+    "760486": 73,
+    "760489": 74,
+    "760488": 75,
+    "760487": 76,
+    "760492": 77,
+    "760490": 78,
+    "760491": 79,
+    "760495": 80,
+    "760494": 81,
+    "760493": 82,
+    "760496": 83,
+    "760497": 84,
+    "760498": 85,
+    "760500": 86,
+    "760501": 87,
+    "760499": 88,
+}
 
 TEAM_ALIASES = {
     "algeria": "Argelia",
@@ -96,6 +114,7 @@ TEAM_ALIASES = {
 @dataclass(frozen=True)
 class SourceMatch:
     event_id: str
+    match_id: int | None
     source_name: str
     starts_at: datetime
     home_team: str
@@ -132,6 +151,10 @@ def parse_args() -> argparse.Namespace:
         "--dry-run",
         action="store_true",
         help="Muestra lo que cambiaría sin modificar data/real_results.json.",
+    )
+    parser.add_argument(
+        "--through",
+        help="Fecha final en formato YYYY-MM-DD. Permite actualizar horarios futuros.",
     )
     return parser.parse_args()
 
@@ -232,6 +255,7 @@ def fetch_espn_matches(start: datetime, end: datetime) -> list[SourceMatch]:
             status = map_source_status(status_type)
             matches.append(SourceMatch(
                 event_id=event_id,
+                match_id=ESPN_KNOCKOUT_MATCH_IDS.get(event_id),
                 source_name="ESPN",
                 starts_at=starts_at,
                 home_team=canonical_team((home.get("team") or {}).get("displayName")),
@@ -260,6 +284,14 @@ def build_match_index(matches: list[dict[str, Any]]) -> dict[tuple[str, str], di
     return index
 
 
+def build_match_id_index(matches: list[dict[str, Any]]) -> dict[int, dict[str, Any]]:
+    return {
+        int(match["match_id"]): match
+        for match in matches
+        if match.get("match_id") is not None
+    }
+
+
 def should_update_status(existing: str, incoming: str) -> bool:
     priority = {"scheduled": 0, "postponed": 0, "live": 1, "finished": 2}
     return priority.get(incoming, 0) >= priority.get(existing, 0)
@@ -268,12 +300,25 @@ def should_update_status(existing: str, incoming: str) -> bool:
 def apply_source_match(target: dict[str, Any], source: SourceMatch) -> list[str]:
     changes = []
     previous = {
+        "date": target.get("date"),
+        "time": target.get("time"),
+        "home_team": target.get("home_team"),
+        "away_team": target.get("away_team"),
         "home_score": target.get("home_score"),
         "away_score": target.get("away_score"),
         "home_penalties": target.get("home_penalties"),
         "away_penalties": target.get("away_penalties"),
         "status": target.get("status"),
+        "match_key": target.get("match_key"),
     }
+
+    target["date"] = source.starts_at.strftime("%Y-%m-%d")
+    target["time"] = source.starts_at.strftime("%H:%M")
+    if source.match_id is not None or not target.get("home_team") or not target.get("away_team"):
+        target["home_team"] = source.home_team
+        target["away_team"] = source.away_team
+    if target.get("home_team") and target.get("away_team"):
+        target["match_key"] = f"{target.get('phase')}|{target.get('home_team')}|{target.get('away_team')}"
 
     if source.status in {"live", "finished"}:
         target["home_score"] = source.home_score
@@ -370,10 +415,20 @@ def main() -> int:
     else:
         start = now - timedelta(hours=args.hours)
         mode = f"últimas {args.hours} horas"
+    end = now
+    if args.through:
+        try:
+            through_date = datetime.strptime(args.through, "%Y-%m-%d")
+        except ValueError:
+            print("ERROR: la fecha final debe tener formato YYYY-MM-DD.", file=sys.stderr)
+            return 2
+        end = through_date.replace(tzinfo=LOCAL_TZ) + timedelta(days=1) - timedelta(seconds=1)
+        mode = f"{mode} hasta {args.through}"
 
     real_results = json.loads(REAL_RESULTS_PATH.read_text(encoding="utf-8"))
     target_index = build_match_index(real_results.get("matches", []))
-    source_matches = fetch_espn_matches(start, now)
+    target_id_index = build_match_id_index(real_results.get("matches", []))
+    source_matches = fetch_espn_matches(start, end)
 
     updated = []
     unchanged = []
@@ -383,7 +438,8 @@ def main() -> int:
     for source in source_matches:
         signature = match_signature(source.home_team, source.away_team)
         reverse_signature = match_signature(source.away_team, source.home_team)
-        target = target_index.get(signature)
+        target = target_id_index.get(source.match_id) if source.match_id is not None else None
+        target = target or target_index.get(signature)
         reverse = False
         if target is None:
             target = target_index.get(reverse_signature)
@@ -391,14 +447,12 @@ def main() -> int:
         if target is None:
             unmatched.append(source)
             continue
-        if source.status == "scheduled":
-            skipped.append(source)
-            continue
 
         effective_source = source
         if reverse:
             effective_source = SourceMatch(
                 event_id=source.event_id,
+                match_id=source.match_id,
                 source_name=source.source_name,
                 starts_at=source.starts_at,
                 home_team=source.away_team,
@@ -420,7 +474,10 @@ def main() -> int:
         if changes:
             updated.append((target.get("match_id"), label, changes))
         else:
-            unchanged.append(label)
+            if source.status == "scheduled":
+                skipped.append(source)
+            else:
+                unchanged.append(label)
 
     if updated:
         real_results["updated_at"] = now.isoformat(timespec="seconds")
@@ -432,7 +489,7 @@ def main() -> int:
             )
 
     print(f"Fuente: ESPN scoreboard")
-    print(f"Ventana: {mode} ({start.isoformat(timespec='seconds')} -> {now.isoformat(timespec='seconds')})")
+    print(f"Ventana: {mode} ({start.isoformat(timespec='seconds')} -> {end.isoformat(timespec='seconds')})")
     print(f"Partidos fuente encontrados: {len(source_matches)}")
     print(f"Actualizados: {len(updated)}")
     for _, label, changes in updated:

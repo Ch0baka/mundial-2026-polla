@@ -39,13 +39,27 @@ assert.equal(app.shiftDateKey("2026-06-19", -1), "2026-06-18");
 
 setResults(realResults.matches);
 let official = app.resolveOfficialFixtureMatch(73);
-assert.equal(official.home_label, "2° Grupo A");
-assert.equal(official.away_label, "2° Grupo B");
+assert.equal(official.home_label, "Sudáfrica");
+assert.equal(official.away_label, "Canadá");
 official = app.resolveOfficialFixtureMatch(90);
-assert.equal(official.home_label, "Ganador partido 73");
+assert.equal(official.home_label, "Canadá");
 assert.equal(official.away_label, "Ganador partido 75");
 
-const completedGroups = realResults.matches.map((match) => {
+const pendingKnockoutResults = realResults.matches.map((match) => {
+  if (match.phase === "group_stage") return { ...match };
+  return {
+    ...match,
+    match_key: `${match.phase}|slot_${match.match_id}_home|slot_${match.match_id}_away`,
+    home_team: null,
+    away_team: null,
+    home_score: null,
+    away_score: null,
+    home_penalties: null,
+    away_penalties: null,
+    status: "scheduled",
+  };
+});
+const completedGroups = pendingKnockoutResults.map((match) => {
   if (match.phase !== "group_stage" || !["A", "B", "C", "F"].includes(match.group)) return { ...match };
   return { ...match, status: "finished", home_score: 1, away_score: 0 };
 });
