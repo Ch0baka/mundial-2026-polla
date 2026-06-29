@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-27T22:29:17-04:00",
+  "updated_at": "2026-06-29T00:01:40-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -1069,11 +1069,11 @@
       "time": "22:00",
       "home_team": "Argelia",
       "away_team": "Austria",
-      "home_score": 0,
-      "away_score": 1,
+      "home_score": 3,
+      "away_score": 3,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "live"
+      "status": "finished"
     },
     {
       "match_id": 68,
@@ -1085,11 +1085,11 @@
       "time": "22:00",
       "home_team": "Jordania",
       "away_team": "Argentina",
-      "home_score": 0,
-      "away_score": 1,
+      "home_score": 1,
+      "away_score": 3,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "live"
+      "status": "finished"
     },
     {
       "match_id": 69,
