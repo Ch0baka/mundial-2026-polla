@@ -1,0 +1,907 @@
+{
+  "schema_version": 1,
+  "source": "ESPN match summaries",
+  "updated_at": "2026-06-30T21:32:26-04:00",
+  "scorers": [
+    {
+      "id": "231388",
+      "name": "Kylian Mbappé",
+      "team": "Francia",
+      "goals": 6
+    },
+    {
+      "id": "45843",
+      "name": "Lionel Messi",
+      "team": "Argentina",
+      "goals": 6
+    },
+    {
+      "id": "253989",
+      "name": "Erling Haaland",
+      "team": "Noruega",
+      "goals": 5
+    },
+    {
+      "id": "229744",
+      "name": "Ousmane Dembélé",
+      "team": "Francia",
+      "goals": 4
+    },
+    {
+      "id": "252107",
+      "name": "Vinícius Júnior",
+      "team": "Brasil",
+      "goals": 4
+    },
+    {
+      "id": "282229",
+      "name": "Brian Brobbey",
+      "team": "Países Bajos",
+      "goals": 3
+    },
+    {
+      "id": "249524",
+      "name": "Cody Gakpo",
+      "team": "Países Bajos",
+      "goals": 3
+    },
+    {
+      "id": "273300",
+      "name": "Deniz Undav",
+      "team": "Alemania",
+      "goals": 3
+    },
+    {
+      "id": "266555",
+      "name": "Elijah Just",
+      "team": "Nueva Zelanda",
+      "goals": 3
+    },
+    {
+      "id": "142200",
+      "name": "Harry Kane",
+      "team": "Inglaterra",
+      "goals": 3
+    },
+    {
+      "id": "304572",
+      "name": "Ismael Saibari",
+      "team": "Marruecos",
+      "goals": 3
+    },
+    {
+      "id": "241012",
+      "name": "Ismaïla Sarr",
+      "team": "Senegal",
+      "goals": 3
+    },
+    {
+      "id": "386992",
+      "name": "Johan Manzambi",
+      "team": "Suiza",
+      "goals": 3
+    },
+    {
+      "id": "273499",
+      "name": "Jonathan David",
+      "team": "Canadá",
+      "goals": 3
+    },
+    {
+      "id": "231182",
+      "name": "Kai Havertz",
+      "team": "Alemania",
+      "goals": 3
+    },
+    {
+      "id": "259902",
+      "name": "Matheus Cunha",
+      "team": "Brasil",
+      "goals": 3
+    },
+    {
+      "id": "224077",
+      "name": "Yoane Wissa",
+      "team": "RD Congo",
+      "goals": 3
+    },
+    {
+      "id": "291630",
+      "name": "Amad Diallo",
+      "team": "Costa de Marfil",
+      "goals": 2
+    },
+    {
+      "id": "296622",
+      "name": "Anthony Elanga",
+      "team": "Suecia",
+      "goals": 2
+    },
+    {
+      "id": "274277",
+      "name": "Ayase Ueda",
+      "team": "Japón",
+      "goals": 2
+    },
+    {
+      "id": "328238",
+      "name": "Bradley Barcola",
+      "team": "Francia",
+      "goals": 2
+    },
+    {
+      "id": "22774",
+      "name": "Cristiano Ronaldo",
+      "team": "Portugal",
+      "goals": 2
+    },
+    {
+      "id": "284792",
+      "name": "Crysencio Summerville",
+      "team": "Países Bajos",
+      "goals": 2
+    },
+    {
+      "id": "205024",
+      "name": "Cyle Larin",
+      "team": "Canadá",
+      "goals": 2
+    },
+    {
+      "id": "219362",
+      "name": "Daichi Kamada",
+      "team": "Japón",
+      "goals": 2
+    },
+    {
+      "id": "146679",
+      "name": "Daniel Muñoz",
+      "team": "Colombia",
+      "goals": 2
+    },
+    {
+      "id": "414676",
+      "name": "Ermin Mahmic",
+      "team": "Bosnia y Herzegovina",
+      "goals": 2
+    },
+    {
+      "id": "282643",
+      "name": "Folarin Balogun",
+      "team": "Estados Unidos",
+      "goals": 2
+    },
+    {
+      "id": "291281",
+      "name": "Jude Bellingham",
+      "team": "Inglaterra",
+      "goals": 2
+    },
+    {
+      "id": "233075",
+      "name": "Julián Quiñones",
+      "team": "México",
+      "goals": 2
+    },
+    {
+      "id": "174980",
+      "name": "Leandro Trossard",
+      "team": "Bélgica",
+      "goals": 2
+    },
+    {
+      "id": "98193",
+      "name": "Marko Arnautovic",
+      "team": "Austria",
+      "goals": 2
+    },
+    {
+      "id": "287025",
+      "name": "Maxi Araújo",
+      "team": "Uruguay",
+      "goals": 2
+    },
+    {
+      "id": "229018",
+      "name": "Mikel Oyarzabal",
+      "team": "España",
+      "goals": 2
+    },
+    {
+      "id": "210397",
+      "name": "Nicolas Pépé",
+      "team": "Costa de Marfil",
+      "goals": 2
+    },
+    {
+      "id": "255889",
+      "name": "Pape Gueye",
+      "team": "Senegal",
+      "goals": 2
+    },
+    {
+      "id": "218086",
+      "name": "Ramin Rezaeian",
+      "team": "Irán",
+      "goals": 2
+    },
+    {
+      "id": "163940",
+      "name": "Riyad Mahrez",
+      "team": "Argelia",
+      "goals": 2
+    },
+    {
+      "id": "259513",
+      "name": "Rubén Vargas",
+      "team": "Suiza",
+      "goals": 2
+    },
+    {
+      "id": "304242",
+      "name": "Yasin Ayari",
+      "team": "Suecia",
+      "goals": 2
+    },
+    {
+      "id": "317793",
+      "name": "Abbosbek Fayzullaev",
+      "team": "Uzbekistán",
+      "goals": 1
+    },
+    {
+      "id": "256667",
+      "name": "Abdulelah Al-Amri",
+      "team": "Arabia Saudita",
+      "goals": 1
+    },
+    {
+      "id": "240233",
+      "name": "Achraf Hakimi",
+      "team": "Marruecos",
+      "goals": 1
+    },
+    {
+      "id": "241466",
+      "name": "Agustín Canobbio",
+      "team": "Uruguay",
+      "goals": 1
+    },
+    {
+      "id": "248276",
+      "name": "Alex Freeman",
+      "team": "Estados Unidos",
+      "goals": 1
+    },
+    {
+      "id": "235662",
+      "name": "Alexander Isak",
+      "team": "Suecia",
+      "goals": 1
+    },
+    {
+      "id": "271132",
+      "name": "Alexis Saelemaekers",
+      "team": "Bélgica",
+      "goals": 1
+    },
+    {
+      "id": "320908",
+      "name": "Ali Olwan",
+      "team": "Jordania",
+      "goals": 1
+    },
+    {
+      "id": "259743",
+      "name": "Amine Gouiri",
+      "team": "Argelia",
+      "goals": 1
+    },
+    {
+      "id": "207288",
+      "name": "Ante Budimir",
+      "team": "Croacia",
+      "goals": 1
+    },
+    {
+      "id": "319368",
+      "name": "Antonio Nusa",
+      "team": "Noruega",
+      "goals": 1
+    },
+    {
+      "id": "310452",
+      "name": "Arda Güler",
+      "team": "Türkiye",
+      "goals": 1
+    },
+    {
+      "id": "228619",
+      "name": "Auston Trusty",
+      "team": "Estados Unidos",
+      "goals": 1
+    },
+    {
+      "id": "244677",
+      "name": "Aymen Hussein",
+      "team": "Irak",
+      "goals": 1
+    },
+    {
+      "id": "322538",
+      "name": "Baris Alper Yilmaz",
+      "team": "Türkiye",
+      "goals": 1
+    },
+    {
+      "id": "202099",
+      "name": "Breel Embolo",
+      "team": "Suiza",
+      "goals": 1
+    },
+    {
+      "id": "387659",
+      "name": "Caleb Yirenkyi",
+      "team": "Ghana",
+      "goals": 1
+    },
+    {
+      "id": "173666",
+      "name": "Casemiro",
+      "team": "Brasil",
+      "goals": 1
+    },
+    {
+      "id": "260643",
+      "name": "Connor Metcalfe",
+      "team": "Australia",
+      "goals": 1
+    },
+    {
+      "id": "286347",
+      "name": "Daizen Maeda",
+      "team": "Japón",
+      "goals": 1
+    },
+    {
+      "id": "205737",
+      "name": "Derrick Luckassen",
+      "team": "Ghana",
+      "goals": 1
+    },
+    {
+      "id": "336388",
+      "name": "Désiré Doué",
+      "team": "Francia",
+      "goals": 1
+    },
+    {
+      "id": "216937",
+      "name": "Eldor Shomurodov",
+      "team": "Uzbekistán",
+      "goals": 1
+    },
+    {
+      "id": "299365",
+      "name": "Emam Ashour",
+      "team": "Egipto",
+      "goals": 1
+    },
+    {
+      "id": "281122",
+      "name": "Felix Nmecha",
+      "team": "Alemania",
+      "goals": 1
+    },
+    {
+      "id": "332367",
+      "name": "Finn Surman",
+      "team": "Nueva Zelanda",
+      "goals": 1
+    },
+    {
+      "id": "299324",
+      "name": "Fiston Mayele",
+      "team": "RD Congo",
+      "goals": 1
+    },
+    {
+      "id": "194711",
+      "name": "Franck Kessié",
+      "team": "Costa de Marfil",
+      "goals": 1
+    },
+    {
+      "id": "269844",
+      "name": "Gabriel Martinelli",
+      "team": "Brasil",
+      "goals": 1
+    },
+    {
+      "id": "379012",
+      "name": "Gessime Yassine",
+      "team": "Marruecos",
+      "goals": 1
+    },
+    {
+      "id": "207343",
+      "name": "Giovani Lo Celso",
+      "team": "Argentina",
+      "goals": 1
+    },
+    {
+      "id": "290230",
+      "name": "Giovanni Reyna",
+      "team": "Estados Unidos",
+      "goals": 1
+    },
+    {
+      "id": "277352",
+      "name": "Gonzalo Plata",
+      "team": "Ecuador",
+      "goals": 1
+    },
+    {
+      "id": "149981",
+      "name": "Granit Xhaka",
+      "team": "Suiza",
+      "goals": 1
+    },
+    {
+      "id": "324991",
+      "name": "Habib Diarra",
+      "team": "Senegal",
+      "goals": 1
+    },
+    {
+      "id": "236586",
+      "name": "Hassan Al-Haydos",
+      "team": "Catar",
+      "goals": 1
+    },
+    {
+      "id": "396085",
+      "name": "Hazem Mastouri",
+      "team": "Túnez",
+      "goals": 1
+    },
+    {
+      "id": "280061",
+      "name": "Hwang In-Beom",
+      "team": "Corea del Sur",
+      "goals": 1
+    },
+    {
+      "id": "366092",
+      "name": "Hélio Varela",
+      "team": "Cabo Verde",
+      "goals": 1
+    },
+    {
+      "id": "388522",
+      "name": "Ibrahim Mbaye",
+      "team": "Senegal",
+      "goals": 1
+    },
+    {
+      "id": "268641",
+      "name": "Iliman Ndiaye",
+      "team": "Senegal",
+      "goals": 1
+    },
+    {
+      "id": "230963",
+      "name": "Issa Diop",
+      "team": "Marruecos",
+      "goals": 1
+    },
+    {
+      "id": "303821",
+      "name": "Jamal Musiala",
+      "team": "Alemania",
+      "goals": 1
+    },
+    {
+      "id": "282583",
+      "name": "Jan Paul van Hecke",
+      "team": "Países Bajos",
+      "goals": 1
+    },
+    {
+      "id": "162843",
+      "name": "John McGinn",
+      "team": "Escocia",
+      "goals": 1
+    },
+    {
+      "id": "305118",
+      "name": "Jovo Lukic",
+      "team": "Bosnia y Herzegovina",
+      "goals": 1
+    },
+    {
+      "id": "355061",
+      "name": "João Neves",
+      "team": "Portugal",
+      "goals": 1
+    },
+    {
+      "id": "20975",
+      "name": "Julio Enciso",
+      "team": "Paraguay",
+      "goals": 1
+    },
+    {
+      "id": "219350",
+      "name": "Junya Ito",
+      "team": "Japón",
+      "goals": 1
+    },
+    {
+      "id": "255295",
+      "name": "Jáminton Campaz",
+      "team": "Colombia",
+      "goals": 1
+    },
+    {
+      "id": "159146",
+      "name": "Kaan Ayhan",
+      "team": "Türkiye",
+      "goals": 1
+    },
+    {
+      "id": "357030",
+      "name": "Kaishu Sano",
+      "team": "Japón",
+      "goals": 1
+    },
+    {
+      "id": "265953",
+      "name": "Keito Nakamura",
+      "team": "Japón",
+      "goals": 1
+    },
+    {
+      "id": "391034",
+      "name": "Kerim Alajbegovic",
+      "team": "Bosnia y Herzegovina",
+      "goals": 1
+    },
+    {
+      "id": "134947",
+      "name": "Kevin De Bruyne",
+      "team": "Bélgica",
+      "goals": 1
+    },
+    {
+      "id": "327173",
+      "name": "Kevin Pina",
+      "team": "Cabo Verde",
+      "goals": 1
+    },
+    {
+      "id": "151714",
+      "name": "Ladislav Krejcí",
+      "team": "República Checa",
+      "goals": 1
+    },
+    {
+      "id": "362150",
+      "name": "Lamine Yamal",
+      "team": "España",
+      "goals": 1
+    },
+    {
+      "id": "219713",
+      "name": "Lautaro Martínez",
+      "team": "Argentina",
+      "goals": 1
+    },
+    {
+      "id": "281736",
+      "name": "Leo Østigard",
+      "team": "Noruega",
+      "goals": 1
+    },
+    {
+      "id": "202641",
+      "name": "Leroy Sané",
+      "team": "Alemania",
+      "goals": 1
+    },
+    {
+      "id": "317285",
+      "name": "Livano Comenencia",
+      "team": "Curazao",
+      "goals": 1
+    },
+    {
+      "id": "257390",
+      "name": "Luis Díaz",
+      "team": "Colombia",
+      "goals": 1
+    },
+    {
+      "id": "242614",
+      "name": "Luis Romo",
+      "team": "México",
+      "goals": 1
+    },
+    {
+      "id": "314444",
+      "name": "Mahmoud Saber",
+      "team": "Egipto",
+      "goals": 1
+    },
+    {
+      "id": "173907",
+      "name": "Marcel Sabitzer",
+      "team": "Austria",
+      "goals": 1
+    },
+    {
+      "id": "129285",
+      "name": "Marcus Holmgren Pedersen",
+      "team": "Noruega",
+      "goals": 1
+    },
+    {
+      "id": "230945",
+      "name": "Marcus Rashford",
+      "team": "Inglaterra",
+      "goals": 1
+    },
+    {
+      "id": "311475",
+      "name": "Martin Baturina",
+      "team": "Croacia",
+      "goals": 1
+    },
+    {
+      "id": "379193",
+      "name": "Mateo Chávez",
+      "team": "México",
+      "goals": 1
+    },
+    {
+      "id": "220120",
+      "name": "Mattias Svanberg",
+      "team": "Suecia",
+      "goals": 1
+    },
+    {
+      "id": "297328",
+      "name": "Matías Galarza",
+      "team": "Paraguay",
+      "goals": 1
+    },
+    {
+      "id": "289046",
+      "name": "Maurício",
+      "team": "Paraguay",
+      "goals": 1
+    },
+    {
+      "id": "249525",
+      "name": "Michal Sadílek",
+      "team": "República Checa",
+      "goals": 1
+    },
+    {
+      "id": "173896",
+      "name": "Mohamed Salah",
+      "team": "Egipto",
+      "goals": 1
+    },
+    {
+      "id": "296999",
+      "name": "Mohammad Mohebbi",
+      "team": "Irán",
+      "goals": 1
+    },
+    {
+      "id": "378495",
+      "name": "Mostafa Zico",
+      "team": "Egipto",
+      "goals": 1
+    },
+    {
+      "id": "257489",
+      "name": "Mousa Al-Tamari",
+      "team": "Jordania",
+      "goals": 1
+    },
+    {
+      "id": "346186",
+      "name": "Nadhir Benbouali",
+      "team": "Argelia",
+      "goals": 1
+    },
+    {
+      "id": "311163",
+      "name": "Nathan Saliba",
+      "team": "Canadá",
+      "goals": 1
+    },
+    {
+      "id": "120829",
+      "name": "Nathaniel Brown",
+      "team": "Alemania",
+      "goals": 1
+    },
+    {
+      "id": "328535",
+      "name": "Nestory Irankunda",
+      "team": "Australia",
+      "goals": 1
+    },
+    {
+      "id": "286828",
+      "name": "Nico Schlotterbeck",
+      "team": "Alemania",
+      "goals": 1
+    },
+    {
+      "id": "206378",
+      "name": "Nikola Vlasic",
+      "team": "Croacia",
+      "goals": 1
+    },
+    {
+      "id": "318090",
+      "name": "Nilson Angulo",
+      "team": "Ecuador",
+      "goals": 1
+    },
+    {
+      "id": "321515",
+      "name": "Nizar Al-Rashdan",
+      "team": "Jordania",
+      "goals": 1
+    },
+    {
+      "id": "290591",
+      "name": "Nuno Mendes",
+      "team": "Portugal",
+      "goals": 1
+    },
+    {
+      "id": "302434",
+      "name": "Oh Hyeon-Gyu",
+      "team": "Corea del Sur",
+      "goals": 1
+    },
+    {
+      "id": "303848",
+      "name": "Omar Rekik",
+      "team": "Túnez",
+      "goals": 1
+    },
+    {
+      "id": "277128",
+      "name": "Petar Musa",
+      "team": "Croacia",
+      "goals": 1
+    },
+    {
+      "id": "341494",
+      "name": "Petar Sucic",
+      "team": "Croacia",
+      "goals": 1
+    },
+    {
+      "id": "318522",
+      "name": "Promise David",
+      "team": "Canadá",
+      "goals": 1
+    },
+    {
+      "id": "258917",
+      "name": "Rafael Leão",
+      "team": "Portugal",
+      "goals": 1
+    },
+    {
+      "id": "364590",
+      "name": "Rafik Belghali",
+      "team": "Argelia",
+      "goals": 1
+    },
+    {
+      "id": "167060",
+      "name": "Raúl Jiménez",
+      "team": "México",
+      "goals": 1
+    },
+    {
+      "id": "238296",
+      "name": "Romano Schmid",
+      "team": "Austria",
+      "goals": 1
+    },
+    {
+      "id": "139437",
+      "name": "Romelu Lukaku",
+      "team": "Bélgica",
+      "goals": 1
+    },
+    {
+      "id": "259131",
+      "name": "Sasa Kalajdzic",
+      "team": "Austria",
+      "goals": 1
+    },
+    {
+      "id": "295771",
+      "name": "Sebastian Berhalter",
+      "team": "Estados Unidos",
+      "goals": 1
+    },
+    {
+      "id": "276139",
+      "name": "Soufiane Rahimi",
+      "team": "Marruecos",
+      "goals": 1
+    },
+    {
+      "id": "270505",
+      "name": "Stephen Eustáquio",
+      "team": "Canadá",
+      "goals": 1
+    },
+    {
+      "id": "256691",
+      "name": "Teboho Mokoena",
+      "team": "Sudáfrica",
+      "goals": 1
+    },
+    {
+      "id": "335450",
+      "name": "Thapelo Maseko",
+      "team": "Sudáfrica",
+      "goals": 1
+    },
+    {
+      "id": "307477",
+      "name": "Thelo Aasgaard",
+      "team": "Noruega",
+      "goals": 1
+    },
+    {
+      "id": "157825",
+      "name": "Trézéguet",
+      "team": "Egipto",
+      "goals": 1
+    },
+    {
+      "id": "258906",
+      "name": "Viktor Gyökeres",
+      "team": "Suecia",
+      "goals": 1
+    },
+    {
+      "id": "157892",
+      "name": "Virgil van Dijk",
+      "team": "Países Bajos",
+      "goals": 1
+    },
+    {
+      "id": "265915",
+      "name": "Wilson Isidor",
+      "team": "Haití",
+      "goals": 1
+    },
+    {
+      "id": "297373",
+      "name": "Álex Baena",
+      "team": "España",
+      "goals": 1
+    },
+    {
+      "id": "283827",
+      "name": "Álvaro Fidalgo",
+      "team": "México",
+      "goals": 1
+    }
+  ]
+}

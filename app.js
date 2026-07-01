@@ -7,6 +7,7 @@ const PATHS = {
   bracket: "data/knockout_bracket.json",
   qualificationOverrides: "data/qualification_overrides.json",
   bestThirdMatrix: "data/best_third_matrix.json",
+  topScorersLocal: "data/top_scorers.json",
   topScorersStats: "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/statistics?season=2026",
   topScorersScoreboard: "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?limit=200&dates=20260611-20260719",
   topScorersSummary: "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event=",
@@ -111,6 +112,7 @@ const state = {
   topScorersAvailable: false,
   topScorersUpdatedAt: null,
   topScorersError: "",
+  topScorersSource: "",
   topScorersRefreshTimer: null,
   controlWarnings: [],
   scoringWarnings: [],
@@ -213,7 +215,11 @@ async function loadScoringRules() {
   return state.scoringRules;
 }
 
-async function loadTopScorers() {
+async function loadTopScorers(options = {}) {
+  if (options.preferLocal) {
+    const loaded = await loadLocalTopScorers();
+    if (loaded) return state.topScorers;
+  }
   try {
     const data = await loadJson(cacheBustedUrl(PATHS.topScorersScoreboard));
     const events = (data?.events ?? []).filter((event) =>
@@ -234,15 +240,31 @@ async function loadTopScorers() {
     state.topScorersAvailable = true;
     state.topScorersUpdatedAt = data?.timestamp || new Date().toISOString();
     state.topScorersError = "";
+    state.topScorersSource = "ESPN eventos";
   } catch {
-    state.topScorersError = "No se pudo actualizar desde ESPN.";
-    if (!state.topScorers.length) {
+    const loaded = await loadLocalTopScorers();
+    state.topScorersError = loaded ? "No se pudo refrescar desde ESPN; mostrando último archivo local." : "No se pudo actualizar desde ESPN.";
+    if (!loaded && !state.topScorers.length) {
       state.topScorers = [];
       state.topScorersAvailable = false;
       state.topScorersUpdatedAt = null;
+      state.topScorersSource = "";
     }
   }
   return state.topScorers;
+}
+
+async function loadLocalTopScorers() {
+  try {
+    const data = await loadJson(PATHS.topScorersLocal);
+    state.topScorers = parseTopScorersFromLocalData(data);
+    state.topScorersAvailable = true;
+    state.topScorersUpdatedAt = data?.updated_at || null;
+    state.topScorersSource = data?.source || "Archivo local";
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function refreshTopScorers() {
@@ -273,7 +295,7 @@ async function init() {
   try {
     await loadPlayersIndex();
     await Promise.all([
-      loadPlayers(), loadTeams(), loadConfig(), loadRealResults(), loadScoringRules(), loadTopScorers(),
+      loadPlayers(), loadTeams(), loadConfig(), loadRealResults(), loadScoringRules(), loadTopScorers({ preferLocal: true }),
       loadBracketConfiguration(),
     ]);
     if (state.players.length) {
@@ -402,7 +424,8 @@ function countTournamentGoals(matches) {
 }
 
 function renderTopScorers() {
-  const updatedLabel = state.topScorersUpdatedAt ? `Actualizado ${formatDate(state.topScorersUpdatedAt)}` : "ESPN";
+  const sourceLabel = state.topScorersSource ? ` · ${state.topScorersSource}` : "";
+  const updatedLabel = state.topScorersUpdatedAt ? `Actualizado ${formatDate(state.topScorersUpdatedAt)}${sourceLabel}` : "ESPN";
   const warning = state.topScorersError ? `<p class="muted top-scorers-note">${escapeHtml(state.topScorersError)}</p>` : "";
   if (!state.topScorersAvailable) {
     return `<div class="panel top-scorers-panel">
@@ -481,6 +504,17 @@ function parseTopScorersFromEspnStats(data) {
   }).filter((scorer) => scorer.goals > 0);
 }
 
+function parseTopScorersFromLocalData(data) {
+  return (data?.scorers ?? []).map((scorer) => ({
+    id: scorer.id ?? "",
+    name: scorer.name ?? "Jugador sin nombre",
+    team: scorer.team ?? "Sin definir",
+    goals: Number(scorer.goals ?? 0),
+    displayValue: String(scorer.goals ?? ""),
+  })).filter((scorer) => scorer.goals > 0)
+    .sort((a, b) => b.goals - a.goals || a.name.localeCompare(b.name));
+}
+
 function parseTopScorersFromEspnSummaries(eventSummaries) {
   const scorers = new Map();
   eventSummaries.forEach(({ summary }) => {
@@ -511,7 +545,7 @@ function parseTopScorersFromEspnSummaries(eventSummaries) {
 
 function isGoalScoringPlay(play) {
   const type = String(play?.type?.type || play?.type?.text || "").toLowerCase();
-  return play?.scoringPlay === true && ["goal", "penalty---scored"].includes(type);
+  return play?.scoringPlay === true && (type === "penalty---scored" || type.startsWith("goal"));
 }
 
 function mapEspnTeamName(teamName) {
@@ -1452,6 +1486,7 @@ if (typeof module !== "undefined" && module.exports) {
     shiftDateKey,
     renderDashboardDailyMatches,
     parseTopScorersFromEspnStats,
+    parseTopScorersFromLocalData,
     parseTopScorersFromEspnSummaries,
     mapEspnTeamName,
     setTestState: (values) => Object.assign(state, values),

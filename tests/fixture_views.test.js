@@ -43,7 +43,7 @@ assert.equal(official.home_label, "Sudáfrica");
 assert.equal(official.away_label, "Canadá");
 official = app.resolveOfficialFixtureMatch(90);
 assert.equal(official.home_label, "Canadá");
-assert.equal(official.away_label, "Ganador partido 75");
+assert.equal(official.away_label, "Marruecos");
 
 const pendingKnockoutResults = realResults.matches.map((match) => {
   if (match.phase === "group_stage") return { ...match };
@@ -140,7 +140,7 @@ const scorersFromEvents = app.parseTopScorersFromEspnSummaries([{
       {
         id: "goal-2",
         scoringPlay: true,
-        type: { type: "goal" },
+        type: { type: "goal---free-kick" },
         team: { displayName: "Argentina" },
         participants: [{ athlete: { id: "45843", displayName: "Lionel Messi" } }],
       },
