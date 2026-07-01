@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-06-30T21:28:34-04:00",
+  "updated_at": "2026-06-30T22:40:19-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -1270,14 +1270,14 @@
       "group": null,
       "matchday": null,
       "date": "2026-06-30",
-      "time": "21:00",
+      "time": "22:00",
       "home_team": "México",
       "away_team": "Ecuador",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 2,
+      "away_score": 0,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled",
+      "status": "live",
       "home_slot": "1° Grupo A",
       "away_slot": "Mejor 3° por definir"
     },
