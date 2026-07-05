@@ -81,6 +81,18 @@ banderas cuando el SVG correspondiente existe. El ranking calcula puntos usando
 Si `data/app_config.json` o una bandera SVG no están disponibles, el portal
 utiliza sus valores por defecto y continúa funcionando.
 
+## Publicación en GitHub Pages
+
+El repositorio incluye un workflow en `.github/workflows/pages.yml` que publica
+el portal estático en GitHub Pages al hacer push a `main`. El workflow arma un
+artefacto con `index.html`, `styles.css`, `app.js`, `assets/` y `data/`, y deja
+fuera scripts, tests, Excel locales y archivos privados.
+
+En GitHub, revisa que `Settings > Pages > Source` esté configurado como
+`GitHub Actions`. Si un despliegue falla solo en el paso `deploy` y el build ya
+terminó correctamente, se puede reintentar desde la página del Action o hacer
+un nuevo push para disparar otra publicación.
+
 ## Modo pruebas
 
 Para eliminar un jugador específico, limpiar todos los jugadores de prueba,
