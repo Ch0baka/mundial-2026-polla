@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-05T15:21:56-04:00",
+  "updated_at": "2026-07-06T20:33:18-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -1525,11 +1525,11 @@
       "time": "15:00",
       "home_team": "Portugal",
       "away_team": "España",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 0,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled",
+      "status": "finished",
       "home_slot": "Ganador partido 84",
       "away_slot": "Ganador partido 83"
     },
@@ -1543,11 +1543,11 @@
       "time": "20:00",
       "home_team": "Estados Unidos",
       "away_team": "Bélgica",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 1,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled",
+      "status": "live",
       "home_slot": "Ganador partido 82",
       "away_slot": "Ganador partido 81"
     },
