@@ -1,8 +1,14 @@
 {
   "schema_version": 1,
   "source": "ESPN match summaries",
-  "updated_at": "2026-07-05T15:29:34-04:00",
+  "updated_at": "2026-07-06T20:32:28-04:00",
   "scorers": [
+    {
+      "id": "253989",
+      "name": "Erling Haaland",
+      "team": "Noruega",
+      "goals": 7
+    },
     {
       "id": "231388",
       "name": "Kylian Mbappé",
@@ -16,21 +22,27 @@
       "goals": 7
     },
     {
-      "id": "253989",
-      "name": "Erling Haaland",
-      "team": "Noruega",
-      "goals": 5
-    },
-    {
       "id": "142200",
       "name": "Harry Kane",
       "team": "Inglaterra",
-      "goals": 5
+      "goals": 6
     },
     {
       "id": "241012",
       "name": "Ismaïla Sarr",
       "team": "Senegal",
+      "goals": 4
+    },
+    {
+      "id": "291281",
+      "name": "Jude Bellingham",
+      "team": "Inglaterra",
+      "goals": 4
+    },
+    {
+      "id": "233075",
+      "name": "Julián Quiñones",
+      "team": "México",
       "goals": 4
     },
     {
@@ -106,12 +118,6 @@
       "goals": 3
     },
     {
-      "id": "233075",
-      "name": "Julián Quiñones",
-      "team": "México",
-      "goals": 3
-    },
-    {
       "id": "231182",
       "name": "Kai Havertz",
       "team": "Alemania",
@@ -121,6 +127,12 @@
       "id": "259902",
       "name": "Matheus Cunha",
       "team": "Brasil",
+      "goals": 3
+    },
+    {
+      "id": "167060",
+      "name": "Raúl Jiménez",
+      "team": "México",
       "goals": 3
     },
     {
@@ -208,15 +220,15 @@
       "goals": 2
     },
     {
-      "id": "291281",
-      "name": "Jude Bellingham",
-      "team": "Inglaterra",
-      "goals": 2
-    },
-    {
       "id": "174980",
       "name": "Leandro Trossard",
       "team": "Bélgica",
+      "goals": 2
+    },
+    {
+      "id": "301416",
+      "name": "Malik Tillman",
+      "team": "Estados Unidos",
       "goals": 2
     },
     {
@@ -247,12 +259,6 @@
       "id": "218086",
       "name": "Ramin Rezaeian",
       "team": "Irán",
-      "goals": 2
-    },
-    {
-      "id": "167060",
-      "name": "Raúl Jiménez",
-      "team": "México",
       "goals": 2
     },
     {
@@ -397,6 +403,12 @@
       "id": "173666",
       "name": "Casemiro",
       "team": "Brasil",
+      "goals": 1
+    },
+    {
+      "id": "296319",
+      "name": "Charles De Ketelaere",
+      "team": "Bélgica",
       "goals": 1
     },
     {
@@ -706,12 +718,6 @@
       "goals": 1
     },
     {
-      "id": "301416",
-      "name": "Malik Tillman",
-      "team": "Estados Unidos",
-      "goals": 1
-    },
-    {
       "id": "173907",
       "name": "Marcel Sabitzer",
       "team": "Austria",
@@ -766,6 +772,12 @@
       "goals": 1
     },
     {
+      "id": "209581",
+      "name": "Mikel Merino",
+      "team": "España",
+      "goals": 1
+    },
+    {
       "id": "173896",
       "name": "Mohamed Salah",
       "team": "Egipto",
@@ -811,6 +823,12 @@
       "id": "328535",
       "name": "Nestory Irankunda",
       "team": "Australia",
+      "goals": 1
+    },
+    {
+      "id": "132948",
+      "name": "Neymar",
+      "team": "Brasil",
       "goals": 1
     },
     {
