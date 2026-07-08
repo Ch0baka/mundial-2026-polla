@@ -1,8 +1,14 @@
 {
   "schema_version": 1,
   "source": "ESPN match summaries",
-  "updated_at": "2026-07-06T20:32:28-04:00",
+  "updated_at": "2026-07-08T08:57:45-04:00",
   "scorers": [
+    {
+      "id": "45843",
+      "name": "Lionel Messi",
+      "team": "Argentina",
+      "goals": 8
+    },
     {
       "id": "253989",
       "name": "Erling Haaland",
@@ -13,12 +19,6 @@
       "id": "231388",
       "name": "Kylian Mbappé",
       "team": "Francia",
-      "goals": 7
-    },
-    {
-      "id": "45843",
-      "name": "Lionel Messi",
-      "team": "Argentina",
       "goals": 7
     },
     {
@@ -136,6 +136,12 @@
       "goals": 3
     },
     {
+      "id": "139437",
+      "name": "Romelu Lukaku",
+      "team": "Bélgica",
+      "goals": 3
+    },
+    {
       "id": "224077",
       "name": "Yoane Wissa",
       "team": "RD Congo",
@@ -175,6 +181,12 @@
       "id": "202099",
       "name": "Breel Embolo",
       "team": "Suiza",
+      "goals": 2
+    },
+    {
+      "id": "296319",
+      "name": "Charles De Ketelaere",
+      "team": "Bélgica",
       "goals": 2
     },
     {
@@ -244,6 +256,12 @@
       "goals": 2
     },
     {
+      "id": "378495",
+      "name": "Mostafa Zico",
+      "team": "Egipto",
+      "goals": 2
+    },
+    {
       "id": "210397",
       "name": "Nicolas Pépé",
       "team": "Costa de Marfil",
@@ -265,12 +283,6 @@
       "id": "163940",
       "name": "Riyad Mahrez",
       "team": "Argelia",
-      "goals": 2
-    },
-    {
-      "id": "139437",
-      "name": "Romelu Lukaku",
-      "team": "Bélgica",
       "goals": 2
     },
     {
@@ -406,15 +418,15 @@
       "goals": 1
     },
     {
-      "id": "296319",
-      "name": "Charles De Ketelaere",
-      "team": "Bélgica",
-      "goals": 1
-    },
-    {
       "id": "260643",
       "name": "Connor Metcalfe",
       "team": "Australia",
+      "goals": 1
+    },
+    {
+      "id": "96970",
+      "name": "Cristian Romero",
+      "team": "Argentina",
       "goals": 1
     },
     {
@@ -451,6 +463,12 @@
       "id": "216937",
       "name": "Eldor Shomurodov",
       "team": "Uzbekistán",
+      "goals": 1
+    },
+    {
+      "id": "285450",
+      "name": "Enzo Fernández",
+      "team": "Argentina",
       "goals": 1
     },
     {
@@ -517,6 +535,12 @@
       "id": "149981",
       "name": "Granit Xhaka",
       "team": "Suiza",
+      "goals": 1
+    },
+    {
+      "id": "193849",
+      "name": "Hans Vanaken",
+      "team": "Bélgica",
       "goals": 1
     },
     {
@@ -790,12 +814,6 @@
       "goals": 1
     },
     {
-      "id": "378495",
-      "name": "Mostafa Zico",
-      "team": "Egipto",
-      "goals": 1
-    },
-    {
       "id": "257489",
       "name": "Mousa Al-Tamari",
       "team": "Jordania",
@@ -979,6 +997,12 @@
       "id": "265915",
       "name": "Wilson Isidor",
       "team": "Haití",
+      "goals": 1
+    },
+    {
+      "id": "265417",
+      "name": "Yasser Ibrahim",
+      "team": "Egipto",
       "goals": 1
     },
     {
