@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-06T22:30:18-04:00",
+  "updated_at": "2026-07-08T08:56:30-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -1561,11 +1561,11 @@
       "time": "12:00",
       "home_team": "Argentina",
       "away_team": "Egipto",
-      "home_score": null,
-      "away_score": null,
+      "home_score": 3,
+      "away_score": 2,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled",
+      "status": "finished",
       "home_slot": "Ganador partido 87",
       "away_slot": "Ganador partido 86"
     },
@@ -1579,11 +1579,11 @@
       "time": "16:00",
       "home_team": "Suiza",
       "away_team": "Colombia",
-      "home_score": null,
-      "away_score": null,
-      "home_penalties": null,
-      "away_penalties": null,
-      "status": "scheduled",
+      "home_score": 0,
+      "away_score": 0,
+      "home_penalties": 4,
+      "away_penalties": 3,
+      "status": "finished",
       "home_slot": "Ganador partido 85",
       "away_slot": "Ganador partido 88"
     },
