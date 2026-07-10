@@ -1,8 +1,14 @@
 {
   "schema_version": 1,
   "source": "ESPN match summaries",
-  "updated_at": "2026-07-08T08:57:45-04:00",
+  "updated_at": "2026-07-10T09:03:33-04:00",
   "scorers": [
+    {
+      "id": "231388",
+      "name": "Kylian Mbappé",
+      "team": "Francia",
+      "goals": 8
+    },
     {
       "id": "45843",
       "name": "Lionel Messi",
@@ -16,16 +22,16 @@
       "goals": 7
     },
     {
-      "id": "231388",
-      "name": "Kylian Mbappé",
-      "team": "Francia",
-      "goals": 7
-    },
-    {
       "id": "142200",
       "name": "Harry Kane",
       "team": "Inglaterra",
       "goals": 6
+    },
+    {
+      "id": "229744",
+      "name": "Ousmane Dembélé",
+      "team": "Francia",
+      "goals": 5
     },
     {
       "id": "241012",
@@ -49,12 +55,6 @@
       "id": "229018",
       "name": "Mikel Oyarzabal",
       "team": "España",
-      "goals": 4
-    },
-    {
-      "id": "229744",
-      "name": "Ousmane Dembélé",
-      "team": "Francia",
       "goals": 4
     },
     {
