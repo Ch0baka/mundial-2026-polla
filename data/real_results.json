@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-08T08:56:30-04:00",
+  "updated_at": "2026-07-10T09:03:00-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -1589,19 +1589,19 @@
     },
     {
       "match_id": 97,
-      "match_key": "quarter_finals|slot_97_home|slot_97_away",
+      "match_key": "quarter_finals|Francia|Marruecos",
       "phase": "quarter_finals",
       "group": null,
       "matchday": null,
       "date": "2026-07-09",
       "time": "16:00",
-      "home_team": null,
-      "away_team": null,
-      "home_score": null,
-      "away_score": null,
+      "home_team": "Francia",
+      "away_team": "Marruecos",
+      "home_score": 2,
+      "away_score": 0,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled",
+      "status": "finished",
       "home_slot": "Ganador partido 90",
       "away_slot": "Ganador partido 89"
     },
