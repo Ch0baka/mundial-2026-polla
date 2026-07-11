@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-10T09:03:00-04:00",
+  "updated_at": "2026-07-11T12:41:37-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -1607,19 +1607,19 @@
     },
     {
       "match_id": 98,
-      "match_key": "quarter_finals|slot_98_home|slot_98_away",
+      "match_key": "quarter_finals|España|Bélgica",
       "phase": "quarter_finals",
       "group": null,
       "matchday": null,
       "date": "2026-07-10",
       "time": "15:00",
-      "home_team": null,
-      "away_team": null,
-      "home_score": null,
-      "away_score": null,
+      "home_team": "España",
+      "away_team": "Bélgica",
+      "home_score": 2,
+      "away_score": 1,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled",
+      "status": "finished",
       "home_slot": "Ganador partido 93",
       "away_slot": "Ganador partido 94"
     },
