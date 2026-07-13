@@ -40,6 +40,9 @@ const PHASE_MATCH_START = {
   final: 104,
 };
 const THEME_STORAGE_KEY = "worldcup-2026-theme";
+const PALETTE_STORAGE_KEY = "worldcup-2026-palette";
+const THEME_MODES = ["light", "dark"];
+const THEME_PALETTES = ["green", "spain", "england", "france"];
 
 const state = {
   index: [],
@@ -184,7 +187,7 @@ async function loadBracketConfiguration() {
 }
 
 async function init() {
-  setupThemeToggle();
+  setupThemeControls();
   setupNavigation();
   try {
     await loadPlayersIndex();
@@ -209,15 +212,27 @@ async function init() {
   }
 }
 
-function setupThemeToggle() {
+function setupThemeControls() {
   const button = document.querySelector("#theme-toggle");
   const savedTheme = readStoredTheme();
-  const initialTheme = ["light", "dark"].includes(savedTheme) ? savedTheme : getPreferredTheme();
-  applyTheme(initialTheme);
+  const savedPalette = readStoredPalette();
+  const initialTheme = THEME_MODES.includes(savedTheme) ? savedTheme : getPreferredTheme();
+  const initialPalette = THEME_PALETTES.includes(savedPalette) ? savedPalette : "green";
+  applyTheme(initialTheme, initialPalette);
   button?.addEventListener("click", () => {
     const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    const currentPalette = document.documentElement.dataset.palette || initialPalette;
     storeTheme(nextTheme);
-    applyTheme(nextTheme);
+    applyTheme(nextTheme, currentPalette);
+  });
+  document.querySelectorAll("[data-palette-option]").forEach((paletteButton) => {
+    paletteButton.addEventListener("click", () => {
+      const nextPalette = paletteButton.dataset.paletteOption;
+      const currentTheme = document.documentElement.dataset.theme || initialTheme;
+      if (!THEME_PALETTES.includes(nextPalette)) return;
+      storePalette(nextPalette);
+      applyTheme(currentTheme, nextPalette);
+    });
   });
 }
 
@@ -237,18 +252,42 @@ function storeTheme(theme) {
   }
 }
 
+function readStoredPalette() {
+  try {
+    return window.localStorage?.getItem(PALETTE_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function storePalette(palette) {
+  try {
+    window.localStorage?.setItem(PALETTE_STORAGE_KEY, palette);
+  } catch {
+    // Safari private contexts can block storage; the in-memory palette still applies.
+  }
+}
+
 function getPreferredTheme() {
   return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
-function applyTheme(theme) {
+function applyTheme(theme, palette = "green") {
   const safeTheme = theme === "dark" ? "dark" : "light";
+  const safePalette = THEME_PALETTES.includes(palette) ? palette : "green";
   document.documentElement.dataset.theme = safeTheme;
+  document.documentElement.dataset.palette = safePalette;
   const button = document.querySelector("#theme-toggle");
-  if (!button) return;
   const isDark = safeTheme === "dark";
-  button.textContent = isDark ? "Tema claro" : "Tema oscuro";
-  button.setAttribute("aria-label", isDark ? "Cambiar a tema claro" : "Cambiar a tema oscuro");
+  if (button) {
+    button.textContent = isDark ? "Tema claro" : "Tema oscuro";
+    button.setAttribute("aria-label", isDark ? "Cambiar a tema claro" : "Cambiar a tema oscuro");
+  }
+  document.querySelectorAll("[data-palette-option]").forEach((paletteButton) => {
+    const active = paletteButton.dataset.paletteOption === safePalette;
+    paletteButton.classList.toggle("is-active", active);
+    paletteButton.setAttribute("aria-pressed", String(active));
+  });
 }
 
 function setupNavigation() {
