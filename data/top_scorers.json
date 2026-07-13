@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "ESPN match summaries",
-  "updated_at": "2026-07-10T09:03:33-04:00",
+  "updated_at": "2026-07-13T10:39:50-04:00",
   "scorers": [
     {
       "id": "231388",
@@ -28,6 +28,12 @@
       "goals": 6
     },
     {
+      "id": "291281",
+      "name": "Jude Bellingham",
+      "team": "Inglaterra",
+      "goals": 6
+    },
+    {
       "id": "229744",
       "name": "Ousmane Dembélé",
       "team": "Francia",
@@ -37,12 +43,6 @@
       "id": "241012",
       "name": "Ismaïla Sarr",
       "team": "Senegal",
-      "goals": 4
-    },
-    {
-      "id": "291281",
-      "name": "Jude Bellingham",
-      "team": "Inglaterra",
       "goals": 4
     },
     {
@@ -67,6 +67,12 @@
       "id": "282229",
       "name": "Brian Brobbey",
       "team": "Países Bajos",
+      "goals": 3
+    },
+    {
+      "id": "296319",
+      "name": "Charles De Ketelaere",
+      "team": "Bélgica",
       "goals": 3
     },
     {
@@ -184,12 +190,6 @@
       "goals": 2
     },
     {
-      "id": "296319",
-      "name": "Charles De Ketelaere",
-      "team": "Bélgica",
-      "goals": 2
-    },
-    {
       "id": "284792",
       "name": "Crysencio Summerville",
       "team": "Países Bajos",
@@ -205,6 +205,12 @@
       "id": "219362",
       "name": "Daichi Kamada",
       "team": "Japón",
+      "goals": 2
+    },
+    {
+      "id": "275842",
+      "name": "Dan Ndoye",
+      "team": "Suiza",
       "goals": 2
     },
     {
@@ -232,6 +238,12 @@
       "goals": 2
     },
     {
+      "id": "219713",
+      "name": "Lautaro Martínez",
+      "team": "Argentina",
+      "goals": 2
+    },
+    {
       "id": "174980",
       "name": "Leandro Trossard",
       "team": "Bélgica",
@@ -253,6 +265,12 @@
       "id": "287025",
       "name": "Maxi Araújo",
       "team": "Uruguay",
+      "goals": 2
+    },
+    {
+      "id": "209581",
+      "name": "Mikel Merino",
+      "team": "España",
       "goals": 2
     },
     {
@@ -346,6 +364,12 @@
       "goals": 1
     },
     {
+      "id": "249299",
+      "name": "Alexis Mac Allister",
+      "team": "Argentina",
+      "goals": 1
+    },
+    {
       "id": "271132",
       "name": "Alexis Saelemaekers",
       "team": "Bélgica",
@@ -361,6 +385,12 @@
       "id": "259743",
       "name": "Amine Gouiri",
       "team": "Argelia",
+      "goals": 1
+    },
+    {
+      "id": "313415",
+      "name": "Andreas Schjelderup",
+      "team": "Noruega",
       "goals": 1
     },
     {
@@ -436,12 +466,6 @@
       "goals": 1
     },
     {
-      "id": "275842",
-      "name": "Dan Ndoye",
-      "team": "Suiza",
-      "goals": 1
-    },
-    {
       "id": "246442",
       "name": "Deroy Duarte",
       "team": "Cabo Verde",
@@ -469,6 +493,12 @@
       "id": "285450",
       "name": "Enzo Fernández",
       "team": "Argentina",
+      "goals": 1
+    },
+    {
+      "id": "214596",
+      "name": "Fabián Ruiz",
+      "team": "España",
       "goals": 1
     },
     {
@@ -634,6 +664,12 @@
       "goals": 1
     },
     {
+      "id": "277206",
+      "name": "Julián Álvarez",
+      "team": "Argentina",
+      "goals": 1
+    },
+    {
       "id": "219350",
       "name": "Junya Ito",
       "team": "Japón",
@@ -691,12 +727,6 @@
       "id": "362150",
       "name": "Lamine Yamal",
       "team": "España",
-      "goals": 1
-    },
-    {
-      "id": "219713",
-      "name": "Lautaro Martínez",
-      "team": "Argentina",
       "goals": 1
     },
     {
@@ -793,12 +823,6 @@
       "id": "249525",
       "name": "Michal Sadílek",
       "team": "República Checa",
-      "goals": 1
-    },
-    {
-      "id": "209581",
-      "name": "Mikel Merino",
-      "team": "España",
       "goals": 1
     },
     {
