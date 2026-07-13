@@ -74,7 +74,7 @@ http://localhost:8000
 
 La aplicación carga `data/players_index.json` y los JSON individuales para
 mostrar dashboard, ranking, jugadores, fase de grupos, eliminatorias, fixture,
-premios y avisos. También carga `data/teams.json` para mostrar
+premios y goleadores. También carga `data/teams.json` para mostrar
 banderas cuando el SVG correspondiente existe. El ranking calcula puntos usando
 únicamente resultados finalizados de `data/real_results.json`.
 
@@ -192,6 +192,22 @@ La puntuación se lee desde `data/scoring_rules.json` y es acumulativa: se suman
 los puntos correspondientes por signo, diferencia de gol y marcador exacto.
 En eliminatorias, acertar el clasificado suma puntos adicionales; el marcador
 de penales no da puntos.
+
+## Top 5 goleadores
+
+El dashboard lee los goleadores desde `data/top_scorers.json`. La web publicada
+no consulta ESPN directamente para evitar fallas por CORS, cambios de API o
+resúmenes incompletos en el navegador.
+
+Para regenerar el archivo local:
+
+```bash
+python scripts/update_top_scorers.py
+```
+
+Si ESPN no responde o no entrega datos suficientes, el script conserva el JSON
+existente. Para publicar cambios, revisa `data/top_scorers.json`, haz commit y
+push como con los resultados reales.
 
 Esta Fase 1 no calcula todavía puntos por campeón, cuadro de honor, premios
 individuales, bonos por clasificados de fase ni desempates avanzados.

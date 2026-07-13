@@ -8,9 +8,6 @@ const PATHS = {
   qualificationOverrides: "data/qualification_overrides.json",
   bestThirdMatrix: "data/best_third_matrix.json",
   topScorersLocal: "data/top_scorers.json",
-  topScorersStats: "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/statistics?season=2026",
-  topScorersScoreboard: "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?limit=200&dates=20260611-20260719",
-  topScorersSummary: "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event=",
 };
 const DEFAULT_CONFIG = {
   mode: "testing",
@@ -43,58 +40,6 @@ const PHASE_MATCH_START = {
   final: 104,
 };
 const THEME_STORAGE_KEY = "worldcup-2026-theme";
-const TOP_SCORERS_REFRESH_MS = 5 * 60 * 1000;
-const ESPN_TEAM_NAMES = {
-  Algeria: "Argelia",
-  Argentina: "Argentina",
-  Australia: "Australia",
-  Austria: "Austria",
-  Belgium: "Bélgica",
-  "Bosnia-Herzegovina": "Bosnia y Herzegovina",
-  "Bosnia and Herzegovina": "Bosnia y Herzegovina",
-  Brazil: "Brasil",
-  Canada: "Canadá",
-  "Cape Verde": "Cabo Verde",
-  Colombia: "Colombia",
-  "Congo DR": "RD Congo",
-  Croatia: "Croacia",
-  Curacao: "Curazao",
-  Czechia: "República Checa",
-  Ecuador: "Ecuador",
-  Egypt: "Egipto",
-  England: "Inglaterra",
-  France: "Francia",
-  Germany: "Alemania",
-  Ghana: "Ghana",
-  Haiti: "Haití",
-  Iran: "Irán",
-  Iraq: "Irak",
-  "Ivory Coast": "Costa de Marfil",
-  Japan: "Japón",
-  Jordan: "Jordania",
-  Mexico: "México",
-  Morocco: "Marruecos",
-  Netherlands: "Países Bajos",
-  "New Zealand": "Nueva Zelanda",
-  Norway: "Noruega",
-  Panama: "Panamá",
-  Paraguay: "Paraguay",
-  Portugal: "Portugal",
-  Qatar: "Catar",
-  "Saudi Arabia": "Arabia Saudita",
-  Scotland: "Escocia",
-  Senegal: "Senegal",
-  "South Africa": "Sudáfrica",
-  "South Korea": "Corea del Sur",
-  Spain: "España",
-  Sweden: "Suecia",
-  Switzerland: "Suiza",
-  Turkey: "Turquía",
-  Tunisia: "Túnez",
-  "United States": "Estados Unidos",
-  Uruguay: "Uruguay",
-  Uzbekistan: "Uzbekistán",
-};
 
 const state = {
   index: [],
@@ -113,7 +58,6 @@ const state = {
   topScorersUpdatedAt: null,
   topScorersError: "",
   topScorersSource: "",
-  topScorersRefreshTimer: null,
   controlWarnings: [],
   scoringWarnings: [],
   leaderboard: [],
@@ -138,12 +82,6 @@ async function loadJson(path) {
   const response = await fetch(path, { cache: "no-store" });
   if (!response.ok) throw new Error(`HTTP ${response.status} al cargar ${path}`);
   return response.json();
-}
-
-function cacheBustedUrl(path) {
-  if (!/^https?:\/\//i.test(path)) return path;
-  const separator = path.includes("?") ? "&" : "?";
-  return `${path}${separator}_=${Date.now()}`;
 }
 
 async function loadPlayersIndex() {
@@ -215,42 +153,9 @@ async function loadScoringRules() {
   return state.scoringRules;
 }
 
-async function loadTopScorers(options = {}) {
-  if (options.preferLocal) {
-    const loaded = await loadLocalTopScorers();
-    if (loaded) return state.topScorers;
-  }
-  try {
-    const data = await loadJson(cacheBustedUrl(PATHS.topScorersScoreboard));
-    const events = (data?.events ?? []).filter((event) =>
-      event?.id && (event.status?.type?.completed || event.status?.type?.state === "in")
-    );
-    const summaries = await Promise.allSettled(events.map(async (event) => ({
-      event,
-      summary: await loadJson(cacheBustedUrl(`${PATHS.topScorersSummary}${event.id}`)),
-    })));
-    const eventSummaries = summaries
-      .filter((result) => result.status === "fulfilled")
-      .map((result) => result.value);
-    state.topScorers = parseTopScorersFromEspnSummaries(eventSummaries);
-    if (!state.topScorers.length) {
-      const fallbackData = await loadJson(cacheBustedUrl(PATHS.topScorersStats));
-      state.topScorers = parseTopScorersFromEspnStats(fallbackData);
-    }
-    state.topScorersAvailable = true;
-    state.topScorersUpdatedAt = data?.timestamp || new Date().toISOString();
-    state.topScorersError = "";
-    state.topScorersSource = "ESPN eventos";
-  } catch {
-    const loaded = await loadLocalTopScorers();
-    state.topScorersError = loaded ? "No se pudo refrescar desde ESPN; mostrando último archivo local." : "No se pudo actualizar desde ESPN.";
-    if (!loaded && !state.topScorers.length) {
-      state.topScorers = [];
-      state.topScorersAvailable = false;
-      state.topScorersUpdatedAt = null;
-      state.topScorersSource = "";
-    }
-  }
+async function loadTopScorers() {
+  const loaded = await loadLocalTopScorers();
+  if (!loaded) state.topScorersError = "No se pudo cargar data/top_scorers.json.";
   return state.topScorers;
 }
 
@@ -265,17 +170,6 @@ async function loadLocalTopScorers() {
   } catch {
     return false;
   }
-}
-
-async function refreshTopScorers() {
-  await loadTopScorers();
-  const container = document.querySelector("#dashboard-top-scorers");
-  if (container) container.innerHTML = renderTopScorers();
-}
-
-function startTopScorersAutoRefresh() {
-  if (state.topScorersRefreshTimer) window.clearInterval(state.topScorersRefreshTimer);
-  state.topScorersRefreshTimer = window.setInterval(refreshTopScorers, TOP_SCORERS_REFRESH_MS);
 }
 
 async function loadBracketConfiguration() {
@@ -295,7 +189,7 @@ async function init() {
   try {
     await loadPlayersIndex();
     await Promise.all([
-      loadPlayers(), loadTeams(), loadConfig(), loadRealResults(), loadScoringRules(), loadTopScorers({ preferLocal: true }),
+      loadPlayers(), loadTeams(), loadConfig(), loadRealResults(), loadScoringRules(), loadTopScorers(),
       loadBracketConfiguration(),
     ]);
     if (state.players.length) {
@@ -303,7 +197,6 @@ async function init() {
       state.selected.knockout = state.players[0].player.id;
     }
     renderAll();
-    startTopScorersAutoRefresh();
     if (state.errors.length) {
       showError(`Carga parcial: ${state.errors.join(" | ")}`);
       setStatus(`${state.players.length} jugadores · carga parcial`, "is-error");
@@ -384,7 +277,6 @@ function renderAll() {
   renderKnockout();
   renderFixture();
   renderAwards();
-  renderWarnings();
 }
 
 function renderDashboard() {
@@ -489,21 +381,6 @@ function renderDashboardMatch(match, resultsOnly) {
   </article>`;
 }
 
-function parseTopScorersFromEspnStats(data) {
-  const goalsCategory = (data?.stats ?? []).find((category) => category.name === "goalsLeaders");
-  return (goalsCategory?.leaders ?? []).map((leader) => {
-    const athlete = leader.athlete ?? {};
-    const team = athlete.team ?? leader.team ?? {};
-    return {
-      id: athlete.id ?? "",
-      name: athlete.displayName ?? athlete.shortName ?? "Jugador sin nombre",
-      team: mapEspnTeamName(team.displayName ?? team.name ?? ""),
-      goals: Number(leader.value ?? 0),
-      displayValue: leader.displayValue ?? "",
-    };
-  }).filter((scorer) => scorer.goals > 0);
-}
-
 function parseTopScorersFromLocalData(data) {
   return (data?.scorers ?? []).map((scorer) => ({
     id: scorer.id ?? "",
@@ -513,43 +390,6 @@ function parseTopScorersFromLocalData(data) {
     displayValue: String(scorer.goals ?? ""),
   })).filter((scorer) => scorer.goals > 0)
     .sort((a, b) => b.goals - a.goals || a.name.localeCompare(b.name));
-}
-
-function parseTopScorersFromEspnSummaries(eventSummaries) {
-  const scorers = new Map();
-  eventSummaries.forEach(({ summary }) => {
-    const seenPlayIds = new Set();
-    (summary?.keyEvents ?? []).forEach((play) => {
-      if (!isGoalScoringPlay(play) || seenPlayIds.has(play.id)) return;
-      seenPlayIds.add(play.id);
-      const athlete = play.participants?.[0]?.athlete;
-      const name = athlete?.displayName || athlete?.shortName;
-      if (!name) return;
-      const id = athlete.id || `${name}|${play.team?.displayName || ""}`;
-      const existing = scorers.get(id) ?? {
-        id,
-        name,
-        team: mapEspnTeamName(play.team?.displayName ?? ""),
-        goals: 0,
-        displayValue: "",
-      };
-      existing.goals += 1;
-      existing.displayValue = `${existing.goals}`;
-      scorers.set(id, existing);
-    });
-  });
-  return [...scorers.values()]
-    .filter((scorer) => scorer.goals > 0)
-    .sort((a, b) => b.goals - a.goals || a.name.localeCompare(b.name));
-}
-
-function isGoalScoringPlay(play) {
-  const type = String(play?.type?.type || play?.type?.text || "").toLowerCase();
-  return play?.scoringPlay === true && (type === "penalty---scored" || type.startsWith("goal"));
-}
-
-function mapEspnTeamName(teamName) {
-  return ESPN_TEAM_NAMES[teamName] || teamName || "Sin definir";
 }
 
 function renderRanking() {
@@ -724,28 +564,6 @@ function renderAwards() {
   const rows = Object.entries(AWARD_LABELS).map(([key, label]) => `
     <tr><td><strong>${label}</strong></td>${state.players.map((player) => `<td>${escapeHtml(player.awards?.[key] || "Sin definir")}</td>`).join("")}</tr>`).join("");
   document.querySelector("#awards-content").innerHTML = table(["Premio", ...state.players.map((player) => player.player.name)], rows);
-}
-
-function renderWarnings() {
-  const pendingControl = state.controlWarnings.filter((warning) => /: Sin equipos definidos$/.test(warning));
-  const reviewControl = state.controlWarnings.filter((warning) => !/: Sin equipos definidos$/.test(warning));
-  const pendingDetails = pendingControl.length
-    ? `<details class="notice-details"><summary>${pendingControl.length} partidos pendientes sin equipos definidos</summary>
-        <ul class="warning-list">${pendingControl.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>
-      </details>`
-    : "";
-  const reviewList = reviewControl.length
-    ? `<ul class="warning-list">${reviewControl.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>`
-    : (!pendingControl.length ? emptyState("Sin avisos") : "");
-  const controlCard = `<article class="warning-card"><div class="warning-heading"><h3>Avisos de control</h3>${warningBadge(state.controlWarnings.length, "aviso")}</div>
-    ${pendingDetails}${reviewList}</article>`;
-  const scoringCard = `<article class="warning-card"><div class="warning-heading"><h3>Avisos de scoring</h3>${warningBadge(state.scoringWarnings.length, "aviso")}</div>
-    ${state.scoringWarnings.length ? `<ul class="warning-list">${state.scoringWarnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>` : emptyState("Sin avisos")}</article>`;
-  document.querySelector("#warnings-content").innerHTML = controlCard + scoringCard + state.players.map((player) => {
-    const warnings = getPlayerWarnings(player);
-    return `<article class="warning-card"><div class="warning-heading"><h3>Avisos de jugador: ${escapeHtml(player.player.name)}</h3>${warningBadge(warnings.length, "aviso")}</div>
-      ${warnings.length ? `<ul class="warning-list">${warnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>` : emptyState("Sin avisos")}</article>`;
-  }).join("");
 }
 
 function renderTeamName(teamName) {
@@ -1485,10 +1303,7 @@ if (typeof module !== "undefined" && module.exports) {
     getLocalDateKey,
     shiftDateKey,
     renderDashboardDailyMatches,
-    parseTopScorersFromEspnStats,
     parseTopScorersFromLocalData,
-    parseTopScorersFromEspnSummaries,
-    mapEspnTeamName,
     setTestState: (values) => Object.assign(state, values),
   };
 }
