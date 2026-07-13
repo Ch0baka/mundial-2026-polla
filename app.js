@@ -214,25 +214,28 @@ async function init() {
 
 function setupThemeControls() {
   const button = document.querySelector("#theme-toggle");
+  const controls = document.querySelector(".theme-controls");
   const savedTheme = readStoredTheme();
   const savedPalette = readStoredPalette();
   const initialTheme = THEME_MODES.includes(savedTheme) ? savedTheme : getPreferredTheme();
   const initialPalette = THEME_PALETTES.includes(savedPalette) ? savedPalette : "green";
   applyTheme(initialTheme, initialPalette);
-  button?.addEventListener("click", () => {
+  if (button) button.addEventListener("click", () => {
     const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
     const currentPalette = document.documentElement.dataset.palette || initialPalette;
     storeTheme(nextTheme);
     applyTheme(nextTheme, currentPalette);
   });
-  document.querySelectorAll("[data-palette-option]").forEach((paletteButton) => {
-    paletteButton.addEventListener("click", () => {
-      const nextPalette = paletteButton.dataset.paletteOption;
-      const currentTheme = document.documentElement.dataset.theme || initialTheme;
-      if (!THEME_PALETTES.includes(nextPalette)) return;
-      storePalette(nextPalette);
-      applyTheme(currentTheme, nextPalette);
-    });
+  if (!controls) return;
+  controls.addEventListener("click", (event) => {
+    const paletteButton = event.target.closest("[data-palette-option]");
+    if (!paletteButton || !controls.contains(paletteButton)) return;
+    event.preventDefault();
+    const nextPalette = paletteButton.getAttribute("data-palette-option");
+    const currentTheme = document.documentElement.dataset.theme || initialTheme;
+    if (!THEME_PALETTES.includes(nextPalette)) return;
+    storePalette(nextPalette);
+    applyTheme(currentTheme, nextPalette);
   });
 }
 

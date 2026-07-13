@@ -19,6 +19,8 @@
   --header-bg:
     radial-gradient(circle at 78% -30%, rgba(77, 202, 143, 0.25), transparent 44%),
     var(--header);
+  --header-overlay:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.12) 52%, rgba(0, 0, 0, 0.28));
   --header-text: #ffffff;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -44,6 +46,8 @@
     --header-bg:
       radial-gradient(circle at 78% -30%, rgba(77, 202, 143, 0.25), transparent 44%),
       var(--header);
+    --header-overlay:
+      linear-gradient(90deg, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.12) 52%, rgba(0, 0, 0, 0.28));
   }
 }
 
@@ -68,6 +72,8 @@
   --header-bg:
     radial-gradient(circle at 78% -30%, rgba(77, 202, 143, 0.25), transparent 44%),
     var(--header);
+  --header-overlay:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.12) 52%, rgba(0, 0, 0, 0.28));
   --header-text: #ffffff;
 }
 
@@ -92,6 +98,8 @@
   --header-bg:
     radial-gradient(circle at 78% -30%, rgba(77, 202, 143, 0.25), transparent 44%),
     var(--header);
+  --header-overlay:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.12) 52%, rgba(0, 0, 0, 0.28));
   --header-text: #ffffff;
 }
 
@@ -111,8 +119,10 @@
   --shadow: 0 18px 45px rgba(125, 32, 16, 0.1);
   --header: #5d0714;
   --header-bg:
-    linear-gradient(90deg, rgba(95, 9, 22, 0.9) 0 34%, rgba(202, 143, 20, 0.9) 34% 66%, rgba(95, 9, 22, 0.9) 66% 100%),
+    linear-gradient(90deg, rgba(95, 9, 22, 0.84) 0%, rgba(132, 32, 22, 0.72) 26%, rgba(202, 143, 20, 0.72) 43%, rgba(202, 143, 20, 0.72) 57%, rgba(132, 32, 22, 0.72) 74%, rgba(95, 9, 22, 0.84) 100%),
     radial-gradient(circle at 85% -15%, rgba(255, 216, 92, 0.45), transparent 42%);
+  --header-overlay:
+    linear-gradient(90deg, rgba(33, 5, 8, 0.46), rgba(33, 5, 8, 0.18) 50%, rgba(33, 5, 8, 0.36));
 }
 
 :root[data-theme="dark"][data-palette="spain"] {
@@ -131,9 +141,11 @@
   --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
   --header: #100405;
   --header-bg:
-    linear-gradient(90deg, rgba(91, 7, 18, 0.82) 0 34%, rgba(159, 105, 12, 0.74) 34% 66%, rgba(91, 7, 18, 0.82) 66% 100%),
+    linear-gradient(90deg, rgba(91, 7, 18, 0.72) 0%, rgba(114, 42, 16, 0.62) 28%, rgba(159, 105, 12, 0.58) 44%, rgba(159, 105, 12, 0.58) 56%, rgba(114, 42, 16, 0.62) 72%, rgba(91, 7, 18, 0.72) 100%),
     radial-gradient(circle at 84% -20%, rgba(255, 216, 92, 0.2), transparent 42%),
     var(--header);
+  --header-overlay:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.54), rgba(0, 0, 0, 0.18) 50%, rgba(0, 0, 0, 0.42));
 }
 
 :root[data-theme="light"][data-palette="england"] {
@@ -150,9 +162,11 @@
   --shadow: 0 18px 45px rgba(35, 43, 54, 0.08);
   --header: #1a2029;
   --header-bg:
-    linear-gradient(90deg, transparent 0 43%, rgba(173, 18, 43, 0.78) 43% 57%, transparent 57% 100%),
-    linear-gradient(0deg, transparent 0 41%, rgba(173, 18, 43, 0.78) 41% 59%, transparent 59% 100%),
+    linear-gradient(90deg, transparent 0 38%, rgba(173, 18, 43, 0.42) 46%, rgba(173, 18, 43, 0.42) 54%, transparent 62% 100%),
+    linear-gradient(0deg, transparent 0 36%, rgba(173, 18, 43, 0.42) 44%, rgba(173, 18, 43, 0.42) 56%, transparent 64% 100%),
     linear-gradient(135deg, #f6f8fb, #cdd6df);
+  --header-overlay:
+    linear-gradient(90deg, rgba(10, 16, 25, 0.44), rgba(10, 16, 25, 0.18) 50%, rgba(10, 16, 25, 0.34));
   --header-text: #17202b;
 }
 
@@ -172,9 +186,11 @@
   --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
   --header: #0c1016;
   --header-bg:
-    linear-gradient(90deg, transparent 0 43%, rgba(173, 18, 43, 0.58) 43% 57%, transparent 57% 100%),
-    linear-gradient(0deg, transparent 0 41%, rgba(173, 18, 43, 0.58) 41% 59%, transparent 59% 100%),
+    linear-gradient(90deg, transparent 0 38%, rgba(173, 18, 43, 0.36) 46%, rgba(173, 18, 43, 0.36) 54%, transparent 62% 100%),
+    linear-gradient(0deg, transparent 0 36%, rgba(173, 18, 43, 0.36) 44%, rgba(173, 18, 43, 0.36) 56%, transparent 64% 100%),
     linear-gradient(135deg, #151b24, #05070a);
+  --header-overlay:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.52), rgba(0, 0, 0, 0.18) 50%, rgba(0, 0, 0, 0.42));
 }
 
 :root[data-theme="light"][data-palette="france"] {
@@ -193,8 +209,10 @@
   --shadow: 0 18px 45px rgba(22, 50, 96, 0.09);
   --header: #132f66;
   --header-bg:
-    linear-gradient(90deg, rgba(22, 58, 132, 0.92) 0 33%, rgba(246, 248, 252, 0.82) 33% 66%, rgba(185, 24, 48, 0.88) 66% 100%),
+    linear-gradient(90deg, rgba(22, 58, 132, 0.82) 0%, rgba(80, 106, 160, 0.58) 30%, rgba(246, 248, 252, 0.48) 45%, rgba(246, 248, 252, 0.48) 55%, rgba(185, 24, 48, 0.64) 72%, rgba(185, 24, 48, 0.82) 100%),
     radial-gradient(circle at 75% -20%, rgba(255, 255, 255, 0.34), transparent 44%);
+  --header-overlay:
+    linear-gradient(90deg, rgba(5, 18, 44, 0.42), rgba(5, 18, 44, 0.2) 50%, rgba(5, 18, 44, 0.38));
 }
 
 :root[data-theme="dark"][data-palette="france"] {
@@ -213,9 +231,11 @@
   --shadow: 0 18px 45px rgba(0, 0, 0, 0.3);
   --header: #081021;
   --header-bg:
-    linear-gradient(90deg, rgba(15, 46, 111, 0.82) 0 33%, rgba(210, 216, 228, 0.24) 33% 66%, rgba(136, 18, 35, 0.78) 66% 100%),
+    linear-gradient(90deg, rgba(15, 46, 111, 0.72) 0%, rgba(50, 68, 110, 0.46) 30%, rgba(210, 216, 228, 0.2) 45%, rgba(210, 216, 228, 0.2) 55%, rgba(136, 18, 35, 0.56) 72%, rgba(136, 18, 35, 0.72) 100%),
     radial-gradient(circle at 80% -22%, rgba(255, 255, 255, 0.18), transparent 44%),
     var(--header);
+  --header-overlay:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.54), rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.46));
 }
 
 * { box-sizing: border-box; }
@@ -226,10 +246,24 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .container { width: min(1180px, calc(100% - 32px)); margin-inline: auto; }
 
 .site-header {
+  position: relative;
+  overflow: hidden;
   padding: 30px 0;
   background: var(--header-bg);
   color: var(--header-text);
 }
+
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: var(--header-overlay);
+  -webkit-backdrop-filter: blur(10px) saturate(0.92);
+  backdrop-filter: blur(10px) saturate(0.92);
+}
+
+.site-header .header-content { position: relative; z-index: 1; }
 
 .header-content, .section-heading, .panel-heading, .player-card-header, .filter-row {
   display: flex;
@@ -265,24 +299,30 @@ h4 { margin-bottom: 12px; }
 .status-pill { padding: 9px 13px; background: rgba(255, 255, 255, 0.12); color: var(--header-text); }
 .status-pill.is-ready { background: #dff7e9; color: #0a4b33; }
 .status-pill.is-error { background: #ffe0e0; color: #792424; }
-.theme-controls { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+.theme-controls {
+  display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap;
+  padding: 6px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 999px;
+  background: rgba(8, 12, 16, 0.42); box-shadow: 0 14px 35px rgba(0, 0, 0, 0.18);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  backdrop-filter: blur(18px) saturate(1.15);
+}
 .palette-switcher {
-  display: inline-flex; gap: 4px; padding: 4px; border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 999px; background: rgba(255, 255, 255, 0.08);
+  display: inline-flex; gap: 4px; padding: 2px; border: 0;
+  border-radius: 999px; background: transparent;
 }
 .theme-toggle, .palette-button {
   -webkit-appearance: none; appearance: none;
   display: inline-flex; align-items: center; justify-content: center;
-  min-height: 36px; border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 999px; padding: 9px 13px;
-  background: rgba(255, 255, 255, 0.1); color: var(--header-text); cursor: pointer;
+  min-height: 36px; border: 1px solid rgba(255, 255, 255, 0.24); border-radius: 999px; padding: 9px 13px;
+  background: rgba(255, 255, 255, 0.08); color: #fff; cursor: pointer;
   font-size: 0.76rem; font-weight: 850; line-height: 1; text-align: center; white-space: nowrap;
   font-family: inherit; box-shadow: none;
 }
 .palette-button { min-height: 30px; padding: 7px 10px; border-color: transparent; background: transparent; }
 .theme-toggle:hover, .theme-toggle:focus-visible,
-.palette-button:hover, .palette-button:focus-visible { background: rgba(255, 255, 255, 0.18); outline: none; }
+.palette-button:hover, .palette-button:focus-visible { background: rgba(255, 255, 255, 0.2); outline: none; }
 .palette-button.is-active {
-  background: rgba(255, 255, 255, 0.86); color: var(--accent-strong);
+  background: rgba(255, 255, 255, 0.94); color: #102035;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
 }
 
