@@ -150,6 +150,14 @@ h1 {
   max-width: 760px; margin-bottom: 10px; font-size: clamp(2.6rem, 7vw, 5.8rem);
   line-height: 0.9; letter-spacing: -0.075em;
 }
+.hero-title {
+  display: flex; align-items: center; gap: clamp(14px, 2.4vw, 28px);
+}
+.hero-title-flag {
+  flex: 0 0 auto; width: clamp(54px, 8vw, 112px); aspect-ratio: 3 / 2;
+  border: 2px solid rgba(255, 255, 255, 0.72); border-radius: 14px; object-fit: cover;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+}
 h2 { margin-bottom: 0; font-size: clamp(1.7rem, 3vw, 2.3rem); letter-spacing: -0.04em; }
 h3 { margin-bottom: 0; }
 h4 { margin-bottom: 12px; }
@@ -363,6 +371,8 @@ select { width: 100%; border: 1px solid var(--border); border-radius: 9px; paddi
   .container { width: min(100% - 22px, 1180px); }
   .site-header { padding: 23px 0; }
   .header-content, .section-heading { align-items: flex-start; flex-direction: column; gap: 15px; }
+  .hero-title { align-items: flex-start; flex-direction: column; }
+  .hero-title-flag { border-radius: 10px; }
   .header-actions { align-self: stretch; justify-content: flex-end; margin-left: 0; }
   .theme-controls { width: 100%; }
   .subtitle { font-size: 0.88rem; }
