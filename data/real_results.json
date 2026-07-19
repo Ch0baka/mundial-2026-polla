@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-16T17:19:55-04:00",
+  "updated_at": "2026-07-18T21:20:54-04:00",
   "status": "in_progress",
   "matches": [
     {
@@ -1697,19 +1697,19 @@
     },
     {
       "match_id": 103,
-      "match_key": "third_place|slot_103_home|slot_103_away",
+      "match_key": "third_place|Francia|Inglaterra",
       "phase": "third_place",
       "group": null,
       "matchday": null,
       "date": "2026-07-18",
       "time": "17:00",
-      "home_team": null,
-      "away_team": null,
-      "home_score": null,
-      "away_score": null,
+      "home_team": "Francia",
+      "away_team": "Inglaterra",
+      "home_score": 4,
+      "away_score": 6,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled",
+      "status": "finished",
       "home_slot": "Perdedor partido 101",
       "away_slot": "Perdedor partido 102"
     },
