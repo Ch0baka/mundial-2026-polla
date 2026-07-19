@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-18T21:20:54-04:00",
-  "status": "in_progress",
+  "updated_at": "2026-07-19T18:04:06-04:00",
+  "status": "finished",
   "matches": [
     {
       "match_id": 1,
@@ -1715,19 +1715,19 @@
     },
     {
       "match_id": 104,
-      "match_key": "final|slot_104_home|slot_104_away",
+      "match_key": "final|España|Argentina",
       "phase": "final",
       "group": null,
       "matchday": null,
       "date": "2026-07-19",
       "time": "15:00",
-      "home_team": null,
-      "away_team": null,
-      "home_score": null,
-      "away_score": null,
+      "home_team": "España",
+      "away_team": "Argentina",
+      "home_score": 1,
+      "away_score": 0,
       "home_penalties": null,
       "away_penalties": null,
-      "status": "scheduled",
+      "status": "finished",
       "home_slot": "Ganador partido 101",
       "away_slot": "Ganador partido 102"
     }
