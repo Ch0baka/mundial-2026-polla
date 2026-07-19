@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "ESPN match summaries",
-  "updated_at": "2026-07-18T21:21:18-04:00",
+  "updated_at": "2026-07-19T18:04:34-04:00",
   "scorers": [
     {
       "id": "231388",
@@ -535,6 +535,12 @@
       "id": "281122",
       "name": "Felix Nmecha",
       "team": "Alemania",
+      "goals": 1
+    },
+    {
+      "id": "265869",
+      "name": "Ferran Torres",
+      "team": "España",
       "goals": 1
     },
     {
