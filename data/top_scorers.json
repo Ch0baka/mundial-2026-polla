@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "source": "ESPN match summaries",
-  "updated_at": "2026-07-13T10:39:50-04:00",
+  "updated_at": "2026-07-18T21:21:18-04:00",
   "scorers": [
     {
       "id": "231388",
       "name": "Kylian Mbappé",
       "team": "Francia",
-      "goals": 8
+      "goals": 10
     },
     {
       "id": "45843",
@@ -22,14 +22,14 @@
       "goals": 7
     },
     {
-      "id": "142200",
-      "name": "Harry Kane",
-      "team": "Inglaterra",
-      "goals": 6
-    },
-    {
       "id": "291281",
       "name": "Jude Bellingham",
+      "team": "Inglaterra",
+      "goals": 7
+    },
+    {
+      "id": "142200",
+      "name": "Harry Kane",
       "team": "Inglaterra",
       "goals": 6
     },
@@ -37,6 +37,12 @@
       "id": "229744",
       "name": "Ousmane Dembélé",
       "team": "Francia",
+      "goals": 6
+    },
+    {
+      "id": "229018",
+      "name": "Mikel Oyarzabal",
+      "team": "España",
       "goals": 5
     },
     {
@@ -52,21 +58,27 @@
       "goals": 4
     },
     {
-      "id": "229018",
-      "name": "Mikel Oyarzabal",
-      "team": "España",
-      "goals": 4
-    },
-    {
       "id": "252107",
       "name": "Vinícius Júnior",
       "team": "Brasil",
       "goals": 4
     },
     {
+      "id": "328238",
+      "name": "Bradley Barcola",
+      "team": "Francia",
+      "goals": 3
+    },
+    {
       "id": "282229",
       "name": "Brian Brobbey",
       "team": "Países Bajos",
+      "goals": 3
+    },
+    {
+      "id": "280555",
+      "name": "Bukayo Saka",
+      "team": "Inglaterra",
       "goals": 3
     },
     {
@@ -130,6 +142,12 @@
       "goals": 3
     },
     {
+      "id": "219713",
+      "name": "Lautaro Martínez",
+      "team": "Argentina",
+      "goals": 3
+    },
+    {
       "id": "259902",
       "name": "Matheus Cunha",
       "team": "Brasil",
@@ -178,12 +196,6 @@
       "goals": 2
     },
     {
-      "id": "328238",
-      "name": "Bradley Barcola",
-      "team": "Francia",
-      "goals": 2
-    },
-    {
       "id": "202099",
       "name": "Breel Embolo",
       "team": "Suiza",
@@ -226,6 +238,12 @@
       "goals": 2
     },
     {
+      "id": "285450",
+      "name": "Enzo Fernández",
+      "team": "Argentina",
+      "goals": 2
+    },
+    {
       "id": "414676",
       "name": "Ermin Mahmic",
       "team": "Bosnia y Herzegovina",
@@ -235,12 +253,6 @@
       "id": "324991",
       "name": "Habib Diarra",
       "team": "Senegal",
-      "goals": 2
-    },
-    {
-      "id": "219713",
-      "name": "Lautaro Martínez",
-      "team": "Argentina",
       "goals": 2
     },
     {
@@ -289,6 +301,12 @@
       "id": "255889",
       "name": "Pape Gueye",
       "team": "Senegal",
+      "goals": 2
+    },
+    {
+      "id": "268533",
+      "name": "Pedro Porro",
+      "team": "España",
       "goals": 2
     },
     {
@@ -400,6 +418,12 @@
       "goals": 1
     },
     {
+      "id": "268782",
+      "name": "Anthony Gordon",
+      "team": "Inglaterra",
+      "goals": 1
+    },
+    {
       "id": "319368",
       "name": "Antonio Nusa",
       "team": "Noruega",
@@ -466,6 +490,12 @@
       "goals": 1
     },
     {
+      "id": "238262",
+      "name": "Declan Rice",
+      "team": "Inglaterra",
+      "goals": 1
+    },
+    {
       "id": "246442",
       "name": "Deroy Duarte",
       "team": "Cabo Verde",
@@ -490,9 +520,9 @@
       "goals": 1
     },
     {
-      "id": "285450",
-      "name": "Enzo Fernández",
-      "team": "Argentina",
+      "id": "231859",
+      "name": "Ezri Konsa",
+      "team": "Inglaterra",
       "goals": 1
     },
     {
@@ -913,12 +943,6 @@
       "id": "303848",
       "name": "Omar Rekik",
       "team": "Túnez",
-      "goals": 1
-    },
-    {
-      "id": "268533",
-      "name": "Pedro Porro",
-      "team": "España",
       "goals": 1
     },
     {
